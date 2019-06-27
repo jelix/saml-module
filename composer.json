@@ -1,0 +1,29 @@
+{
+    "name": "jelix/saml-module",
+    "type": "jelix-module",
+    "description": "module for Jelix, allowing to authenticate against an SAML server.",
+    "keywords": ["saml", "authentication", "jelix"],
+    "homepage": "http://jelix.org",
+    "license": "LGPL",
+    "authors": [
+        {
+            "name": "Laurent Jouanneau",
+            "email": "laurent@jelix.org"
+        }
+    ],
+    "require": {
+      "php": ">=5.6",
+      "onelogin/php-saml": "^3.1.1"
+    },
+    "minimum-stability": "stable",
+    "extra" : {
+        "jelix" : {
+            "modules": [
+                "saml"
+            ]
+        },
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}

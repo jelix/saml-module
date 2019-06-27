@@ -1,0 +1,4 @@
+*.komodoproject
+.idea
+vendor
+composer.lock
