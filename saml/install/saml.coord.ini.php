@@ -45,5 +45,8 @@ form = "jauthdb_admin~jelixuser"
 ; should be related to the var directory of the application
 uploadsDirectory= ""
 
+; value "on": create the user in the database if it doesn't exist when the user is authenticated
+automaticAccountCreation=on
+
 ; other parameters for SAML service provider and identity provider are
 ; into saml:* sections into the main configuration.
