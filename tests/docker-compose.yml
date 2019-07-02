@@ -1,0 +1,23 @@
+version: '3'
+services:
+  web:
+    image: nginx:alpine
+    container_name: webnginx
+    ports:
+        - "8080:80"
+    volumes:
+      - "./etc/nginx/default.conf:/etc/nginx/conf.d/default.conf"
+      - "./etc/nginx/default.template.conf:/etc/nginx/conf.d/default.template"
+      - "../:/opt/"
+    environment:
+      - NGINX_HOST=${NGINX_HOST}
+    command: /bin/sh -c "envsubst '$$NGINX_HOST' < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+    #restart: always
+    depends_on:
+      - php
+  php:
+    build: ./phpfpm
+    #restart: always
+    volumes:
+      - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
+      - "../:/opt/"

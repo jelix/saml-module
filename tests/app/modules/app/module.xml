@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="http://jelix.org/ns/module/1.0">
+    <info id="app@innophi.com" name="app" createdate="2019-06-28">
+        <version date="2019-06-28">0.1pre</version>
+        <label lang="en_US">app</label>
+        <description lang="en_US" />
+        <license URL="">All rights reserved</license>
+        <copyright>2019 3liz</copyright>
+        <creator name="Laurent Jouanneau" email="laurent@innophi.com" />
+        <!--<contributor name="hisname" email="hisemail@yoursite.undefined"  since="" role=""/>-->
+        <homepageURL>https://3liz.com</homepageURL>
+    </info>
+    <dependencies>
+        <jelix minversion="1.6.23" maxversion="1.6.*"/>
+    </dependencies>
+</module>

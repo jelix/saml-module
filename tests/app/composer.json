@@ -1,0 +1,10 @@
+{
+    "name": "test",
+    "type": "project",
+    "license": "LGPL",
+    "require": {
+      "php": ">=5.6",
+      "onelogin/php-saml": "^3.1.1"
+    },
+    "minimum-stability": "stable"
+}
