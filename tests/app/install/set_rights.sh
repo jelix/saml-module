@@ -16,4 +16,4 @@ fi
 DIRS="$APPDIR/var/config $APPDIR/var/db $APPDIR/var/log $APPDIR/var/mails $APPDIR/var/uploads $APPDIR/temp/app"
 
 chown -R $USER:$GROUP $DIRS
-chmod -R ug+w $DIRS
+chmod -R ugo+w $DIRS

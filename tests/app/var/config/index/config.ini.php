@@ -7,4 +7,4 @@ startAction="default:index"
 [responses]
 
 [modules]
-app.access=2
+
