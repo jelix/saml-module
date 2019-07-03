@@ -66,6 +66,12 @@ mainly into `var/config/mainconfig.ini.php` or `var/config/localconfig.ini.php`
 You should put your service provider certificate and private key into 
 respectively `var/config/saml/certs/sp.crt` and `var/config/saml/certs/sp.key`.
 
+An example to create the certificat (only for tests)
+
+```
+openssl req -x509 -newkey rsa:4096 -keyout var/config/saml/certs/sp.key -out var/config/saml/certs/sp.crt -days 365 -nodes -subj "/C=FR/ST=France/L=Paris/O=jelix/OU=tests/CN=samltest.jelix.org"
+```
+
 If you plan to update the certificate and private key you can save a new 
 x509cert into `var/config/saml/certs/sp_new.crt` and it will be published on the 
 SP metadata so Identity Providers can read them and get ready for rollover.

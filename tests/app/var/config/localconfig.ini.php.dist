@@ -11,3 +11,12 @@ chmodDir=0777
 
 forceHTTPPort=80
 forceHTTPSPort=443
+
+[saml:idp]
+entityId=http://auth.lemon.local/saml/metadata
+
+singleSignOnServiceUrl=http://auth.lemon.local/saml/singleSignOn
+singleLogoutServiceUrl=http://auth.lemon.local/saml/singleLogout
+
+certs_signing_files=idp_sig.crt
+certs_encryption_files=idp_encrypt.crt

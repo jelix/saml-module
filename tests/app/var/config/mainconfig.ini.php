@@ -283,13 +283,13 @@ singleLogoutServiceBinding=http-redirect
 ; In some scenarios the IdP uses different certificates for
 ; signing/encryption, or is under key rollover phase and more
 ; than one certificate is published on IdP metadata.
-; In order to handle that, you must indicate certificate files that should be stored
-; into the var/config/saml/certs/ directory
+; In order to handle that, you must indicate certificate files names,
+; separated by a coma. Files should be stored into the var/config/saml/certs/ directory
 ; If there is only one certificate file for signing/encryption, just leave
 ; following parameter empty, and put a idp.crt file into var/config/saml/certs/
 
-certs_signing_files=";filename1,filename2..."
-certs_encryption_files=";filename1,filename2..."
+certs_signing_files=idp_sig.crt
+certs_encryption_files=idp_encrypt.crt
 
 ; signatures and encryptions offered
 [saml:security]

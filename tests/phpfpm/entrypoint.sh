@@ -30,5 +30,12 @@ sh install/set_rights.sh
 # Restarting the container
 sh install/clean_vartmp.sh
 
+if [ ! -f /opt/tests/app/var/config/saml/certs/sp.crt ]; then
+    openssl req -x509 -newkey rsa:4096 -keyout /opt/tests/app/var/config/saml/certs/sp.key -out /opt/tests/app/var/config/saml/certs/sp.crt -days 3650 -nodes -subj "/C=FR/ST=France/L=Paris/O=jelix/OU=tests/CN=samltest.jelix.org"
+    chown 1000:1000 /opt/tests/app/var/config/saml/certs/sp.key /opt/tests/app/var/config/saml/certs/sp.crt
+    chmod 644 /opt/tests/app/var/config/saml/certs/sp.key /opt/tests/app/var/config/saml/certs/sp.crt
+
+fi
+
 echo "launch exec $@"
 exec "$@"
