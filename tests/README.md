@@ -13,6 +13,8 @@ In your /etc/hosts:
 
 ```bash
 docker-compose build
-docker-compose run
+docker-compose run -V
 ```
+
+Because a bug into the lemonldap-ng image, the `-V` option is required. 
 
