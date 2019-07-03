@@ -71,10 +71,24 @@ class samlModuleInstaller extends jInstallerModule {
             $email =  $this->getParameter('emailadmin');
             if ($login) {
                 $cn = $this->dbConnection();
-                $cn->exec("INSERT INTO ".$cn->prefixTable('jlx_user')." (usr_login, usr_password, usr_email ) VALUES
-                            (".$cn->quote($login).", '!!saml' , ".$cn->quote($email).")");
-                jAcl2DbUserGroup::createUser($login);
-                jAcl2DbUserGroup::addUserToGroup($login, 'admins');
+                $rs = $cn->query("SELECT usr_login FROM ".$cn->prefixTable('jlx_user')." WHERE usr_login = ".$cn->quote($login));
+                if (!$rs->fetch()) {
+                    /*require_once(JELIX_LIB_PATH.'auth/jAuth.class.php');
+                    require_once(__DIR__.'/../plugins/auth/saml/saml.auth.php');
+
+                    $confIni = parse_ini_file(jApp::configPath($authconfig), true);
+                    $authConfig = jAuth::loadConfig($confIni);
+                    $driver = new samlAuthDriver($authConfig['saml']);
+                    $passwordHash = $driver->cryptPassword('admin');*/
+                    $passwordHash = '!!saml';
+                    $cn->exec("INSERT INTO ".$cn->prefixTable('jlx_user')." (usr_login, usr_password, usr_email ) VALUES
+                                (".$cn->quote($login).", ".$cn->quote($passwordHash)." , ".$cn->quote($email).")");
+                }
+
+                if (class_exists('jAcl2DbUserGroup')) {
+                    jAcl2DbUserGroup::createUser($login);
+                    jAcl2DbUserGroup::addUserToGroup($login, 'admins');
+                }
             }
         }
     }

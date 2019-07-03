@@ -7,7 +7,7 @@ default = "app"
 
 [jdb:app]
 driver="sqlite3"
-database="jelix.sqlite"
+database="var:db/jelix.sqlite"
 persistent= on
 
 ; when you have charset issues, enable force_encoding so the connection will be

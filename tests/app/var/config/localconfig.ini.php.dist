@@ -3,7 +3,6 @@
 ; this is configuration specific to the local server, to this specific instance.
 ; it overrides mainconfig.ini.php parameters
 
-
 domainName=appsaml.local
 
 ; chmod for files created by Jelix

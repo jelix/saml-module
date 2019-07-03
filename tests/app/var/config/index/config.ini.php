@@ -8,3 +8,9 @@ startAction="default:index"
 
 [modules]
 
+
+
+[coordplugins]
+saml="saml/saml.coord.ini.php"
+saml.name=auth
+

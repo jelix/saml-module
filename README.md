@@ -33,7 +33,7 @@ it into the `mainconfig.ini.php` file (into yourapp/var/config/).
 In the `[modules]` section, add:
 
 ```ini
-saml.access=1
+saml.access=2
 ```
 
 The module `jauthdb` is required, and the `jauth` module should be deactivated.
@@ -55,7 +55,7 @@ The installer:
 - deactivate the plugin `auth` for jCoordinator, and replace it by the `saml` plugin
 - create a `var/config/saml.coord.ini.php` for the `saml` plugin
 - remove roles `auth.user.change.password` and `auth.users.change.password'` from jAcl2 data
-- setup an admin user
+- setup an admin user if there is an install parameter useradmin and emailadmin
 
 configuration
 -------------
