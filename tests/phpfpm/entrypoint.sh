@@ -18,6 +18,8 @@ if [ ! -d /opt/tests/jelix ]; then
 fi
 
 cd /opt/tests/app
+composer install --prefer-dist --no-progress --no-ansi --no-interaction
+
 # Set up Configuration
 php install/installer.php
 

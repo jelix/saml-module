@@ -1,5 +1,5 @@
 {
-    "name": "test",
+    "name": "jelix/samltest",
     "type": "project",
     "license": "LGPL",
     "require": {

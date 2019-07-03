@@ -23,6 +23,7 @@ RUN apk --no-cache add git php7 php7-fpm \
     php7-xmlwriter \
     php7-simplexml \
     php7-zip \
+    php7-phar \
     wget
 
 # 82 is the standard uid/gid for "www-data" in Alpine
