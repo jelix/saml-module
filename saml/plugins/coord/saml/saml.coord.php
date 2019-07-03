@@ -14,7 +14,8 @@ require(JELIX_LIB_PATH.'auth/jAuthDummyUser.class.php');
 */
 class samlCoordPlugin implements jICoordPlugin {
 
-    protected $config;
+    // keep public for jAuth :/
+    public $config;
 
     function __construct($conf){
         $this->config = $conf;

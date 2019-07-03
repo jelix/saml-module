@@ -28,6 +28,7 @@ class Configuration {
             $iniConfig = \jApp::config();
         }
 
+        $this->fixConfigValues($iniConfig);
         $spConfig = $iniConfig->{'saml:sp'};
 
         $this->settings['strict'] = !$spConfig['saml_debug'];
@@ -37,15 +38,55 @@ class Configuration {
         $this->settings['sp'] = $this->getSpConfig($iniConfig);
         $this->settings['idp'] = $this->getIdPConfig($iniConfig);
         $this->settings['security'] = $iniConfig->{'saml:security'};
-        $this->settings['contactPerson'] = array(
-            'technical' => $spConfig['technicalContactPerson'],
-            'support'  => $spConfig['supportContactPerson'],
-        );
-        $this->settings['organization'] = array( 'en-US' => $spConfig['organization']);
+        $this->settings['contactPerson'] = array();
+
+        if (isset($spConfig['technicalContactPerson']) &&
+            isset($spConfig['technicalContactPerson']['givenName']) &&
+            $spConfig['technicalContactPerson']['givenName'] != '' &&
+            isset($spConfig['technicalContactPerson']['emailAddress']) &&
+            $spConfig['technicalContactPerson']['emailAddress'] != ''
+        ) {
+            $this->settings['contactPerson']['technical'] = $spConfig['technicalContactPerson'];
+        }
+
+        if (isset($spConfig['supportContactPerson']) &&
+            isset($spConfig['supportContactPerson']['givenName']) &&
+            $spConfig['supportContactPerson']['givenName'] != '' &&
+            isset($spConfig['supportContactPerson']['emailAddress']) &&
+            $spConfig['supportContactPerson']['emailAddress'] != ''
+        ) {
+            $this->settings['contactPerson']['support'] = $spConfig['supportContactPerson'];
+        }
+
+        if (isset($spConfig['organization'])) {
+            $org = array();
+            if (isset($spConfig['organization']['name']) &&
+                $spConfig['organization']['name'] != ''
+            ) {
+                $org['name'] = $spConfig['organization']['name'];
+            }
+
+            if (isset($spConfig['organization']['displayname']) &&
+                $spConfig['organization']['displayname'] != ''
+            ) {
+                $org['displayname'] = $spConfig['organization']['displayname'];
+            }
+
+            if (isset($spConfig['organization']['url']) &&
+                $spConfig['organization']['url'] != ''
+            ) {
+                $org['url'] = $spConfig['organization']['url'];
+            }
+            if (count($org)) {
+                $this->settings['organization'] = array( 'en-US' => $org);
+            }
+        }
+
         $this->settings['compress'] = array(
             'requests' => $spConfig['compressRequests'],
             'responses' => $spConfig['compressResponses']
         );
+
     }
 
     protected function getSpConfig($iniConfig) {
@@ -214,5 +255,34 @@ class Configuration {
      */
     function getSettingsArray() {
         return $this->settings;
+    }
+
+
+    protected function fixConfigValues($iniConfig) {
+        $boolVal = array('saml_debug', 'compressRequests', 'compressResponses');
+        $this->fixBool($iniConfig, 'saml:sp', $boolVal);
+
+        $boolVal = array('nameIdEncrypted', 'authnRequestsSigned', 'logoutRequestSigned',
+            'logoutResponseSigned', 'signMetadata', 'wantMessagesSigned',
+            'wantAssertionsEncrypted', 'wantAssertionsSigned', 'wantNameId',
+            'wantNameIdEncrypted', 'requestedAuthnContext', 'wantXMLValidation',
+            'relaxDestinationValidation', 'lowercaseUrlencoding'
+        );
+        $this->fixBool($iniConfig, 'saml:security', $boolVal);
+    }
+
+    protected function fixBool($iniConfig, $section, $values) {
+        foreach ($values as $name) {
+            $val = $iniConfig->{$section}[$name];
+            if (is_bool($val)) {
+                continue;
+            }
+            if ($val) {
+                $iniConfig->{$section}[$name] = true;
+            }
+            else {
+                $iniConfig->{$section}[$name] = false;
+            }
+        }
     }
 }
