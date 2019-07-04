@@ -30,15 +30,15 @@ services:
     expose:
       - "9000"
   lemon:
-    image: coudot/lemonldap-ng
+    build: ./llng
     environment:
       - VIRTUAL_HOST=lemon.local,auth.lemon.local,manager.lemon.local,handler.lemon.local,test1.lemon.local,test2.lemon.local
       - SSODOMAIN=lemon.local
-      - PORTAL_HOSTNAME=auth.lemon.local
-      - MANAGER_HOSTNAME=manager.lemon.local
-      - HANDLER_HOSTNAME=handler.lemon.local
-      - TEST1_HOSTNAME=test1.lemon.local
-      - TEST2_HOSTNAME=test2.lemon.local
+      #- PORTAL_HOSTNAME=auth.lemon.local
+      #- MANAGER_HOSTNAME=manager.lemon.local
+      #- HANDLER_HOSTNAME=handler.lemon.local
+      #- TEST1_HOSTNAME=test1.lemon.local
+      #- TEST2_HOSTNAME=test2.lemon.local
       - LOGLEVEL=debug
       - FASTCGI_LISTEN_PORT=9900
     expose:
