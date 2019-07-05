@@ -9,16 +9,26 @@
 */
 
 class defaultCtrl extends jController {
+
+    public $pluginParams = array(
+        '*'=>array('auth.required'=>false)
+    );
+
+
     /**
     *
     */
     function index() {
         $rep = $this->getResponse('html');
 
-        // this is a call for the 'welcome' zone after creating a new application
-        // remove this line !
-        $rep->body->assignZone('MAIN', 'jelix~check_install');
+        $tpl = new jTpl();
+
+        $rep->body->assign('MAIN', $tpl->fetch('index'));
 
         return $rep;
     }
+
+
+
+
 }
