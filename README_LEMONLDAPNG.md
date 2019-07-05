@@ -65,15 +65,15 @@ For example
 
 ```
 
------------------------------------
-| Key name   | Name   | Mandatory |
------------------------------------
-| uid        | uid    | off       |
------------------------------------
-| cn         | cn     | off       |
------------------------------------
-| mail       | mail   | off       |
------------------------------------
+-------------------------------------
+| Key name   | Name     | Mandatory |
+-------------------------------------
+| uid        | login    | off       |
+-------------------------------------
+| cn         | username | off       |
+-------------------------------------
+| mail       | mail     | off       |
+-------------------------------------
 
 ```
 
@@ -102,3 +102,19 @@ entityId=https://portal.lemon.local/saml/metadata
 singleSignOnServiceUrl=https://portal.lemon.local/saml/singleSignOn
 singleLogoutServiceUrl=https://portal.lemon.local/saml/singleLogout
 ```
+
+You should set up the mapping of attributes. In an example below, we setup
+the exported attributes. The SAML jelix module will receive these attributes:
+`login`, `username` and `mail`.
+
+If the DAO user record have properties `login`, `name` and `email`, the 
+mapping attributes should be (into the mainconfig.ini.php or localconfig.ini.pĥp):
+
+```
+[saml:attributes-mapping]
+__login=login
+; <dao property>=<saml attribute>
+login=login
+email=mail
+name=username
+``` 

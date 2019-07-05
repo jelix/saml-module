@@ -48,8 +48,11 @@ class endpointCtrl extends jController {
 
     /**
      * SP Assertion Consumer Service Endpoint
+     *
+     * Called when the user has been authenticated at the identity provider
      */
     function acs() {
+
         $configuration = new \Jelix\Saml\Configuration($this->request);
 
         $samlSettings = $configuration->getSettingsArray();
@@ -58,11 +61,37 @@ class endpointCtrl extends jController {
 
         $errors = $auth->getErrors();
         if (!empty($errors)) {
+            jLog::log(implode(', ', $errors)."\n".$auth->getLastErrorReason(),'error');
             return $this->error(implode(', ', $errors));
         }
 
         if (!$auth->isAuthenticated()) {
             return $this->error();
+        }
+
+        $loginAttr = $configuration->getLoginAttribute();
+        $attributes = $auth->getAttributes();
+        if (empty($attributes)) {
+            return $this->error('SAML attributes are missing from the identity provider response. The '.$loginAttr.' attribute at least should be present');
+        }
+
+        if (!isset($attributes[$loginAttr])) {
+            return $this->error('SAML attribute "'.$loginAttr.'" is missing from the identity provider response.');
+        }
+        $login = $attributes[$loginAttr];
+        if (is_array($login)) {
+            $login = $login[0];
+        }
+
+        // indicate the attributes to the driver
+        /** @var samlAuthDriver $samlDriver */
+        $samlDriver = jAuth::getDriver();
+        $samlDriver->setAttributesMapping($attributes, $configuration->getAttributesMapping());
+
+        // now we can login. A user will be probably created, with the saml attributes
+        // given to the driver
+        if (!jAuth::login($login, '!!saml')) {
+            return $this->error('You are not authorized to use this application.');
         }
 
         $_SESSION['samlUserdata'] = $auth->getAttributes();
@@ -82,7 +111,7 @@ class endpointCtrl extends jController {
         $rep = $this->getResponse('html');
         $rep->title = jLocale::get('saml~auth.authentication.done');
 
-        $attributes = $_SESSION['samlUserdata'];
+        $attributes = $auth->getAttributes();
         if (!empty($attributes)) {
             $html = '<h1>Attributes</h1>';
             $html .= '<table><thead><th>Names</th><th>values</th></thead><tbody>';
@@ -129,7 +158,7 @@ class endpointCtrl extends jController {
             jAuth::logout();
             $tpl->assign('error', '');
         } else {
-            $tpl->assign('error', implode(', ', $errors));
+            $tpl->assign('error', implode(', ', $errors)."\n".$auth->getLastErrorReason());
         }
         $rep->body->assign('MAIN', $tpl->fetch('logout'));
         return $rep;

@@ -17,6 +17,16 @@ class Configuration {
     protected $settings = array();
 
     /**
+     * @var string the SAML attribute that contains the user login
+     */
+    protected $loginAttribute = '';
+
+    /**
+     * @var array mapping between dao record properties (keys) and saml attributes (values)
+     */
+    protected $attributesMapping = array();
+
+    /**
      * Configuration constructor.
      * @param \jRequest $request
      * @param object $iniConfig typically jApp::config()
@@ -87,6 +97,13 @@ class Configuration {
             'responses' => $spConfig['compressResponses']
         );
 
+        $attrConfig = $iniConfig->{'saml:attributes-mapping'};
+        if (!isset($attrConfig['__login']) || $attrConfig['__login'] == '') {
+            throw new \Exception('__login is missing into the attributes mapping configuration');
+        }
+        $this->loginAttribute = $attrConfig['__login'];
+        unset($attrConfig['__login']);
+        $this->attributesMapping = $attrConfig;
     }
 
     protected function getSpConfig($iniConfig) {
@@ -239,11 +256,12 @@ class Configuration {
                 'encryption' => $certsEncryption
             );
         }
-        \jLog::dump($identityProvider, '$identityProvider');
         return $identityProvider;
     }
 
     /**
+     * All SAML settings as a Settings object.
+     *
      * @return Settings
      * @throws \OneLogin\Saml2\Error
      */
@@ -252,12 +270,29 @@ class Configuration {
     }
 
     /**
+     * All SAML settings as an array
      * @return array
      */
     function getSettingsArray() {
         return $this->settings;
     }
 
+
+    /**
+     * Gives the SAML attribute that contains the user login
+     *
+     * @return string
+     */
+    function getLoginAttribute() {
+        return $this->loginAttribute;
+    }
+
+    /**
+     * @return array
+     */
+    function getAttributesMapping() {
+        return $this->attributesMapping;
+    }
 
     protected function fixConfigValues($iniConfig) {
         $boolVal = array('saml_debug', 'compressRequests', 'compressResponses');

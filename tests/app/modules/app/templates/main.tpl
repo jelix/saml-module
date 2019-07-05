@@ -5,8 +5,9 @@
 
 <div id="page">
     <div id="user">
-    {ifuserconnected}You are identified. <a href="{jurl 'saml~auth:logout'}">logout</a>
-    {else}You are not identified. <a href="{jurl 'saml~auth:login'}">login</a>{/ifuserconnected}
+    {ifuserconnected}You are authenticated. <a href="{jurl 'saml~auth:logout'}">logout</a>
+    {else}You are not authenticated. <a href="{jurl 'saml~auth:login'}">login</a>{/ifuserconnected}
+        <a href="{jurl 'app~default:index'}">home</a>
     </div>
 {$MAIN}
 </div>

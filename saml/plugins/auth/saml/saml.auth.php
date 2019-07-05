@@ -96,18 +96,15 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
         // we ignore password since it is managed by the SAML server
 
         $daouser = jDao::get($this->_params['dao'], $this->_params['profile']);
-        if (function_exists('mb_strtolower')) {
-            $Llogin = mb_strtolower($login);
-        }
-        else {
-            $Llogin = $login;
-        }
-        $user = $daouser->getByLogin($Llogin);
+        $user = $daouser->getByLogin($login);
         if (!$user) {
             if ($this->automaticAccountCreation) {
-                $user = $this->createUserObject($Llogin, $password);
+                $user = $this->createUserObject($login, '!!saml');
                 if (jApp::isModuleEnabled('jcommunity')) {
                     $user->status = 1; // STATUS_VALID
+                }
+                foreach($this->samlAttributesValues as $property => $value) {
+                    $user->$property = $value;
                 }
                 jAuth::saveNewUser($user);
             } else {
@@ -115,5 +112,21 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
             }
         }
         return $user;
+    }
+
+    protected $samlAttributesValues = array();
+
+    public function setAttributesMapping($samlAttributes, $mappingAttributes) {
+
+        foreach($mappingAttributes as $property => $attribute) {
+            if (!isset($samlAttributes[$attribute]) || !$samlAttributes[$attribute]) {
+                continue;
+            }
+            $val = $samlAttributes[$attribute];
+            if (is_array($val)) {
+                $val = $val[0];
+            }
+            $this->samlAttributesValues[$property] = $val;
+        }
     }
 }
