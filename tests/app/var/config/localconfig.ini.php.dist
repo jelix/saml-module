@@ -18,5 +18,5 @@ entityId=http://auth.lemon.local/saml/metadata
 singleSignOnServiceUrl=http://auth.lemon.local/saml/singleSignOn
 singleLogoutServiceUrl=http://auth.lemon.local/saml/singleLogout
 
-certs_signing_files=idp_sig.crt
-certs_encryption_files=idp_encrypt.crt
+certs_signing_files=idp_sig.pem
+certs_encryption_files=idp_encrypt.pem

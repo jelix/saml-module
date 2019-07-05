@@ -1,0 +1,372 @@
+{
+  "totp2fInterval": 30,
+  "cspConnect": "'self'",
+  "groups": {},
+  "autoSigninRules": {},
+  "localSessionStorage": "Cache::FileCache",
+  "sfRemovedNotifMsg": "_removedSF_ expired second factor(s) has/have been removed!",
+  "corsEnabled": 1,
+  "oidcRPMetaDataOptionsExtraClaims": null,
+  "impersonationPrefix": "real_",
+  "persistentStorage": "Apache::Session::File",
+  "yubikey2fPublicIDSize": 12,
+  "oidcRPMetaDataOptions": null,
+  "cspScript": "'self'",
+  "casAppMetaDataOptions": null,
+  "timeout": 72000,
+  "useSafeJail": 1,
+  "utotp2fActivation": 0,
+  "samlNameIDFormatMapX509": "mail",
+  "portalSkin": "bootstrap",
+  "samlIDPSSODescriptorSingleSignOnServiceHTTPRedirect": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect;#PORTAL#/saml/singleSignOn;",
+  "corsAllow_Headers": "*",
+  "samlIDPSSODescriptorSingleLogoutServiceSOAP": "urn:oasis:names:tc:SAML:2.0:bindings:SOAP;#PORTAL#/saml/singleLogoutSOAP;",
+  "globalStorageOptions": {
+    "Directory": "/var/lib/lemonldap-ng/sessions",
+    "LockDirectory": "/var/lib/lemonldap-ng/sessions/lock",
+    "generateModule": "Lemonldap::NG::Common::Apache::Session::Generate::SHA256"
+  },
+  "formTimeout": 120,
+  "samlIDPMetaDataExportedAttributes": null,
+  "samlOrganizationName": "Example",
+  "notificationWildcard": "allusers",
+  "samlServicePrivateKeySig": "-----BEGIN PRIVATE KEY-----\nMIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBANy8S1el4Nnt54nk\nBMBZ262hXLSm5oCC8d2b1ApV76K2ElD6UiCwuKVxiy1DwO88RM9Lym4R+dHZ6s9b\nPPnurEy5agajOsK1eOun5jz5vN2NQu7GocBwbLNwm7tAzKkI/BH+xj4aSVJ8eolq\nQbUinnxz0sPQJPeO9pjUj8o2pe2xAgMBAAECgYEAwNStbPA4Mamnb8qGbBMT2ebx\nOc/j5bh+2n3bCvxvz9EGxz8mp/A6Hi3Gy9A4p8Yaxo0LVoTVnQGmI2ctKZnbYbvU\nVczBl762Vq8tWo9nC13L5CVXrK0AFTQZo2YwA6/EPzEnyVHCUCoP5aPnjApn6LGY\n1ova3BmbOKZGJgzjWlECQQDzf7VhqAT4MwGgs9UO1pUnNvcbEMfrrdHHeG9t9h7y\npr5WN18YRsGDoXSvS27McLQHD5njg7I0IK0fQerTF7PbAkEA6BFol5/ruPQLYOBW\nguLfQwwn0DcV3b3+xyxiageXhT5iSGP4RgylMwMvgZ1dT6sqqj88uCD1RyDjWU4I\nOgAgYwJANR2um1bjfqDhwgR4fXwhnSRIUwceFTMdh72l0P7XUWc+LeB2Rf1pSSV3\nJqX1zXLoUoH8t7yKqwRVv3PJnbKV8QJAfJdEEQtxsZWMOlGXAKQu+z8ebOH2Iltr\n2qDQoV48EfQhLf5F/82wL4gJTEwhGbGqsUZMIgrHxI06oeqL7h+9QwJBAOXN8JKB\nld24pNlyVlRhWknq1YWCyKaibeLmuyvo2/hHWycEuFQOVF4vzmCBdLXb2Kyj0qKq\nxfOJRys4o7uNmGU=\n-----END PRIVATE KEY-----",
+  "ext2fActivation": 0,
+  "samlServicePrivateKeyEnc": "-----BEGIN PRIVATE KEY-----\nMIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBANHfpwXc6O43Nv0f\nQwFBH8mtMoN0Z+EV6/JbxYufI8e6gMzS7Yo4rptw5P9VLmmOY5RZxXq0wxqU7RpK\nHVXj5OHj1N2XeFBRES1L52ob7rm2O9G1gqdAunjeunkHe1/EEJ7CIPSrjC84HWZB\nM8r+beFJteLffvCLJ751aH4WOAnDAgMBAAECgYA2HETS5ScFLCU4U9QRwbmxZL9O\nVzflN6KyxOiE3A38k+BbbtKhvYV/PDc+gbbKrlSMTiz1Ox/Gfbk3+v3fRDehckO6\njVJojWh40oZ3xhY3KzU9p3H1v9klvaNGp5v3SSwWJtIqHVvGLy/LBWWjp70D51xK\nnqi2IqsTOAh+fIZsuQJBAPWYc1CrF5TIcT2T5z7nglPZNi11MTY4zTYbi5tIgAHx\nI0naf8uZR4zGYnoNEhihJutcW6NbtmWjAodU72reHDcCQQDaw8noEL/1IP20IVPr\nGnBIm5dTCAEBYy22/50/UC1MDG7drGvSa8iUsKhm1CpuQE1mTQOfSxtPLfP8UoPx\nQfDVAkA4LIyDsP6Ny2MLYJ8N5koK/63CrAF7k3Zsn9RIykZtK0iVBeMhIIgbDO1N\nWVwAQivyvYdAUCPiD2zuo2C3ouH1AkEAhDugidPGFCey8vTKQuwiPuE9oQTPhsUq\nVtk/dYvDNZq2UOvt6K0Z+zalNDK+yxG3N0UKEXlWso+2USiXdHdFWQJBANUVKdF4\njvBeC02EV0ch2G/4QSR8EXttgADwYN3r1GWnhv3TrfmCbVIIXT8+Et3QAuSI3Tdi\njAJA//wMZUKNhu4=\n-----END PRIVATE KEY-----",
+  "authentication": "Demo",
+  "infoFormMethod": "get",
+  "corsExpose_Headers": "*",
+  "timeoutActivity": 0,
+  "passwordDB": "Demo",
+  "userControl": "^[\\w\\.\\-@]+$",
+  "activeTimer": 1,
+  "cfgNum": 1,
+  "nginxCustomHandlers": {},
+  "samlSPMetaDataXML": {
+    "appsaml": {
+      "samlSPMetaDataXML": "<?xml version=\"1.0\"?>\n<md:EntityDescriptor xmlns:md=\"urn:oasis:names:tc:SAML:2.0:metadata\"\n                     validUntil=\"2019-07-05T14:46:59Z\"\n                     cacheDuration=\"PT604800S\"\n                     entityID=\"http://appsaml.local/index.php/saml/endpoint/metadata\">\n    <md:SPSSODescriptor AuthnRequestsSigned=\"false\" WantAssertionsSigned=\"false\" protocolSupportEnumeration=\"urn:oasis:names:tc:SAML:2.0:protocol\">\n        <md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\"\n                                Location=\"http://appsaml.local/index.php/saml/endpoint/sls\" />\n        <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</md:NameIDFormat>\n        <md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\"\n                                     Location=\"http://appsaml.local/index.php/saml/endpoint/acs\"\n                                     index=\"1\" />\n        \n    </md:SPSSODescriptor>\n</md:EntityDescriptor>"
+    }
+  },
+  "yubikey2fUserCanRemoveKey": 1,
+  "corsAllow_Origin": "*",
+  "oidcOPMetaDataJWKS": null,
+  "totp2fRange": 1,
+  "samlAuthnContextMapKerberos": 4,
+  "mailTimeout": 0,
+  "notification": 1,
+  "whatToTrace": "_whatToTrace",
+  "applicationList": {
+    "1sample": {
+      "test2": {
+        "type": "application",
+        "options": {
+          "uri": "http://test2.lemon.local/",
+          "display": "auto",
+          "logo": "thumbnail.png",
+          "name": "Application Test 2",
+          "description": "The same simple application displaying authenticated user"
+        }
+      },
+      "type": "category",
+      "catname": "Sample applications",
+      "test1": {
+        "options": {
+          "uri": "http://test1.lemon.local/",
+          "display": "auto",
+          "logo": "demo.png",
+          "name": "Application Test 1",
+          "description": "A simple application displaying authenticated user"
+        },
+        "type": "application"
+      }
+    },
+    "2administration": {
+      "sessions": {
+        "options": {
+          "uri": "http://manager.lemon.local/sessions.html",
+          "description": "Explore WebSSO sessions",
+          "logo": "database.png",
+          "display": "auto",
+          "name": "Sessions explorer"
+        },
+        "type": "application"
+      },
+      "catname": "Administration",
+      "notifications": {
+        "options": {
+          "uri": "http://manager.lemon.local/notifications.html",
+          "name": "Notifications explorer",
+          "display": "auto",
+          "logo": "database.png",
+          "description": "Explore WebSSO notifications"
+        },
+        "type": "application"
+      },
+      "type": "category",
+      "manager": {
+        "options": {
+          "uri": "http://manager.lemon.local/manager.html",
+          "display": "auto",
+          "logo": "configure.png",
+          "name": "WebSSO Manager",
+          "description": "Configure LemonLDAP::NG WebSSO"
+        },
+        "type": "application"
+      }
+    },
+    "3documentation": {
+      "officialwebsite": {
+        "type": "application",
+        "options": {
+          "uri": "http://lemonldap-ng.org/",
+          "description": "Official LemonLDAP::NG Website",
+          "display": "on",
+          "name": "Official Website",
+          "logo": "network.png"
+        }
+      },
+      "localdoc": {
+        "options": {
+          "display": "on",
+          "logo": "help.png",
+          "name": "Local documentation",
+          "description": "Documentation supplied with LemonLDAP::NG",
+          "uri": "http://manager.lemon.local/doc/"
+        },
+        "type": "application"
+      },
+      "type": "category",
+      "catname": "Documentation"
+    }
+  },
+  "rest2fVerifyArgs": {},
+  "locationRules": {
+    "test1.lemon.local": {
+      "^/logout": "logout_sso",
+      "default": "accept"
+    },
+    "auth.lemon.local": {
+      "default": "accept",
+      "(?#checkUser)^/checkuser": "$uid eq \"dwho\"",
+      "(?#errors)^/lmerror/": "accept"
+    },
+    "test2.lemon.local": {
+      "^/logout": "logout_sso",
+      "default": "accept"
+    },
+    "manager.lemon.local": {
+      "(?#Notifications)/notifications": "$uid eq \"dwho\" or $uid eq \"rtyler\"",
+      "default": "$uid eq \"dwho\" or $uid eq \"rtyler\"",
+      "(?#Configuration)^/(manager\\.html|confs|$)": "$uid eq \"dwho\"",
+      "(?#Sessions)/sessions": "$uid eq \"dwho\" or $uid eq \"rtyler\""
+    }
+  },
+  "portalSkinBackground": "1280px-Cedar_Breaks_National_Monument_partially.jpg",
+  "upgradeSession": 1,
+  "samlIDPMetaDataXML": {},
+  "confirmFormMethod": "post",
+  "sfRequired": 0,
+  "samlIDPSSODescriptorArtifactResolutionServiceArtifact": "1;0;urn:oasis:names:tc:SAML:2.0:bindings:SOAP;#PORTAL#/saml/artifact",
+  "portalMainLogo": "common/logos/logo_llng_400px.png",
+  "samlRelayStateTimeout": 600,
+  "samlIDPSSODescriptorSingleLogoutServiceHTTPRedirect": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect;#PORTAL#/saml/singleLogout;#PORTAL#/saml/singleLogoutReturn",
+  "httpOnly": 1,
+  "oidcRPMetaDataExportedVars": null,
+  "exportedHeaders": {
+    "test1.lemon.local": {
+      "Auth-User": "$uid"
+    },
+    "test2.lemon.local": {
+      "Auth-User": "$uid"
+    }
+  },
+  "samlStorageOptions": {},
+  "samlServiceSignatureMethod": "RSA_SHA256",
+  "captcha_size": 6,
+  "timeoutActivityInterval": 60,
+  "checkXSS": 1,
+  "portalDisplayChangePassword": "$_auth =~ /^(LDAP|DBI|Demo)$/",
+  "casAppMetaDataExportedVars": null,
+  "samlServicePublicKeySig": "-----BEGIN CERTIFICATE-----\nMIICtDCCAh2gAwIBAgIUTz7kPYA2VHH6duei0RAbPT9CXdUwDQYJKoZIhvcNAQEL\nBQAwbDELMAkGA1UEBhMCRlIxDzANBgNVBAgMBkZyYW5jZTEOMAwGA1UEBwwFUGFy\naXMxDjAMBgNVBAoMBWplbGl4MQ4wDAYDVQQLDAV0ZXN0czEcMBoGA1UEAwwTbGVt\nb250ZXN0LmplbGl4Lm9yZzAeFw0xOTA3MDQyMTA2MDhaFw0yOTA3MDEyMTA2MDha\nMGwxCzAJBgNVBAYTAkZSMQ8wDQYDVQQIDAZGcmFuY2UxDjAMBgNVBAcMBVBhcmlz\nMQ4wDAYDVQQKDAVqZWxpeDEOMAwGA1UECwwFdGVzdHMxHDAaBgNVBAMME2xlbW9u\ndGVzdC5qZWxpeC5vcmcwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANy8S1el\n4Nnt54nkBMBZ262hXLSm5oCC8d2b1ApV76K2ElD6UiCwuKVxiy1DwO88RM9Lym4R\n+dHZ6s9bPPnurEy5agajOsK1eOun5jz5vN2NQu7GocBwbLNwm7tAzKkI/BH+xj4a\nSVJ8eolqQbUinnxz0sPQJPeO9pjUj8o2pe2xAgMBAAGjUzBRMB0GA1UdDgQWBBQR\n0oxVFsXjHKKE+lm/Lpgfab/M7DAfBgNVHSMEGDAWgBQR0oxVFsXjHKKE+lm/Lpgf\nab/M7DAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4GBAHZ/+dnYfu4Z\nrS6BoasFB2oRl+zHr6K9KgVJn8lthsJLrAuV7Yct6QW8bBwlWw7MllZtjGstVyVF\nGNXlfhBVEHPs59W+0yrOshzfOQCnFtqxMvUNaxvAEVh4YHcBbIF66mEgFC9KM3D4\nE59HMJb1A+ZSk6BVCyr0RUyS2Z5vJTe6\n-----END CERTIFICATE-----",
+  "samlSPSSODescriptorWantAssertionsSigned": 1,
+  "yubikey2fSelfRegistration": 0,
+  "mailCharset": "utf-8",
+  "samlAttributeAuthorityDescriptorAttributeServiceSOAP": "urn:oasis:names:tc:SAML:2.0:bindings:SOAP;#PORTAL#/saml/AA/SOAP;",
+  "portalPingInterval": 60000,
+  "totp2fActivation": 0,
+  "failedLoginNumber": 5,
+  "sfRemovedNotifTitle": "Second factor notification",
+  "logoutServices": {},
+  "sfRemovedMsgRule": 0,
+  "samlServiceUseCertificateInResponse": 0,
+  "u2fUserCanRemoveKey": 1,
+  "domain": "lemon.local",
+  "samlSPMetaDataExportedAttributes": {
+    "appsaml": {
+      "cn": "0;username",
+      "uid": "0;login",
+      "mail": "0;mail"
+    }
+  },
+  "portalAntiFrame": 1,
+  "SMTPTLSOpts": {},
+  "port": -1,
+  "demoExportedVars": {
+    "cn": "cn",
+    "uid": "uid",
+    "mail": "mail"
+  },
+  "mailFrom": "noreply@lemon.local",
+  "samlIDPSSODescriptorSingleSignOnServiceHTTPPost": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST;#PORTAL#/saml/singleSignOn;",
+  "casStorageOptions": {},
+  "checkUserHiddenAttributes": "_2fDevices _loginHistory hGroups",
+  "ext2fCodeActivation": "\\d{6}",
+  "lwpOpts": {},
+  "userDB": "Same",
+  "impersonationHiddenAttributes": "_2fDevices _loginHistory",
+  "totp2fUserCanRemoveKey": 1,
+  "sessionDataToRemember": {},
+  "samlSPMetaDataOptions": {
+    "appsaml": {
+      "samlSPMetaDataOptionsNameIDFormat": "",
+      "samlSPMetaDataOptionsCheckSLOMessageSignature": 1,
+      "samlSPMetaDataOptionsForceUTF8": 1,
+      "samlSPMetaDataOptionsSignSSOMessage": -1,
+      "samlSPMetaDataOptionsSessionNotOnOrAfterTimeout": 72000,
+      "samlSPMetaDataOptionsOneTimeUse": 0,
+      "samlSPMetaDataOptionsSignSLOMessage": -1,
+      "samlSPMetaDataOptionsNotOnOrAfterTimeout": 72000,
+      "samlSPMetaDataOptionsEnableIDPInitiatedURL": 0,
+      "samlSPMetaDataOptionsCheckSSOMessageSignature": 1,
+      "samlSPMetaDataOptionsEncryptionMode": "none"
+    }
+  },
+  "portalDisplayLogout": 1,
+  "showLanguages": 1,
+  "cfgDate": 1562277259,
+  "vhostOptions": null,
+  "portalSkinRules": {},
+  "samlIDPSSODescriptorSingleSignOnServiceHTTPArtifact": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact;#PORTAL#/saml/singleSignOnArtifact;",
+  "issuerDBSAMLRule": 1,
+  "casSrvMetaDataExportedVars": null,
+  "rest2fInitArgs": {},
+  "notificationStorage": "File",
+  "mailSessionKey": "mail",
+  "samlOrganizationURL": "http://www.lemon.local",
+  "cfgVersion": "2.0.5",
+  "cfgLog": "",
+  "samlSPSSODescriptorSingleLogoutServiceHTTPPost": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST;#PORTAL#/saml/proxySingleLogout;#PORTAL#/saml/proxySingleLogoutReturn",
+  "notifyDeleted": 1,
+  "securedCookie": 0,
+  "portalCheckLogins": 1,
+  "corsMax_Age": "86400",
+  "cspFont": "'self'",
+  "portalErrorOnExpiredSession": 1,
+  "impersonationSkipEmptyValues": 1,
+  "cspFormAction": "'self'",
+  "samlSPSSODescriptorAssertionConsumerServiceHTTPPost": "0;1;urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST;#PORTAL#/saml/proxySingleSignOnPost",
+  "requireToken": 1,
+  "samlNameIDFormatMapEmail": "mail",
+  "issuerDBSAMLPath": "^/saml/",
+  "passwordResetAllowedRetries": 3,
+  "useRedirectOnError": 1,
+  "notificationStorageOptions": {
+    "dirName": "/var/lib/lemonldap-ng/notifications"
+  },
+  "samlServicePublicKeyEnc": "-----BEGIN CERTIFICATE-----\nMIICtDCCAh2gAwIBAgIUHviyr8pbxqIYp3fkoJHtDvEhbdowDQYJKoZIhvcNAQEL\nBQAwbDELMAkGA1UEBhMCRlIxDzANBgNVBAgMBkZyYW5jZTEOMAwGA1UEBwwFUGFy\naXMxDjAMBgNVBAoMBWplbGl4MQ4wDAYDVQQLDAV0ZXN0czEcMBoGA1UEAwwTbGVt\nb250ZXN0LmplbGl4Lm9yZzAeFw0xOTA3MDQyMTA2MThaFw0yOTA3MDEyMTA2MTha\nMGwxCzAJBgNVBAYTAkZSMQ8wDQYDVQQIDAZGcmFuY2UxDjAMBgNVBAcMBVBhcmlz\nMQ4wDAYDVQQKDAVqZWxpeDEOMAwGA1UECwwFdGVzdHMxHDAaBgNVBAMME2xlbW9u\ndGVzdC5qZWxpeC5vcmcwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANHfpwXc\n6O43Nv0fQwFBH8mtMoN0Z+EV6/JbxYufI8e6gMzS7Yo4rptw5P9VLmmOY5RZxXq0\nwxqU7RpKHVXj5OHj1N2XeFBRES1L52ob7rm2O9G1gqdAunjeunkHe1/EEJ7CIPSr\njC84HWZBM8r+beFJteLffvCLJ751aH4WOAnDAgMBAAGjUzBRMB0GA1UdDgQWBBQe\nD24eXXBAUC1ww2POclx8LrXfiTAfBgNVHSMEGDAWgBQeD24eXXBAUC1ww2POclx8\nLrXfiTAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4GBACCDaWp/vZ8E\nIxji8J3Lqr7f7lOPtQogdfEGMmiuT8oAGc4x6u0+nb4cYft86falB94jG8JCcDLr\nYLXcmfc+eOvCRBfteD9/LLLmS4cl7RubWMU0RD8PVh0x3dv6Xu03hK7cY5tO/KxJ\nmyCIPcxqPpl+M9YrLEStKTwzo/YxjAoO\n-----END CERTIFICATE-----",
+  "corsAllow_Credentials": "true",
+  "key": "VV3kDwS_y&dx'Bpk",
+  "localSessionStorageOptions": {
+    "namespace": "lemonldap-ng-sessions",
+    "directory_umask": "007",
+    "cache_root": "/tmp",
+    "default_expires_in": 600,
+    "cache_depth": 3
+  },
+  "https": -1,
+  "samlSPSSODescriptorAssertionConsumerServiceHTTPArtifact": "1;0;urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact;#PORTAL#/saml/proxySingleSignOnArtifact",
+  "u2fActivation": 0,
+  "samlIDPSSODescriptorWantAuthnRequestsSigned": 1,
+  "portalDisplayAppslist": 1,
+  "samlAuthnContextMapTLSClient": 5,
+  "rest2fActivation": 0,
+  "portalForceAuthnInterval": 5,
+  "globalStorage": "Apache::Session::File",
+  "portalDisplayLoginHistory": 1,
+  "oidcOPMetaDataJSON": null,
+  "SMTPTLS": "",
+  "mail2fActivation": 0,
+  "issuerDBSAMLActivation": 1,
+  "macros": {
+    "UA": "$ENV{HTTP_USER_AGENT}",
+    "_whatToTrace": "$_auth eq 'SAML' ? \"$_user\\@$_idpConfKey\" : $_auth eq 'OpenIDConnect' ? \"$_user\\@$_oidcConnectedRP\" : \"$_user\""
+  },
+  "redirectFormMethod": "get",
+  "grantSessionRules": {},
+  "casAttributes": {},
+  "cfgAuthor": "dwho",
+  "samlIDPSSODescriptorSingleLogoutServiceHTTPPost": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST;#PORTAL#/saml/singleLogout;#PORTAL#/saml/singleLogoutReturn",
+  "portalUserAttr": "_user",
+  "exportedVars": {},
+  "yubikey2fActivation": 0,
+  "totp2fDigits": 6,
+  "registerDB": "Demo",
+  "samlNameIDFormatMapKerberos": "uid",
+  "cspDefault": "'self'",
+  "casSrvMetaDataOptions": null,
+  "jsRedirect": 0,
+  "sfRemovedNotifRef": "RemoveSF",
+  "randomPasswordRegexp": "[A-Z]{3}[a-z]{5}.\\d{2}",
+  "samlEntityID": "#PORTAL#/saml/metadata",
+  "mail2fCodeRegex": "\\d{6}",
+  "impersonationRule": 0,
+  "impersonationMergeSSOgroups": 0,
+  "portalDisplayOidcConsents": "$_oidcConnectedRP",
+  "SMTPServer": "",
+  "oidcOPMetaDataExportedVars": null,
+  "u2fSelfRegistration": 0,
+  "hiddenAttributes": "_password",
+  "oidcOPMetaDataOptions": null,
+  "successLoginNumber": 5,
+  "samlSPSSODescriptorArtifactResolutionServiceArtifact": "1;0;urn:oasis:names:tc:SAML:2.0:bindings:SOAP;#PORTAL#/saml/artifact",
+  "cspStyle": "'self'",
+  "samlMetadataForceUTF8": 1,
+  "totp2fSelfRegistration": 0,
+  "portal": "http://auth.lemon.local/",
+  "mailUrl": "http://auth.lemon.local/resetpwd",
+  "reloadTimeout": 5,
+  "samlOrganizationDisplayName": "Example",
+  "captcha_register_enabled": 1,
+  "samlOverrideIDPEntityID": "",
+  "portalDisplayRegister": 1,
+  "portalRequireOldPassword": 1,
+  "samlIdPResolveCookie": "lemonldapidp",
+  "reloadUrls": {
+    "localhost": "http://handler.lemon.local/reload"
+  },
+  "samlSPSSODescriptorSingleLogoutServiceSOAP": "urn:oasis:names:tc:SAML:2.0:bindings:SOAP;#PORTAL#/saml/proxySingleLogoutSOAP;",
+  "checkUserIdRule": 1,
+  "samlSPSSODescriptorAuthnRequestsSigned": 1,
+  "samlNameIDFormatMapWindows": "uid",
+  "post": null,
+  "cookieName": "lemonldap",
+  "registerUrl": "http://auth.lemon.local/register",
+  "samlSPSSODescriptorSingleLogoutServiceHTTPRedirect": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect;#PORTAL#/saml/proxySingleLogout;#PORTAL#/saml/proxySingleLogoutReturn",
+  "loginHistoryEnabled": 1,
+  "multiValuesSeparator": "; ",
+  "cfgAuthorIP": "172.22.0.5",
+  "registerTimeout": 0,
+  "captcha_mail_enabled": 1,
+  "samlAuthnContextMapPassword": 2,
+  "samlIDPMetaDataOptions": null,
+  "impersonationIdRule": 1,
+  "lwpSslOpts": {},
+  "casAccessControlPolicy": "none",
+  "corsAllow_Methods": "POST,GET",
+  "persistentStorageOptions": {
+    "LockDirectory": "/var/lib/lemonldap-ng/psessions/lock",
+    "Directory": "/var/lib/lemonldap-ng/psessions"
+  },
+  "samlAuthnContextMapPasswordProtectedTransport": 3,
+  "cspImg": "'self' data:"
+}

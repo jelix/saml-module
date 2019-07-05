@@ -16,14 +16,27 @@ then choose `on`.
 
 Click on the `save` button.
 
-Retrieve certs and keys
------------------------
+Create certificates and keys
+-----------------------------
 
-Go to the page `SAML2 service > security parameters > Signature`, and click
-on "New keys" if there are no keys yet. Indicate or not a password. Then retrieve 
-the content of the public key, and store it into `yourapp/var/config/saml/idp_sig.crt`.
+You should create two certificates and their keys, for SAML signing and encryption,
+if they are not yet registered into the LemonLDAP::ng manager.
 
-Go to the page `SAML2 service > security parameters > Encryption`, and click
+For example:
+
+```
+openssl req -x509 -new -newkey rsa:4096 -keyout idp_encrypt.key -out idp_encrypt.pem  -nodes -days 3650 -subj "/C=FR/ST=France/L=Paris/O=jelix/OU=tests/CN=lemontest.jelix.org"
+openssl req -x509 -new -newkey rsa:4096 -keyout idp_sig.key -out idp_sig.pem  -nodes -days 3650 -subj "/C=FR/ST=France/L=Paris/O=jelix/OU=tests/CN=lemontest.jelix.org"
+```
+
+Copy files `idp_sig.pem` and `idp_encrypt.pem` into the directory `var/config/saml/certs/`
+and declare them into the `yourapp/var/config/localconfig.ini.php` file . See below.
+
+
+In the LemonLDAP::ng manager, go to the page `SAML2 service > security parameters > Signature`, 
+and indicate the contents of idp_sig.key and idp_sig.pem. Then go to the page 
+`SAML2 service > security parameters > Encryption`, and indicate the contents 
+of idp_sig.key and idp_sig.pem
 on "New keys" if there are no keys yet. Indicate or not a password. Then retrieve 
 the content of the public key, and store it into `tests/app/var/config/saml/idp_encrypt.crt`.
 
@@ -55,7 +68,7 @@ For example
 -----------------------------------
 | Key name   | Name   | Mandatory |
 -----------------------------------
-| Identifier | id     | off       |
+| uid        | uid    | off       |
 -----------------------------------
 | cn         | cn     | off       |
 -----------------------------------
@@ -76,8 +89,8 @@ Set the following values into this section.
 - indicates the name of the certs files you created from the lemonldap certificats:
 
 ```
-certs_signing_files=idp_sig.crt
-certs_encryption_files=idp_encrypt.crt
+certs_signing_files=idp_sig.pem
+certs_encryption_files=idp_encrypt.pem
 ```
 
 - sets some url of the portal, for SSO and SLO, as well as the entity id. Here
