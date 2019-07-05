@@ -29,7 +29,7 @@ class authCtrl extends jController {
      */
     function login() {
         /** @var jResponseRedirectUrl $rep */
-        $rep = $this->getResponse('redirecturl');
+        $rep = $this->getResponse('redirectUrl');
 
         $router = jApp::coord();
         if ($router->originalAction->isEqualTo($router->action)) {
@@ -60,7 +60,7 @@ class authCtrl extends jController {
      * @throws \OneLogin\Saml2\Error
      */
     function logout() {
-        $rep = $this->getResponse('redirecturl');
+        $rep = $this->getResponse('redirectUrl');
 
         $configuration = new \Jelix\Saml\Configuration($this->request);
         $auth = new Auth($configuration->getSettingsArray());

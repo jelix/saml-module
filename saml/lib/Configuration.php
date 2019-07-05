@@ -33,7 +33,7 @@ class Configuration {
 
         $this->settings['strict'] = !$spConfig['saml_debug'];
         $this->settings['debug'] = $spConfig['saml_debug'];
-        $this->settings['baseurl'] = $request->getServerURI() . \jApp::urlBasePath();
+        $this->settings['baseurl'] = str_replace('/acs', '/', \jUrl::getFull('saml~endpoint:acs'));
 
         $this->settings['sp'] = $this->getSpConfig($iniConfig);
         $this->settings['idp'] = $this->getIdPConfig($iniConfig);
@@ -239,6 +239,7 @@ class Configuration {
                 'encryption' => $certsEncryption
             );
         }
+        \jLog::dump($identityProvider, '$identityProvider');
         return $identityProvider;
     }
 

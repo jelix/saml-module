@@ -4,7 +4,7 @@
     {else}you are not authorized.{/if}
 </p>
 {if $error}
-    <div class="error">{$error}</div>
+    <div class="error"><pre>{$error|eschtml}</pre></div>
 {else}
     <p><a href="{jurl 'saml~auth:login'}">Try again</a>.</p>
 {/if}
