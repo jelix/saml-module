@@ -21,13 +21,14 @@ class pagesCtrl extends jController {
     function profile() {
         $rep = $this->getResponse('html');
 
-        $attributes = array();
+        $attributes = $_SESSION['samlUserdata'];
+
+        $rep->title = jLocale::get('saml~auth.authentication.done');
 
         $tpl = new jTpl();
         $tpl->assign('attributes', $attributes);
-
+        $tpl->assign('session', var_export($_SESSION, true));
         $rep->body->assign('MAIN', $tpl->fetch('profile'));
-
         return $rep;
     }
 

@@ -62,21 +62,21 @@ class endpointCtrl extends jController {
         $errors = $auth->getErrors();
         if (!empty($errors)) {
             jLog::log(implode(', ', $errors)."\n".$auth->getLastErrorReason(),'error');
-            return $this->error(implode(', ', $errors));
+            return $this->acsError(implode(', ', $errors));
         }
 
         if (!$auth->isAuthenticated()) {
-            return $this->error();
+            return $this->acsError();
         }
 
         $loginAttr = $configuration->getLoginAttribute();
         $attributes = $auth->getAttributes();
         if (empty($attributes)) {
-            return $this->error('SAML attributes are missing from the identity provider response. The '.$loginAttr.' attribute at least should be present');
+            return $this->acsError('SAML attributes are missing from the identity provider response. The '.$loginAttr.' attribute at least should be present');
         }
 
         if (!isset($attributes[$loginAttr])) {
-            return $this->error('SAML attribute "'.$loginAttr.'" is missing from the identity provider response.');
+            return $this->acsError('SAML attribute "'.$loginAttr.'" is missing from the identity provider response.');
         }
         $login = $attributes[$loginAttr];
         if (is_array($login)) {
@@ -91,7 +91,7 @@ class endpointCtrl extends jController {
         // now we can login. A user will be probably created, with the saml attributes
         // given to the driver
         if (!jAuth::login($login, '!!saml')) {
-            return $this->error('You are not authorized to use this application.');
+            return $this->acsError('You are not authorized to use this application.');
         }
 
         $_SESSION['samlUserdata'] = $auth->getAttributes();
@@ -101,39 +101,24 @@ class endpointCtrl extends jController {
         $_SESSION['samlNameIdNameQualifier'] = $auth->getNameIdNameQualifier();
         $_SESSION['samlNameIdSPNameQualifier'] = $auth->getNameIdSPNameQualifier();
 
-        if (isset($_POST['RelayState']) && Utils::getSelfURL() != $_POST['RelayState']) {
-            /** @var jResponseRedirectUrl $rep */
-            $rep = $this->getResponse('redirecturl');
-            $rep->url = $_POST['RelayState'];
-            return $rep;
+        if (isset($_POST['RelayState']) && $_POST['RelayState'] != jUrl::getFull('saml~endpoint:acs')) {
+            $relayState = $_POST['RelayState'];
+        }
+        else {
+            $afterLoginAction = (jApp::config()->{'saml:sp'})['after_login'];
+            if ($afterLoginAction) {
+                // page indicated into the after_login option
+                $relayState = jUrl::getFull($afterLoginAction);
+            } else {
+                // home page
+                $relayState = $this->request->getServerURI() . jApp::urlBasePath();
+            }
         }
 
-        $rep = $this->getResponse('html');
-        $rep->title = jLocale::get('saml~auth.authentication.done');
 
-        $attributes = $auth->getAttributes();
-        if (!empty($attributes)) {
-            $html = '<h1>Attributes</h1>';
-            $html .= '<table><thead><th>Names</th><th>values</th></thead><tbody>';
-            foreach ($attributes as $attributeName => $attributeValues) {
-                $html .= '<tr><td>'.htmlentities($attributeName).'</td><td><ul>';
-                foreach ($attributeValues as $attributeValue) {
-                    $html .= '<li>'.htmlentities($attributeValue).'</li>';
-                }
-                $html .= '</ul></td></tr>';
-            }
-            $html .= '</tbody></table>';
-            if (!empty($_SESSION['IdPSessionIndex'])) {
-                $html .= '<p>The SessionIndex of the IdP is: '.$_SESSION['IdPSessionIndex'].'</p>';
-            }
-        } else {
-            $html = '';
-        }
-
-        $tpl = new jTpl();
-        $tpl->assign('message', $html);
-        $rep->body->assign('MAIN', $tpl->fetch('authenticated'));
-
+        /** @var jResponseRedirectUrl $rep */
+        $rep = $this->getResponse('redirectUrl');
+        $rep->url = $relayState;
         return $rep;
     }
 
@@ -146,25 +131,53 @@ class endpointCtrl extends jController {
     function sls() {
         $configuration = new \Jelix\Saml\Configuration($this->request);
         $auth = new Auth($configuration->getSettingsArray());
-        $auth->processSLO();
 
+
+        $url = $auth->processSLO(true, null, true, null, true);
         $errors = $auth->getErrors();
-        /** @var jResponseHtml $rep */
-        $rep = $this->getResponse('htmlauth');
-        $rep->title = 'Logged out';
-        $tpl = new jTpl();
 
         if (empty($errors)) {
             jAuth::logout();
-            $tpl->assign('error', '');
+
+            unset($_SESSION['samlUserdata']);
+            unset($_SESSION['IdPSessionIndex']);
+            unset($_SESSION['samlNameId']);
+            unset($_SESSION['samlNameIdFormat']);
+            unset($_SESSION['samlNameIdNameQualifier']);
+            unset($_SESSION['samlNameIdSPNameQualifier']);
+
+            if ($url) {
+                /** @var jResponseRedirectUrl $rep */
+                $rep = $this->getResponse('redirectUrl');
+                $rep->url = $url;
+                return $rep;
+            }
+            $relayState = $this->param('RelayState');
+            if ($relayState) {
+                /** @var jResponseRedirectUrl $rep */
+                $rep = $this->getResponse('redirectUrl');
+                $rep->url = $relayState;
+            }
+            else {
+                $afterLogoutAction = (jApp::config()->{'saml:sp'})['after_logout'];
+                if ($afterLogoutAction) {
+                    // page indicated into the after_login option
+                    $url = jUrl::getFull($afterLogoutAction);
+                    /** @var jResponseRedirectUrl $rep */
+                    $rep = $this->getResponse('redirectUrl');
+                    $rep->url = $url;
+                }
+                else {
+                    $rep = $this->logoutresult();
+                }
+            }
         } else {
-            $tpl->assign('error', implode(', ', $errors)."\n".$auth->getLastErrorReason());
+            $rep = $this->logoutresult(implode(', ', $errors)."\n".$auth->getLastErrorReason());
         }
-        $rep->body->assign('MAIN', $tpl->fetch('logout'));
         return $rep;
     }
 
-    protected function error($error = '') {
+    protected function acsError($error = '') {
         /** @var jResponseHtml $rep */
         $rep = $this->getResponse('htmlauth');
         if ($error) {
@@ -179,5 +192,28 @@ class endpointCtrl extends jController {
         $rep->body->assign('MAIN', $tpl->fetch('notauthenticated'));
         return $rep;
     }
+
+    public function logoutdone() {
+        return $this->logoutresult();
+    }
+
+
+    protected function logoutresult($error = '') {
+        /** @var jResponseHtml $rep */
+        $rep = $this->getResponse('htmlauth');
+        $rep->title = 'Logged out';
+        $tpl = new jTpl();
+
+        if ($error) {
+            $rep->setHttpStatus('503', 'Service Unavailable');
+            $tpl->assign('error', $this->param('error'));
+        }
+        else {
+            $tpl->assign('error', '');
+        }
+        $rep->body->assign('MAIN', $tpl->fetch('logout'));
+        return $rep;
+    }
+
 }
 

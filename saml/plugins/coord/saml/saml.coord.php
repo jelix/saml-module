@@ -32,7 +32,6 @@ class samlCoordPlugin implements jICoordPlugin {
      * @return null or jSelectorAct  if action should change
      */
     public function beforeAction ($params) {
-        $notLogged = false;
         $selector = null;
 
         //Creating the user's object if needed
@@ -46,17 +45,17 @@ class samlCoordPlugin implements jICoordPlugin {
         try {
             $needAuth = isset($params['auth.required']) ? ($params['auth.required']==true):$this->config['auth_required'];
 
-            if ($needAuth) {
+            if ($needAuth && $notLogged) {
                 // if this is an ajax request, we don't want redirection to a web page
                 // so we shouldn't force authentication if we are not logged
-                if ($notLogged && jApp::coord()->request->isAjax()) {
+                if (jApp::coord()->request->isAjax()) {
                     throw new jException($this->config['error_message']);
                 }
 
                 // execute the login action, except if the request is
                 // for the endpoint (login response from the identity server)
                 $currentAction = jApp::coord()->originalAction;
-                if ($currentAction->module != 'saml' ||
+                if ($currentAction->module != 'saml' &&
                     $currentAction->controller != 'endpoint'
                 ) {
                     $selector = new jSelectorAct('saml~auth:login');

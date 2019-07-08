@@ -8,7 +8,7 @@ driver = saml
 session_name = "JELIX_USER"
 
 ; set to 'on' to destroy the session on logout
-session_destroy = 
+session_destroy = on
 
 ; If the value is "on", the user must be authentificated for all actions, except those
 ; for which a plugin parameter  auth.required is false

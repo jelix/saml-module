@@ -32,13 +32,26 @@ class authCtrl extends jController {
         $rep = $this->getResponse('redirectUrl');
 
         $router = jApp::coord();
-        if ($router->originalAction->isEqualTo($router->action)) {
-            // the user has clicked on a link that point directly to the login() method
-            $relayState = $this->request->getServerURI().jApp::urlBasePath();
+        if (!$router->originalAction->isEqualTo($router->action) &&
+            $_SERVER['REQUEST_METHOD'] == 'GET'
+        ) {
+            // internal redirection from the coordinator plugin, and the current
+            // request is a GET request
+            $relayState = jUrl::getFull($router->originalAction->toString(), $this->request->params);
         }
         else {
-            // internal redirection from the coordinator plugin
-            $relayState = jUrl::getFull($router->originalAction->toString(), $this->request->params);
+            // the user has clicked on a link that point directly to the login() method
+            // or the internal redirection is made during a non GET request.
+            // we will then redirect the user to the default page to display
+            // after a login.
+            $afterLoginAction = (jApp::config()->{'saml:sp'})['after_login'];
+            if ($afterLoginAction) {
+                // page indicated into the after_login option
+                $relayState = jUrl::getFull($afterLoginAction);
+            } else {
+                // home page
+                $relayState = $this->request->getServerURI() . jApp::urlBasePath();
+            }
         }
 
         $configuration = new \Jelix\Saml\Configuration($this->request);
@@ -71,11 +84,14 @@ class authCtrl extends jController {
         $nameIdNameQualifier = null;
         $nameIdSPNameQualifier = null;
 
+        $hasSAMLSession = false;
         if (isset($_SESSION['IdPSessionIndex']) && !empty($_SESSION['IdPSessionIndex'])) {
             $sessionIndex = $_SESSION['IdPSessionIndex'];
+            $hasSAMLSession = true;
         }
         if (isset($_SESSION['samlNameId'])) {
             $nameId = $_SESSION['samlNameId'];
+            $hasSAMLSession = true;
         }
         if (isset($_SESSION['samlNameIdFormat'])) {
             $nameIdFormat = $_SESSION['samlNameIdFormat'];
@@ -87,23 +103,64 @@ class authCtrl extends jController {
             $nameIdSPNameQualifier = $_SESSION['samlNameIdSPNameQualifier'];
         }
 
-        $relayState = jUrl::getFull('saml~auth:notauthenticated');
+        jAuth::logout();
 
+        if (!$hasSAMLSession) {
+            // to avoid error "unknown session" on the IdP side
+            $rep = $this->getResponse('redirect');
+            $afterLogoutAction = (jApp::config()->{'saml:sp'})['after_logout'];
+            if ($afterLogoutAction) {
+                $rep->action = $afterLogoutAction;
+            } else {
+                $rep->action = 'saml~endpoint:logoutdone';
+            }
+            return $rep;
+        }
+
+        unset($_SESSION['samlUserdata']);
+        unset($_SESSION['IdPSessionIndex']);
+        unset($_SESSION['samlNameId']);
+        unset($_SESSION['samlNameIdFormat']);
+        unset($_SESSION['samlNameIdNameQualifier']);
+        unset($_SESSION['samlNameIdSPNameQualifier']);
+
+        $afterLogoutAction = (jApp::config()->{'saml:sp'})['after_logout'];
+        if ($afterLogoutAction) {
+            // page indicated into the after_login option
+            $relayState = jUrl::getFull($afterLogoutAction);
+        } else {
+            // home page
+            $relayState = jUrl::getFull('saml~endpoint:logoutdone');
+        }
         $rep->url = $auth->logout($relayState, array(), $nameId,
             $sessionIndex, true, $nameIdFormat, $nameIdNameQualifier, $nameIdSPNameQualifier);
 
-        // jAuth::logout() will be made on the endpoint:slo action
         return $rep;
     }
 
     function notauthenticated() {
         /** @var jResponseHtml $rep */
         $rep = $this->getResponse('htmlauth');
-        $rep->setHttpStatus('401', 'Unauthorized');
         $rep->title = 'Not authenticated';
         $tpl = new jTpl();
-        $tpl->assign('error', '');
+
+        if ($this->param('error')) {
+            $rep->setHttpStatus('401', 'Unauthorized');
+            $tpl->assign('error', $this->param('error'));
+        }
+        else {
+            $tpl->assign('error', '');
+        }
         $rep->body->assign('MAIN', $tpl->fetch('notauthenticated'));
+        return $rep;
+    }
+
+    function authenticated() {
+        /** @var jResponseHtml $rep */
+        $rep = $this->getResponse('htmlauth');
+        $rep->title = 'Authenticated';
+        $tpl = new jTpl();
+        $rep->body->assign('MAIN', $tpl->fetch('authenticated'));
         return $rep;
     }
 }
