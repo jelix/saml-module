@@ -2,6 +2,9 @@ FROM alpine:3.9
 
 ARG composer_version=1.8.6
 
+ENV FPM_USER=1000 \
+    FPM_GROUP=1000
+
 RUN apk update && apk upgrade
 RUN apk --no-cache add git php7 php7-fpm \
     php7-tokenizer \
@@ -24,15 +27,12 @@ RUN apk --no-cache add git php7 php7-fpm \
     php7-simplexml \
     php7-zip \
     php7-phar \
+    php7-gettext \
     openssl \
     wget
 
 # 82 is the standard uid/gid for "www-data" in Alpine
 RUN set -eux; \
-	addgroup -g 82 -S www-data; \
-	adduser -u 82 -D -S -G www-data www-data; \
-	sed -i "/^user =/c\user = www-data"   /etc/php7/php-fpm.d/www.conf; \
-    sed -i "/^group =/c\group = www-data" /etc/php7/php-fpm.d/www.conf; \
     sed -i "/^listen =/c\listen = 9000" /etc/php7/php-fpm.d/www.conf
 
 

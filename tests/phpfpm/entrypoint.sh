@@ -3,6 +3,9 @@
 set -e
 set -x
 
+sed -i "/^user =/c\user = $FPM_USER"   /etc/php7/php-fpm.d/www.conf
+sed -i "/^group =/c\group = $FPM_GROUP" /etc/php7/php-fpm.d/www.conf
+
 # Copy config files to mount point
 [ ! -f /opt/tests/app/var/config/localconfig.ini.php  ] && cp /opt/tests/app/var/config/localconfig.ini.php.dist  /opt/tests/app/var/config/localconfig.ini.php
 [ ! -f /opt/tests/app/var/config/profiles.ini.php     ] && cp /opt/tests/app/var/config/profiles.ini.php.dist     /opt/tests/app/var/config/profiles.ini.php
@@ -19,12 +22,14 @@ fi
 
 cd /opt/tests/app
 composer install --prefer-dist --no-progress --no-ansi --no-interaction
+chown -R $FPM_USER:$FPM_GROUP vendor composer.lock
+
 
 # Set up Configuration
 php install/installer.php
 
 # Set owner/and group
-sh install/set_rights.sh
+sh install/set_rights.sh $FPM_USER $FPM_GROUP
 
 # Clean cache files in case we are
 # Restarting the container

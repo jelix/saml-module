@@ -6,8 +6,8 @@
 domainName=appsaml.local
 
 ; chmod for files created by Jelix
-chmodFile=0666
-chmodDir=0777
+chmodFile=0664
+chmodDir=0775
 
 forceHTTPPort=80
 forceHTTPSPort=443
