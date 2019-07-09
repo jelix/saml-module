@@ -244,6 +244,7 @@ class Configuration {
             ),
             'singleLogoutService' => array(
                 'url' => $idpConfig['singleLogoutServiceUrl'],
+                'responseUrl' => $idpConfig['singleLogoutServiceResponseUrl'],
                 'binding' => $bindings[$idpConfig['singleLogoutServiceBinding']],
             ),
             // Public x509 certificate of the IdP
