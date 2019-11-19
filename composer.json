@@ -4,7 +4,7 @@
     "description": "module for Jelix, allowing to authenticate against an SAML server.",
     "keywords": ["saml", "authentication", "jelix"],
     "homepage": "http://jelix.org",
-    "license": "LGPL",
+    "license": "LGPL-2.1-only",
     "authors": [
         {
             "name": "Laurent Jouanneau",

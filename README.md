@@ -1,10 +1,21 @@
 This is a module for Jelix, providing authentication for jAuth against SAML servers 
 
+This is an **experimental module** for now.
+
 Installation
 ============
 
 This module is for Jelix 1.6.21 and higher. It replaces the jauth module,
 and it is compatible with jauthdb, jauthdb_admin modules.
+
+It uses the [onelogin/php-saml](https://github.com/onelogin/php-saml/) library. This 
+library requires:
+
+- php 7.0 or more
+- some core PHP extensions like php-xml, php-date, php-zlib.
+- openssl. Install the openssl library. It handles x509 certificates.
+- gettext. Install that library and its php driver. It handles translations.
+- curl. Install that library and its php driver if you plan to use the IdP Metadata parser.
 
 Install files with Jelix 1.7
 ----------------------------
@@ -22,10 +33,21 @@ php yourapp/dev.php module:configure saml
 php yourapp/install/installer.php
 
 ```
+
 Install files with Jelix 1.6.21
 -------------------------------
 
-Copy the `saml` directory into the modules/ directory of your application.
+If you are using Composer in your application, you should indicate the package
+into your composer.json:
+                                               
+```
+composer require "jelix/saml-module"
+```
+
+Else, if you are not using Composer, you must install [onelogin/php-saml 3.2.1](https://github.com/onelogin/php-saml/releases/tag/3.2.1) 
+by hand, extract it somewhere, and add into your application.init.php
+an include instruction to load its file `_toolkit_loader.php`. Then copy the `saml` 
+directory of saml-module into the modules/ directory of your application.
 
 Next you must say to Jelix that you want to use the module. Declare
 it into the `mainconfig.ini.php` file (into yourapp/var/config/).
@@ -63,6 +85,10 @@ Configuration
 You should setup parameters into `var/config/saml.coord.ini.php`, and
 mainly into `var/config/mainconfig.ini.php` or `var/config/localconfig.ini.php`,
 into all `saml:*` sections.
+
+To understand parameters into `saml:idp` and `saml:security`, see
+the [README.md file of php-saml](https://github.com/onelogin/php-saml/blob/3.2.1/README.md).
+
 
 Certificates
 ------------
