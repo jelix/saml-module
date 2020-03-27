@@ -19,19 +19,34 @@ library requires:
 
 Install files with Jelix 1.7
 ----------------------------
+
 You should use Composer to install the module. Run this commands in a shell:
                                                
 ```
 composer require "jelix/saml-module"
 ```
 
+The module `jauthdb` is required, and the `jauth` module should be deactivated.
+In the `[modules]` section of `app/system/mainconfig.ini.php` or `var/config/localconfig.ini.php`,
+you should have:
+
+```ini
+jauth.enable=0
+jauthdb.enable=1
+```
+
+If you are using jCommunity, you must deactivate both modules:
+
+```ini
+jauth.enable=0
+jauthdb.enable=0
+```
+
+
 Launch the configurator for your application to enable the module
 
 ```bash
 php yourapp/dev.php module:configure saml
-
-php yourapp/install/installer.php
-
 ```
 
 Install files with Jelix 1.6.21
@@ -50,7 +65,7 @@ an include instruction to load its file `_toolkit_loader.php`. Then copy the `sa
 directory of saml-module into the modules/ directory of your application.
 
 Next you must say to Jelix that you want to use the module. Declare
-it into the `mainconfig.ini.php` file (into yourapp/var/config/).
+it into the `mainconfig.ini.php` or `localconfig.ini.php` file (into yourapp/var/config/).
 
 In the `[modules]` section, add:
 
@@ -66,6 +81,58 @@ jauth.access=0
 jauthdb.access=1
 ```
 
+If you are using jCommunity, you must deactivate both modules:
+
+```ini
+jauth.access=0
+jauthdb.access=0
+```
+
+
+Configuring the installaton
+===========================
+
+For the moment, there is no configurator dedicated to the module for Jelix 1.7, 
+so you should set some parameter by hand, like for Jelix 1.6.
+
+Installation parameters are:
+
+- `localconfig`: says that the configuration should be set into `localconfig.ini.php`, not `mainconfig.ini.php`
+- `useradmin`: the login of the administrator. An account will be created and
+   admin rights will be given to him.
+-  `emailadmin`: email of the administrator
+
+Indicate them into the `[modules]` section, like in this example:
+
+```ini
+saml.installparam="localconfig;useradmin=admin;emailadmin=foo@example.com"
+```
+
+Installing in an application already having user database
+=========================================================
+
+FIXME
+
+Working with jcommunity
+========================
+
+```ini
+[jcommunity]
+loginResponse = htmlauth
+registrationEnabled = off
+resetPasswordEnabled = off
+resetPasswordAdminEnabled = off
+verifyNickname = off
+passwordChangeEnabled=off
+accountDestroyEnabled=on
+useJAuthDbAdminRights=on
+
+```
+
+
+Launch the installer
+=====================
+
 In the command line, launch:
 
 ```
@@ -78,6 +145,7 @@ The installer:
 - create a `var/config/saml.coord.ini.php` for the `saml` plugin
 - remove roles `auth.user.change.password` and `auth.users.change.password'` from jAcl2 data
 - setup an admin user if there is an install parameter useradmin and emailadmin
+
 
 Configuration
 =============
