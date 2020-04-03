@@ -27,6 +27,38 @@ error_message = "saml~auth.notlogged"
 ; action to execute on a missing authentification when on_error=2
 on_error_action = "saml~auth:notauthenticated"
 
+;=========== Parameters for jauth/jcommunity module
+
+; action to redirect after the login. same as in `[saml:sp]` of the main configuration
+after_login="view~default:index"
+
+; don't touch these values
+on_error_sleep=0
+after_logout="saml~auth:logout"
+enable_after_login_override=off
+enable_after_logout_override=off
+
+;============ Parameters for the persistance of the authentification
+
+; enable the persistance of the authentification between two sessions
+persistant_enable=on
+
+; the name of the cookie which is used to store data for the authentification
+persistant_cookie_name=LizmapSession
+
+; duration of the validity of the cookie (in days). default is 1 day.
+persistant_duration=1
+
+;=========== parameters for password hashing
+
+; method of the hash. 0 or "" means old hashing behavior of jAuth
+; (using password_* parameters in drivers ).
+; Prefer to choose 1, which is the default hash method (bcrypt).
+password_hash_method=1
+
+; options for the hash method. list of "name:value" separated by a ";"
+password_hash_options=
+
 
 ;------- parameters for the "saml" driver
 [saml]
@@ -35,7 +67,7 @@ compatiblewithdb = on
 ; name of the dao to get user data
 dao = "jauthdb~jelixuser"
 
-; profile to use for jDb 
+; profile to use for jDb
 profile = ""
 
 ; name of the form for the jauthdb_admin module
