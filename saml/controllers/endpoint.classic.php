@@ -161,7 +161,7 @@ class endpointCtrl extends jController {
             else {
                 $afterLogoutAction = (jApp::config()->{'saml:sp'})['after_logout'];
                 if ($afterLogoutAction) {
-                    // page indicated into the after_login option
+                    // page indicated into the after_logout option
                     $url = jUrl::getFull($afterLogoutAction);
                     /** @var jResponseRedirectUrl $rep */
                     $rep = $this->getResponse('redirectUrl');
@@ -206,7 +206,7 @@ class endpointCtrl extends jController {
 
         if ($error) {
             $rep->setHttpStatus('503', 'Service Unavailable');
-            $tpl->assign('error', $this->param('error'));
+            $tpl->assign('error', $error);
         }
         else {
             $tpl->assign('error', '');
