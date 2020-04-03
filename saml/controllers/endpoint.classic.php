@@ -180,6 +180,10 @@ class endpointCtrl extends jController {
     protected function acsError($error = '') {
         /** @var jResponseHtml $rep */
         $rep = $this->getResponse('htmlauth');
+        if ($rep->bodyTpl == '') {
+            $rep->bodyTpl = 'saml~main_error';
+        }
+
         if ($error) {
             $rep->setHttpStatus('503', 'Service Unavailable');
         }
@@ -201,6 +205,10 @@ class endpointCtrl extends jController {
     protected function logoutresult($error = '') {
         /** @var jResponseHtml $rep */
         $rep = $this->getResponse('htmlauth');
+        if ($rep->bodyTpl == '') {
+            $rep->bodyTpl = 'saml~main_error';
+        }
+
         $rep->title = 'Logged out';
         $tpl = new jTpl();
 

@@ -102,6 +102,16 @@ class samlModuleInstaller extends jInstallerModule {
             $iniConfig->save();
         }
 
+        $driver = $iniConfig->getValue('driver', 'coordplugin_auth');
+        if ($driver && $driver != 'saml') {
+            $iniConfig->setValue('driver', 'saml', 'coordplugin_auth');
+        }
+
+        $responseClass = $iniConfig->getValue('htmlauth', 'responses');
+        if (!$responseClass) {
+            $iniConfig->setValue('htmlauth', 'jResponseHtml', 'responses');
+        }
+
         // create a first user if indicated
         $login = $this->getParameter('useradmin');
         $email =  $this->getParameter('emailadmin');

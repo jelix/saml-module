@@ -141,6 +141,9 @@ class authCtrl extends jController {
     function notauthenticated() {
         /** @var jResponseHtml $rep */
         $rep = $this->getResponse('htmlauth');
+        if ($rep->bodyTpl == '') {
+            $rep->bodyTpl = 'saml~main_error';
+        }
         $rep->title = 'Not authenticated';
         $tpl = new jTpl();
 
@@ -158,6 +161,9 @@ class authCtrl extends jController {
     function authenticated() {
         /** @var jResponseHtml $rep */
         $rep = $this->getResponse('htmlauth');
+        if ($rep->bodyTpl == '') {
+            $rep->bodyTpl = 'saml~main_error';
+        }
         $rep->title = 'Authenticated';
         $tpl = new jTpl();
         $rep->body->assign('MAIN', $tpl->fetch('authenticated'));
