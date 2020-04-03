@@ -1,8 +1,9 @@
 
-<h2>Logged out</h2>
+<h2>{@saml~auth.logout.title@}</h2>
 {if $error}
-<p>Sorry, an error appear during the logout:</p>
+<p>{@saml~auth.logout.error.explanation@}</p>
  <div class="error">{$error}</div>
 {else}
-<p>Sucessfully logged out</p>
+<p>{@saml~auth.logout.success@}</p>
+<p><a href="{jurl 'saml~auth:login'}">{@saml~auth.logout.login.again@}</a>.</p>
 {/if}

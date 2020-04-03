@@ -113,11 +113,11 @@ class Configuration {
         $spPrivateKey  = \jApp::configPath('saml/certs/sp.key');
 
         if (!file_exists($spX509certFile)) {
-            throw new \Exception('SAML Error: certificat file of the service provider, var/config/saml/certs/sp.crt, does not exists');
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.sp.cert'));
         }
 
         if (!file_exists($spPrivateKey)) {
-            throw new \Exception('SAML Error: private key file of the service provider, var/config/saml/certs/sp.key, does not exists');
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.sp.key'));
         }
 
         // Service Provider Data that we are deploying
@@ -193,7 +193,7 @@ class Configuration {
             $idpX509certFile = \jApp::configPath('saml/certs/idp.crt');
 
             if (!file_exists($idpX509certFile) && $idpConfig['certs_signing_files'] == '') {
-                throw new \Exception('SAML Error: certificat file of the identity provider, var/config/saml/certs/idp.crt, does not exists');
+                throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.idp.cert', array('idp.crt')));
             }
             $idpX509cert = file_get_contents($idpX509certFile);
         }
@@ -204,7 +204,7 @@ class Configuration {
             foreach( $list as $file) {
                 $path = \jApp::configPath('saml/certs/'.$file);
                 if (!file_exists($path)) {
-                    throw new \Exception('SAML Error: certificat file of the identity provider, var/config/saml/certs/'.$path.', does not exists');
+                    throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.idp.key', array($path)));
                 }
                 $certsSigning[] = file_get_contents($path);
             }
@@ -213,7 +213,7 @@ class Configuration {
             foreach( $list as $file) {
                 $path = \jApp::configPath('saml/certs/'.$file);
                 if (!file_exists($path)) {
-                    throw new \Exception('SAML Error: certificat file of the identity provider, var/config/saml/certs/'.$path.', does not exists');
+                    throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.idp.cert', array($path)));
                 }
                 $certsEncryption[] = file_get_contents($path);
             }
@@ -227,11 +227,11 @@ class Configuration {
             'deflate' => Constants::BINDING_DEFLATE,
         );
         if (!isset($bindings[$idpConfig['singleSignOnServiceBinding']])) {
-            throw new \Exception('SAML Error: bad value for singleSignOnServiceBinding');
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.bad.parameter', array('singleSignOnServiceBinding')));
         }
 
         if (!isset($bindings[$idpConfig['singleLogoutServiceBinding']])) {
-            throw new \Exception('SAML Error: bad value for singleSignOnServiceBinding');
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.bad.parameter', array('singleLogoutServiceBinding')));
         }
 
 

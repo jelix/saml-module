@@ -1,10 +1,8 @@
-<p>
-    Sorry, you cannot use this application because
-    {if $error}you are not authenticated because of the following error:
-    {else}you are not authorized.{/if}
+<p>{if $error}{@saml~auth.authentication.error.explanation@}
+    {else}{@saml~auth.authentication.error.explanation.not.authorized@}{/if}
 </p>
 {if $error}
     <div class="error"><pre>{$error|eschtml}</pre></div>
 {else}
-    <p><a href="{jurl 'saml~auth:login'}">Try again</a>.</p>
+    <p><a href="{jurl 'saml~auth:login'}">{@saml~auth.authentication.error.try.again@}</a>.</p>
 {/if}

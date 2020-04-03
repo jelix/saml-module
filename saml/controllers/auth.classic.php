@@ -144,7 +144,7 @@ class authCtrl extends jController {
         if ($rep->bodyTpl == '') {
             $rep->bodyTpl = 'saml~main_error';
         }
-        $rep->title = 'Not authenticated';
+        $rep->title = jLocale::get('saml~auth.authentication.error.not.authenticated.title');
         $tpl = new jTpl();
 
         if ($this->param('error')) {
@@ -164,7 +164,7 @@ class authCtrl extends jController {
         if ($rep->bodyTpl == '') {
             $rep->bodyTpl = 'saml~main_error';
         }
-        $rep->title = 'Authenticated';
+        $rep->title = jLocale::get('saml~auth.authenticated.title');
         $tpl = new jTpl();
         $rep->body->assign('MAIN', $tpl->fetch('authenticated'));
         return $rep;

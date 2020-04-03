@@ -72,11 +72,11 @@ class endpointCtrl extends jController {
         $loginAttr = $configuration->getLoginAttribute();
         $attributes = $auth->getAttributes();
         if (empty($attributes)) {
-            return $this->acsError('SAML attributes are missing from the identity provider response. The '.$loginAttr.' attribute at least should be present');
+            return $this->acsError(jLocale::get('saml~auth.authentication.error.saml.attributes.missing', array($loginAttr)));
         }
 
         if (!isset($attributes[$loginAttr])) {
-            return $this->acsError('SAML attribute "'.$loginAttr.'" is missing from the identity provider response.');
+            return $this->acsError(jLocale::get('saml~auth.authentication.error.saml.attribute.missing', array($loginAttr)));
         }
         $login = $attributes[$loginAttr];
         if (is_array($login)) {
@@ -91,7 +91,7 @@ class endpointCtrl extends jController {
         // now we can login. A user will be probably created, with the saml attributes
         // given to the driver
         if (!jAuth::login($login, '!!saml')) {
-            return $this->acsError('You are not authorized to use this application.');
+            return $this->acsError(jLocale::get('saml~auth.authentication.error.not.authorized'));
         }
 
         $_SESSION['samlUserdata'] = $auth->getAttributes();
@@ -190,7 +190,7 @@ class endpointCtrl extends jController {
         else {
             $rep->setHttpStatus('401', 'Unauthorized');
         }
-        $rep->title = 'Authentication error';
+        $rep->title = jLocale::get('saml~auth.authentication.error.title');
         $tpl = new jTpl();
         $tpl->assign('error', $error);
         $rep->body->assign('MAIN', $tpl->fetch('notauthenticated'));
@@ -209,7 +209,7 @@ class endpointCtrl extends jController {
             $rep->bodyTpl = 'saml~main_error';
         }
 
-        $rep->title = 'Logged out';
+        $rep->title = jLocale::get('saml~auth.logout.title');
         $tpl = new jTpl();
 
         if ($error) {
