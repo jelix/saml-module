@@ -103,7 +103,7 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
                 if (jApp::isModuleEnabled('jcommunity')) {
                     $user->status = 1; // STATUS_VALID
                 }
-                foreach($this->samlAttributesValues as $property => $value) {
+                foreach($this->userAttributesValues as $property => $value) {
                     $user->$property = $value;
                 }
                 jAuth::saveNewUser($user);
@@ -114,9 +114,14 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
         return $user;
     }
 
+
     protected $samlAttributesValues = array();
 
+    protected $userAttributesValues = array();
+
     public function setAttributesMapping($samlAttributes, $mappingAttributes) {
+
+        $this->samlAttributesValues = $samlAttributes;
 
         foreach($mappingAttributes as $property => $attribute) {
             if (!isset($samlAttributes[$attribute]) || !$samlAttributes[$attribute]) {
@@ -126,7 +131,18 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
             if (is_array($val)) {
                 $val = $val[0];
             }
-            $this->samlAttributesValues[$property] = $val;
+            $this->userAttributesValues[$property] = $val;
         }
     }
+
+    public function getSAMLAttributes() {
+        return $this->samlAttributesValues;
+    }
+
+    public function getUserAttributes() {
+        return $this->userAttributesValues;
+    }
+
+
+
 }
