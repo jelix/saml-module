@@ -303,7 +303,8 @@ class Configuration {
             'logoutResponseSigned', 'signMetadata', 'wantMessagesSigned',
             'wantAssertionsEncrypted', 'wantAssertionsSigned', 'wantNameId',
             'wantNameIdEncrypted', 'requestedAuthnContext', 'wantXMLValidation',
-            'relaxDestinationValidation', 'lowercaseUrlencoding'
+            'relaxDestinationValidation', 'destinationStrictlyMatches',
+            'rejectUnsolicitedResponsesWithInResponseTo', 'lowercaseUrlencoding'
         );
         $this->fixBool($iniConfig, 'saml:security', $boolVal);
     }
