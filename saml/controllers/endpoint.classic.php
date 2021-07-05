@@ -138,13 +138,15 @@ class endpointCtrl extends jController {
 
         if (empty($errors)) {
             jAuth::logout();
-
+            unset($_SESSION);
+            /*
             unset($_SESSION['samlUserdata']);
             unset($_SESSION['IdPSessionIndex']);
             unset($_SESSION['samlNameId']);
             unset($_SESSION['samlNameIdFormat']);
             unset($_SESSION['samlNameIdNameQualifier']);
             unset($_SESSION['samlNameIdSPNameQualifier']);
+            */
 
             if ($url) {
                 /** @var jResponseRedirectUrl $rep */
