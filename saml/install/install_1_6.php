@@ -147,6 +147,13 @@ class samlModuleInstaller extends jInstallerModule {
                     //jAcl2DbManager::removeRight($id, 'auth.users.create', '-', true);
                     //jAcl2DbManager::removeRight($id, 'auth.users.delete', '-', true);
                 }
+
+                if ($login) {
+                    jAcl2DbUserGroup::createUser($login, false);
+                    if (jAcl2DbUserGroup::getGroup('admins')) {
+                        jAcl2DbUserGroup::addUserToGroup($login, 'admins');
+                    }
+                }
             }
         }
     }
