@@ -135,6 +135,9 @@ class authCtrl extends jController {
         $rep->url = $auth->logout($relayState, array(), $nameId,
             $sessionIndex, true, $nameIdFormat, $nameIdNameQualifier, $nameIdSPNameQualifier);
 
+        $rep->addHttpHeader('Pragma', 'no-cache');
+        $rep->addHttpHeader('Cache-Control', 'no-cache, must-revalidate');
+
         return $rep;
     }
 
