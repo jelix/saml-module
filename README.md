@@ -59,7 +59,7 @@ into your composer.json:
 composer require "jelix/saml-module"
 ```
 
-Else, if you are not using Composer, you must install [onelogin/php-saml 3.2.1](https://github.com/onelogin/php-saml/releases/tag/3.2.1) 
+Else, if you are not using Composer, you must install [onelogin/php-saml 3.4.1](https://github.com/onelogin/php-saml/releases/tag/3.4.1) 
 by hand, extract it somewhere, and add into your application.init.php
 an include instruction to load its file `_toolkit_loader.php`. Then copy the `saml` 
 directory of saml-module into the modules/ directory of your application.
@@ -150,12 +150,12 @@ The installer:
 Configuration
 =============
 
-You should setup parameters into `var/config/saml.coord.ini.php`, and
+You should setup parameters into `var/config/saml/saml.coord.ini.php`, and
 mainly into `var/config/mainconfig.ini.php` or `var/config/localconfig.ini.php`,
 into all `saml:*` sections.
 
 To understand parameters into `saml:idp` and `saml:security`, see
-the [README.md file of php-saml](https://github.com/onelogin/php-saml/blob/3.2.1/README.md).
+the [README.md file of php-saml](https://github.com/onelogin/php-saml/blob/3.4.1/README.md).
 
 
 Certificates
@@ -165,7 +165,7 @@ You should put your service provider certificate and private key into
 respectively `var/config/saml/certs/sp.crt` and `var/config/saml/certs/sp.key`.
 
 An example to create the certificate (only for tests, you probably have to generate
-them against an external or internal cerficates authority)
+them against an external or internal certificates authority)
 
 ```
 openssl req -x509 -newkey rsa:4096 -keyout var/config/saml/certs/sp.key -out var/config/saml/certs/sp.crt -days 365 -nodes -subj "/C=FR/ST=France/L=Paris/O=jelix/OU=tests/CN=samltest.jelix.org"
