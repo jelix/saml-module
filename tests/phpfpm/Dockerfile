@@ -3,7 +3,8 @@ FROM alpine:3.9
 ARG composer_version=1.8.6
 
 ENV FPM_USER=1000 \
-    FPM_GROUP=1000
+    FPM_GROUP=1000 \
+    JELIX_VERSION=1.6.34
 
 RUN apk update && apk upgrade
 RUN apk --no-cache add git php7 php7-fpm \

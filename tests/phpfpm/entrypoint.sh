@@ -10,14 +10,15 @@ sed -i "/^group =/c\group = $FPM_GROUP" /etc/php7/php-fpm.d/www.conf
 [ ! -f /opt/tests/app/var/config/localconfig.ini.php  ] && cp /opt/tests/app/var/config/localconfig.ini.php.dist  /opt/tests/app/var/config/localconfig.ini.php
 [ ! -f /opt/tests/app/var/config/profiles.ini.php     ] && cp /opt/tests/app/var/config/profiles.ini.php.dist     /opt/tests/app/var/config/profiles.ini.php
 
-jelix_archive=https://download.jelix.org/jelix/releases/1.6.x/1.6.23/jelix-1.6.23-dev.tar.gz
-jelix_directory=jelix-1.6.23-dev
+jelix_archive=https://download.jelix.org/jelix/releases/1.6.x/${JELIX_VERSION}/jelix-${JELIX_VERSION}-dev.tar.gz
+jelix_directory=jelix-${JELIX_VERSION}-dev
 
 if [ ! -d /opt/tests/jelix ]; then
     wget -O /opt/tests/jelix.tar.gz $jelix_archive
     cd /opt/tests/ && tar xzf jelix.tar.gz
     mv $jelix_directory jelix
     rm jelix.tar.gz
+    chown -R $FPM_USER:$FPM_GROUP jelix
 fi
 
 cd /opt/tests/app
