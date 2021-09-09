@@ -13,7 +13,7 @@
     ],
     "require": {
       "php": ">=5.6",
-      "onelogin/php-saml": "^3.4.1"
+      "onelogin/php-saml": "^3.6.1"
     },
     "minimum-stability": "stable",
     "extra" : {
