@@ -1,11 +1,11 @@
 Changes
 =======
 
-Next Version
-------------
+Version 1.0.2
+-------------
 
 - Fix SP metadata : some data, like the sp certificate, were missing from metadata.
-
+- Upgrade PHP-Saml to 3.6.1
 
 Version 1.0.1
 -------------

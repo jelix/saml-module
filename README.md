@@ -49,9 +49,10 @@ Launch the configurator for your application to enable the module
 php yourapp/dev.php module:configure saml
 ```
 
-Install files with Jelix 1.6.21
--------------------------------
+Install files with Jelix 1.6.*
+------------------------------
 
+It works with Jelix 1.6.21 minimum.
 If you are using Composer in your application, you should indicate the package
 into your composer.json:
                                                
@@ -59,7 +60,7 @@ into your composer.json:
 composer require "jelix/saml-module"
 ```
 
-Else, if you are not using Composer, you must install [onelogin/php-saml 3.4.1](https://github.com/onelogin/php-saml/releases/tag/3.4.1) 
+Else, if you are not using Composer, you must install [onelogin/php-saml 3.6.1](https://github.com/onelogin/php-saml/releases/tag/3.6.1) 
 by hand, extract it somewhere, and add into your application.init.php
 an include instruction to load its file `_toolkit_loader.php`. Then copy the `saml` 
 directory of saml-module into the modules/ directory of your application.
