@@ -1,14 +1,13 @@
 <?php
 /**
  * @author  Laurent Jouanneau
- * @copyright  2019 3Liz
+ * @copyright  2019-2021 3Liz
  * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
  */
 
 use OneLogin\Saml2\Auth;
 use OneLogin\Saml2\Error;
 use OneLogin\Saml2\Metadata;
-use OneLogin\Saml2\Utils;
 
 /**
  * Controller called by the Identity Provider
@@ -27,7 +26,18 @@ class endpointCtrl extends jController {
         $samlSettings = $configuration->getSettings();
 
         $sp = $samlSettings->getSPData();
-        $samlMetadata = Metadata::builder($sp);
+
+        $sd = $configuration->getSettings()->getSecurityData();
+        $authnsign = $sd['authnRequestsSigned'];
+        $wsign = $sd['wantAssertionsSigned'];
+
+        $validUntil = null;
+        $cacheDuration = null;
+        $contacts = $configuration->getSettings()->getContacts();
+        $organization = $configuration->getSettings()->getOrganization();
+        $attributes = array();
+
+        $samlMetadata = Metadata::builder($sp, $authnsign, $wsign, $validUntil, $cacheDuration, $contacts, $organization, $attributes);
         $xml->content = $samlMetadata;
 
         /*

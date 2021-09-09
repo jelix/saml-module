@@ -1,6 +1,11 @@
 Changes
 =======
 
+Next Version
+------------
+
+- Fix SP metadata : some data were missing
+
 
 Version 1.0.1
 -------------

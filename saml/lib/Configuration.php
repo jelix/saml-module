@@ -1,7 +1,7 @@
 <?php
 /**
  * @author  Laurent Jouanneau
- * @copyright  2019 3Liz
+ * @copyright  2019-2021 3Liz
  * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
  */
 namespace Jelix\Saml;
@@ -45,8 +45,8 @@ class Configuration {
         $this->settings['debug'] = $spConfig['saml_debug'];
         $this->settings['baseurl'] = str_replace('/acs', '/', \jUrl::getFull('saml~endpoint:acs'));
 
-        $this->settings['sp'] = $this->getSpConfig($iniConfig);
-        $this->settings['idp'] = $this->getIdPConfig($iniConfig);
+        $this->settings['sp'] = $this->readSpConfig($iniConfig);
+        $this->settings['idp'] = $this->readIdPConfig($iniConfig);
         $this->settings['security'] = $iniConfig->{'saml:security'};
         $this->settings['contactPerson'] = array();
 
@@ -106,7 +106,7 @@ class Configuration {
         $this->attributesMapping = $attrConfig;
     }
 
-    protected function getSpConfig($iniConfig) {
+    protected function readSpConfig($iniConfig) {
         $spConfig = $iniConfig->{'saml:sp'};
 
         $spX509certFile = \jApp::configPath('saml/certs/sp.crt');
@@ -186,7 +186,7 @@ class Configuration {
         return $serviceProvider;
     }
 
-    protected function getIdPConfig($iniConfig) {
+    protected function readIdPConfig($iniConfig) {
         $idpConfig = $iniConfig->{'saml:idp'};
 
         if ($idpConfig['certs_signing_files'] == '') {
