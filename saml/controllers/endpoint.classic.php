@@ -25,31 +25,7 @@ class endpointCtrl extends jController {
 
         $samlSettings = $configuration->getSettings();
 
-        $sp = $samlSettings->getSPData();
-
-        $sd = $configuration->getSettings()->getSecurityData();
-        $authnsign = $sd['authnRequestsSigned'];
-        $wsign = $sd['wantAssertionsSigned'];
-
-        $validUntil = null;
-        $cacheDuration = null;
-        $contacts = $configuration->getSettings()->getContacts();
-        $organization = $configuration->getSettings()->getOrganization();
-        $attributes = array();
-
-        $samlMetadata = Metadata::builder($sp, $authnsign, $wsign, $validUntil, $cacheDuration, $contacts, $organization, $attributes);
-        $xml->content = $samlMetadata;
-
-        /*
-        $samlMetadata = $settings->getSPMetadata();
-        $errors = $settings->validateMetadata($metadata);
-        if (!empty($errors)) {
-            throw new Error(
-                'Invalid SP metadata: '.implode(', ', $errors),
-                Error::METADATA_SP_INVALID
-            );
-        }
-         */
+        $xml->content = $samlSettings->getSPMetadata();
 
         $xml->sendXMLHeader = false;
         $xml->checkValidity = false;
@@ -135,7 +111,8 @@ class endpointCtrl extends jController {
     /**
      * SP Single Logout Service Endpoint
      *
-     * @return jResponseHtml
+     * @return jResponseHtml|jResponseRedirectUrl
+     *
      * @throws Error
      */
     function sls() {

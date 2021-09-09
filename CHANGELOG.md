@@ -4,7 +4,7 @@ Changes
 Next Version
 ------------
 
-- Fix SP metadata : some data were missing
+- Fix SP metadata : some data, like the sp certificate, were missing from metadata.
 
 
 Version 1.0.1

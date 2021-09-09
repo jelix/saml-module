@@ -1,5 +1,4 @@
-FROM coudot/lemonldap-ng:2.0.12
-# 2.0.13 does not work, invalid signature on login
+FROM coudot/lemonldap-ng:2.0.13
 
 COPY lmConf-1.json /var/lib/lemonldap-ng/conf/lmConf-1.json
 
