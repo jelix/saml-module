@@ -236,19 +236,19 @@ saml_debug=off
 after_login =
 
 ; action to redirect to after a successfully logout
-after_logout =
+after_logout = "saml~endpoint:logoutdone"
 
 
 ; Contact information template, it is recommended to supply a technical and
 ; support contacts
-technicalContactPerson[givenName]=
-technicalContactPerson[emailAddress]=
-supportContactPerson[givenName]=
-supportContactPerson[emailAddress]=
+technicalContactPerson[givenName]= LaurentTech Jouanneau
+technicalContactPerson[emailAddress]= laurent+samltech@jelix.org
+supportContactPerson[givenName]= LaurentSupport Jouanneau
+supportContactPerson[emailAddress]= laurent+samlsupport@jelix.org
 
-organization[name] =
-organization[displayname] =
-organization[url] =
+organization[name] = Jelix_SAML
+organization[displayname] = Jelix SAML
+organization[url] = "https://jelix.org"
 
 compressRequests=on
 compressResponses=on
@@ -318,15 +318,15 @@ nameIdEncrypted=off
 
 ; Indicates whether the <samlp:AuthnRequest> messages sent by this SP
 ; will be signed.              [The Metadata of the SP will offer this info]
-authnRequestsSigned=off
+authnRequestsSigned=on
 
 ; Indicates whether the <samlp:logoutRequest> messages sent by this SP
 ; will be signed.
-logoutRequestSigned=off
+logoutRequestSigned=on
 
 ; Indicates whether the <samlp:logoutResponse> messages sent by this SP
 ; will be signed.
-logoutResponseSigned=off
+logoutResponseSigned=on
 
 ; Sign the Metadata
 signMetadata=off

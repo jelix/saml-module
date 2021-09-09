@@ -1,6 +1,6 @@
 FROM alpine:3.9
 
-ARG composer_version=1.8.6
+ARG composer_version=2.1.6
 
 ENV FPM_USER=1000 \
     FPM_GROUP=1000 \
