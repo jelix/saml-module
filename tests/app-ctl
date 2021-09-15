@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+COMMAND="$1"
+shift
+
+if [ "$COMMAND" == "" ]; then
+    echo "Error: command is missing"
+    echo "Possible commands: clean-tmp, reset, install, rights, composer-install, composer-update"
+    echo " shell, shellroot"
+    exit 1;
+fi
+CONTAINER=jelix_saml_php
+
+case $COMMAND in
+    clean-tmp)
+        docker exec -t -i $CONTAINER appctl.sh clean_tmp;;
+    reset)
+        docker exec -t -i $CONTAINER appctl.sh reset;;
+    install)
+        docker exec -t -i $CONTAINER appctl.sh install;;
+    rights)
+        docker exec -t -i $CONTAINER appctl.sh rights;;
+    composer-install)
+        docker exec -t -i $CONTAINER appctl.sh composer_install;;
+    composer-update)
+        docker exec -t -i $CONTAINER appctl.sh composer_update;;
+    #unittests)
+    #    docker exec -t -i $CONTAINER appctl.sh unittests;;
+    shell)
+       docker exec -it --user usertest $CONTAINER  /bin/sh -l;;
+    shellroot)
+       docker exec -it $CONTAINER  /bin/sh  -l;;
+    *)
+        echo "wrong command"
+        exit 2
+        ;;
+esac
+
+

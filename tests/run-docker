@@ -2,6 +2,9 @@
 
 set -e
 
+export FPM_USER_ID=${FPM_USER_ID:-$(id -u)}
+export FPM_GROUP_ID=${FPM_GROUP_ID:-$(id -g)}
+
 CMD="$1";
 if [ -z "$CMD" ]; then
     CMD="up"

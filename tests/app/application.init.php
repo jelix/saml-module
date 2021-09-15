@@ -18,4 +18,4 @@ jApp::initPaths(
     __DIR__.'/var/config/',
     __DIR__.'/scripts/'
 );
-jApp::setTempBasePath(realpath(__DIR__.'/temp/app/').'/');
+jApp::setTempBasePath(realpath(__DIR__.'/temp/').'/');

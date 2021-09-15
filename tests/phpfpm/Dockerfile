@@ -1,10 +1,12 @@
 FROM alpine:3.9
 
 ARG composer_version=2.1.6
+ARG user_id
+ARG group_id
 
-ENV FPM_USER=1000 \
-    FPM_GROUP=1000 \
-    JELIX_VERSION=1.6.34
+ENV FPM_USER_ID=${user_id}
+ENV FPM_GROUP_ID=${group_id}
+ENV JELIX_VERSION=1.6.34
 
 RUN apk update && apk upgrade
 RUN apk --no-cache add git php7 php7-fpm \
@@ -32,17 +34,19 @@ RUN apk --no-cache add git php7 php7-fpm \
     openssl \
     wget
 
-# 82 is the standard uid/gid for "www-data" in Alpine
 RUN set -eux; \
-    sed -i "/^listen =/c\listen = 9000" /etc/php7/php-fpm.d/www.conf
-
+    sed -i "/^listen =/c\listen = 9000" /etc/php7/php-fpm.d/www.conf; \
+    sed -i "/^display_errors =/c\display_errors = On" /etc/php7/php.ini; \
+    addgroup -g $FPM_GROUP_ID grouptest; \
+    adduser -D -u $FPM_USER_ID -G grouptest usertest;
 
 ## Install Composer
 RUN wget -O /bin/composer https://getcomposer.org/download/$composer_version/composer.phar \
     && chmod +x /bin/composer
 
 COPY entrypoint.sh /bin/
-RUN chmod 755 /bin/entrypoint.sh
+COPY appctl.sh /bin/
+RUN chmod 755 /bin/entrypoint.sh /bin/appctl.sh
 
 ENV PHP_INI_DIR /etc/php7
 

@@ -18,6 +18,7 @@ Then launch the containers for tests
 ```bash
 ./run-docker build
 ./run-docker up
+./app-ctl reset
 ``` 
 
 You can then open in your browser:
