@@ -16,7 +16,7 @@ theme=default
 
 pluginsPath="app:plugins/,lib:jelix-plugins/"
 
-modulesPath="lib:jelix-modules/,app:modules/"
+modulesPath="lib:jelix-admin-modules/,lib:jelix-modules/,app:modules/"
 
 ; default domain name to use with jfullurl for example.
 ; Let it empty to use $_SERVER['SERVER_NAME'] value instead.
@@ -114,6 +114,7 @@ simple_urlengine_https=
 
 index="@classic"
 
+admin="jacl2db_admin~*@classic, jauthdb_admin~*@classic, master_admin~*@classic, jpref_admin~*@classic, saml~*@classic"
 
 [basic_significant_urlengine_entrypoints]
 ; for each entry point, it indicates if the entry point name
@@ -121,6 +122,8 @@ index="@classic"
 index=on
 xmlrpc=on
 jsonrpc=on
+
+admin=1
 
 [jResponseHtml]
 ; list of active plugins for jResponseHtml
@@ -233,10 +236,10 @@ name=
 saml_debug=off
 
 ; action to redirect to after a successfully login.
-after_login =
+after_login=
 
 ; action to redirect to after a successfully logout
-after_logout = "saml~endpoint:logoutdone"
+after_logout=
 
 
 ; Contact information template, it is recommended to supply a technical and
@@ -401,4 +404,6 @@ digestAlgorithm="http://www.w3.org/2001/04/xmlenc#sha256"
 ; ADFS URL-Encodes SAML data as lowercase, and the toolkit by default uses
 ; uppercase. Turn it True for ADFS compatibility on signature verification
 lowercaseUrlencoding=off
+
+
 

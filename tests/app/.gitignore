@@ -16,7 +16,7 @@ var/uploads/*
 var/mails/*
 !var/mails/.dummy
 composer.lock
-temp/app/*
-!temp/app/.dummy
+temp/*
+!temp/.dummy
 vendor/*
 

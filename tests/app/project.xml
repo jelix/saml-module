@@ -3,20 +3,21 @@
     <info id="app@innophi.com" name="app" createdate="2019-06-28">
         <version date="2019-06-28">0.1pre</version>
         <label lang="en_US">app</label>
-        <description lang="en_US"></description>
+        <description lang="en_US"/>
         <license URL="">All rights reserved</license>
-        <copyright>2019 3liz</copyright>
-        <creator name="Laurent Jouanneau" email="laurent@innophi.com"  />
+        <copyright>2019-2021 3liz</copyright>
+        <creator name="Laurent Jouanneau" email="laurent@innophi.com"/>
         <homepageURL>https://3liz.com</homepageURL>
     </info>
     <dependencies>
-        <jelix minversion="1.6.23" maxversion="1.6.*" />
+        <jelix minversion="1.6.23" maxversion="1.6.*"/>
     </dependencies>
     <entrypoints>
         <!-- file: the path to the entry point relative to the base path
             config: the path to the config file used by the entry point, relative
                     to var/config/
             type: type of the entry point : classic, cmdline, xmlrpc....-->
-        <entry file="index.php" config="index/config.ini.php" />
+        <entry file="index.php" config="index/config.ini.php"/>
+        <entry file="admin.php" config="admin/config.ini.php" type="classic"/>
     </entrypoints>
 </project>
