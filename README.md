@@ -90,8 +90,8 @@ jauthdb.access=0
 ```
 
 
-Configuring the installaton
-===========================
+Configuring the installation
+============================
 
 For the moment, there is no configurator dedicated to the module for Jelix 1.7, 
 so you should set some parameter by hand, like for Jelix 1.6.

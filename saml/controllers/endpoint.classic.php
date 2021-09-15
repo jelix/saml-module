@@ -73,10 +73,12 @@ class endpointCtrl extends jController {
         /** @var samlAuthDriver $samlDriver */
         $samlDriver = jAuth::getDriver();
         $samlDriver->setAttributesMapping($attributes, $configuration->getAttributesMapping());
+        $password = $samlDriver->activateAuthWithSaml();
 
         // now we can login. A user will be probably created, with the saml attributes
         // given to the driver
-        if (!jAuth::login($login, '!!saml')) {
+
+        if (!jAuth::login($login, $password)) {
             return $this->acsError(jLocale::get('saml~auth.authentication.error.not.authorized'));
         }
 

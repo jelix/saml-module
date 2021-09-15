@@ -13,6 +13,11 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
 
     protected $automaticAccountCreation = false;
 
+    /**
+     * @var bool true if the current login process is made with SAML
+     */
+    protected $authWithSamlActivated = false;
+
     function __construct($params) {
         if (property_exists(jApp::config(), 'saml') && is_array(jApp::config()->saml)) {
             $params = array_merge($params, jApp::config()->saml);
@@ -70,8 +75,7 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
     public function createUserObject($login, $password) {
         $user = jDao::createRecord($this->_params['dao'], $this->_params['profile']);
         $user->login = $login;
-        // we ignore password since it is managed by the SAML server
-        $user->password = '!!saml';
+        $user->password = $this->cryptPassword($password);
         return $user;
     }
 
@@ -85,30 +89,67 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
     }
 
     public function canChangePassword($login) {
-        return false;
-    }
-    public function changePassword($login, $newpassword) {
-        // we ignore password since it is managed by the SAML server
         return true;
     }
 
-    public function verifyPassword($login, $password) {
-        // we ignore password since it is managed by the SAML server
+    public function changePassword($login, $newpassword) {
+        $dao = jDao::get($this->_params['dao'], $this->_params['profile']);
+        return $dao->updatePassword($login, $this->cryptPassword($newpassword));
+    }
 
+    /**
+     * Call it before calling jAuth::login() when authentication
+     * with SAML is a success.
+     *
+     * @return string random password to give to jAuth::login()
+     */
+    public function activateAuthWithSaml()
+    {
+        $this->authWithSamlActivated = true;
+        $this->currentPassword = jAuth::getRandomPassword();
+        return $this->currentPassword;
+    }
+
+    public function verifyPassword($login, $password)
+    {
         $daouser = jDao::get($this->_params['dao'], $this->_params['profile']);
         $user = $daouser->getByLogin($login);
-        if (!$user) {
-            if ($this->automaticAccountCreation) {
-                $user = $this->createUserObject($login, '!!saml');
-                if (jApp::isModuleEnabled('jcommunity')) {
-                    $user->status = 1; // STATUS_VALID
-                }
-                foreach($this->userAttributesValues as $property => $value) {
-                    $user->$property = $value;
-                }
-                jAuth::saveNewUser($user);
-            } else {
+
+        if ($this->authWithSamlActivated) {
+            // authentication with SAML
+
+            if ($this->currentPassword != $password) {
                 return false;
+            }
+            $this->currentPassword = '';
+            $this->authWithSamlActivated = false;
+
+            if (!$user) {
+                if ($this->automaticAccountCreation) {
+                    // authentication with SAML
+                    $user = $this->createUserObject($login, $password);
+                    if (jApp::isModuleEnabled('jcommunity')) {
+                        $user->status = 1; // STATUS_VALID
+                    }
+                    foreach($this->userAttributesValues as $property => $value) {
+                        $user->$property = $value;
+                    }
+                    jAuth::saveNewUser($user);
+                } else {
+                    return false;
+                }
+            }
+        }
+        else {
+            // authentication with login/password
+            $result = $this->checkPassword($password, $user->password);
+            if ($result === false)
+                return false;
+
+            if ($result !== true) {
+                // it is a new hash for the password, let's update it persistently
+                $user->password = $result;
+                $daouser->updatePassword($login, $result);
             }
         }
         return $user;
@@ -142,7 +183,6 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
     public function getUserAttributes() {
         return $this->userAttributesValues;
     }
-
 
 
 }

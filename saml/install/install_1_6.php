@@ -10,6 +10,9 @@
  */
 class samlModuleInstaller extends jInstallerModule {
 
+    /**
+     * @return jIniFileModifier
+     */
     protected function getAppConfig()
     {
         if ($this->getParameter('localconfig')) {
@@ -23,10 +26,15 @@ class samlModuleInstaller extends jInstallerModule {
         return $appConfig;
     }
 
-    protected function getAuthConfAndDriver() {
-        $ini = $this->getAuthConf();
+    /**
+     * @return [jIniFileModifier, array]
+     * @throws jException
+     */
+    protected function getAuthConfAndDriver()
+    {
+        list($ini, $confFileName) = $this->getAuthConf();
         if ($ini === null) {
-            return array(null, null);
+            return array(null, null, null);
         }
         $confIni = parse_ini_file($ini->getFileName(), true);
 
@@ -37,87 +45,109 @@ class samlModuleInstaller extends jInstallerModule {
             (isset($driverConfig['compatiblewithdb']) &&
                 $driverConfig['compatiblewithdb'])
         ) {
-            return array($ini, $authConfig[$authConfig['driver']]);
+            return array($ini, $authConfig[$authConfig['driver']], $confFileName);
         }
-        return array(null, null);
+        return array(null, null, null);
     }
 
+    /**
+     * @return [jIniFileModifier, string]
+     * @throws Exception
+     */
     protected function getAuthConf() {
         $authconfig = $this->entryPoint->localConfigIni->getValue('auth','coordplugins');
         if (!$authconfig) {
-            return null;
+            return array(null, null);
         }
         $confPath = jApp::configPath($authconfig);
         $conf = new jIniFileModifier($confPath);
-        return $conf;
+        return array($conf, $authconfig);
     }
 
 
     function install() {
-        if ($this->entryPoint->type == 'cmdline')
+        if ($this->entryPoint->type == 'cmdline') {
             return;
+        }
 
-
-        // retrieve current DAO if possible, if there are already installed other auth modules
-        list($authConfigIni, $driverConfig) = $this->getAuthConfAndDriver();
-
-
-        // create the saml.coord.ini.php if needed
         jFile::createDir(jApp::configPath('saml/certs'));
-        $authConfigfile = jApp::configPath('saml/saml.coord.ini.php');
-        $authConfigfileIsNew = false;
-        if ($this->firstExec('saml:installconfigfile')) {
+
+        /**
+         * @var jIniFileModifier $originalAuthConfigIni
+         * @var array $driverConfig
+         */
+        list($originalAuthConfigIni, $driverConfig, $authConfigFileName) = $this->getAuthConfAndDriver();
+
+        if (!$originalAuthConfigIni || !$originalAuthConfigIni->isSection('saml')) {
+            // there is no saml section in the configuration file
+            // let's install our own saml.coord.ini.php file.
+
+            $authConfigFileName = 'saml/saml.coord.ini.php';
+
+            $authConfigfileIsNew = false;
+            $authConfigfile = jApp::configPath($authConfigFileName);
             if (!file_exists($authConfigfile)) {
                 $this->copyFile('saml.coord.ini.php', $authConfigfile);
                 $authConfigfileIsNew = true;
             }
+
+            // retrieve current DAO if possible, if there are already installed other auth modules
+            // fill saml.coord.ini.php with setting indicating the current dao/form/profile
+            $authConfig =  new jIniFileModifier($authConfigfile);
+            if ($authConfigfileIsNew && $driverConfig) {
+                $authConfig->setValue('dao', $driverConfig['dao'], 'saml');
+                $authConfig->setValue('profile', $driverConfig['profile'], 'saml');
+                $authConfig->setValue('form', $driverConfig['form'], 'saml');
+                if (isset($driverConfig['userform'])) {
+                    $authConfig->setValue('userform', $driverConfig['userform'], 'saml');
+                }
+                $authConfig->setValue('uploadsDirectory', $driverConfig['uploadsDirectory'], 'saml');
+            }
+
+            $epConfig = $this->entryPoint->getEpConfigIni();
+            $epConfig->setValue('auth', $authConfigFileName, 'coordplugins');
+        }
+        else {
+            // the current auth coord file has already a saml section
+            // we don't touch it
+            $authConfigfile = jApp::configPath($authConfigFileName);
+            $authConfig =  new jIniFileModifier($authConfigfile);
         }
 
-        // fill saml.coord.ini.php with setting indicating the current dao/form/profile
-        $authconfig =  new jIniFileModifier($authConfigfile);
-        if ($authConfigfileIsNew && $driverConfig) {
-            $authconfig->setValue('dao', $driverConfig['dao'], 'saml');
-            $authconfig->setValue('profile', $driverConfig['profile'], 'saml');
-            $authconfig->setValue('form', $driverConfig['form'], 'saml');
-            $authconfig->setValue('uploadsDirectory', $driverConfig['uploadsDirectory'], 'saml');
-        }
+        // declare the coord plugin saml
+        //$epConfig = $this->entryPoint->getEpConfigIni();
+        //$samlconfig = $epConfig->getValue('saml','coordplugins');
+        //$samlconfigMaster = $epConfig->getValue('saml','coordplugins', null, true);
+        //if (!$samlconfig && !$samlconfigMaster) {
+        //    $epConfig->setValue('saml', $authConfigFileName, 'coordplugins');
+        //    $epConfig->setValue('saml.name', 'auth', 'coordplugins');
+        //    $epConfig->setValue('auth', '', 'coordplugins');
+        //}
 
-
-        // declare saml.coord.ini.php
-        $samlconfig = $this->config->getValue('saml','coordplugins');
-        $samlconfigMaster = $this->config->getValue('saml','coordplugins', null, true);
-        if (!$samlconfig && !$samlconfigMaster) {
-            $entrypointconfig = $this->config->getOverrider();
-            $entrypointconfig->setValue('saml', 'saml/saml.coord.ini.php', 'coordplugins');
-            $entrypointconfig->setValue('saml.name', 'auth', 'coordplugins');
-            $entrypointconfig->removeValue('auth', 'coordplugins');
-
-        }
-
-        // import SAML configuation into localconfig or mainconfig
-        $iniConfig = $this->getAppConfig();
-        if (!$iniConfig->isSection('saml:sp')) {
+        // import SAML configuration into localconfig or mainconfig
+        $appConfig = $this->getAppConfig();
+        if (!$appConfig->isSection('saml:sp')) {
             $samlIniConfig = new jIniFileModifier(__DIR__.'/config.ini');
-            $iniConfig->import($samlIniConfig);
-            $iniConfig->save();
+            $appConfig->import($samlIniConfig);
+            $appConfig->save();
         }
 
-        $driver = $iniConfig->getValue('driver', 'coordplugin_auth');
+        $driver = $appConfig->getValue('driver', 'coordplugin_auth');
         if ($driver && $driver != 'saml') {
-            $iniConfig->setValue('driver', 'saml', 'coordplugin_auth');
+            $appConfig->setValue('driver', 'saml', 'coordplugin_auth');
         }
 
-        $responseClass = $iniConfig->getValue('htmlauth', 'responses');
+        $responseClass = $this->entryPoint->localConfigIni->getValue('htmlauth', 'responses');
         if (!$responseClass) {
-            $iniConfig->setValue('htmlauth', 'jResponseHtml', 'responses');
+            $appConfig->setValue('htmlauth', 'jResponseHtml', 'responses');
         }
 
         // create a first user if indicated
         $login = $this->getParameter('useradmin');
         $email =  $this->getParameter('emailadmin');
         if ($login && $this->firstDbExec()) {
-            $daoSelector = $authconfig->getValue('dao', 'saml');
-            $dbProfile = $authconfig->getValue('profile', 'saml');
+            $daoSelector = $authConfig->getValue('dao', 'saml');
+            $dbProfile = $authConfig->getValue('profile', 'saml');
 
             // be sure the table is created
             $mapper = new jDaoDbMapper($dbProfile);
@@ -128,31 +158,20 @@ class samlModuleInstaller extends jInstallerModule {
             if (!$user) {
                 $user = jDao::createRecord($daoSelector, $dbProfile);
                 $user->login = $login;
-                $user->password = '!!saml';
+                $user->password = password_hash('AdminSaml', 1);
                 $user->email = ($email === null? '': $email);
                 $dao->insert($user);
             }
         }
 
-        $authconfig->save();
+        $authConfig->save();
 
         // if jAcl2 is activated, remove some rights.
         if ($this->firstExec('saml:acl2')) {
-            if (class_exists('jAcl2DbManager')) {
-                $groups = jDao::get('jacl2db~jacl2group', 'jacl2_profile')->findAll();
-                foreach($groups as $group) {
-                    $id = $group->id_aclgrp;
-                    jAcl2DbManager::removeRight($id, 'auth.user.change.password', '-', true);
-                    jAcl2DbManager::removeRight($id, 'auth.users.change.password', '-', true);
-                    //jAcl2DbManager::removeRight($id, 'auth.users.create', '-', true);
-                    //jAcl2DbManager::removeRight($id, 'auth.users.delete', '-', true);
-                }
-
-                if ($login) {
-                    jAcl2DbUserGroup::createUser($login, false);
-                    if (jAcl2DbUserGroup::getGroup('admins')) {
-                        jAcl2DbUserGroup::addUserToGroup($login, 'admins');
-                    }
+            if (class_exists('jAcl2DbUserGroup') && $login) {
+                jAcl2DbUserGroup::createUser($login, false);
+                if (jAcl2DbUserGroup::getGroup('admins')) {
+                    jAcl2DbUserGroup::addUserToGroup($login, 'admins');
                 }
             }
         }
