@@ -31,20 +31,19 @@ domainName=
 
 jelix.access=2
 
-; jacldb is deprecated. keep it uninstall if possible. install jacl2db instead
-jacldb.access=0
-
-jacl2db.access=0
-jauth.access=0
+jacl2db.access=1
+jauth.access=1
 jauthdb.access=1
-junittests.access=0
-jsoap.access=0
 
 app.access=2
 
 saml.access=2
 saml.path="/opt/saml/"
 saml.installparam="useradmin=dwho;emailadmin=dwho@lemon.local"
+
+jacl2db_admin.access=1
+jauthdb_admin.access=1
+master_admin.access=1
 
 [coordplugins]
 ;name = file_ini_name or 1
@@ -113,8 +112,7 @@ simple_urlengine_https=
 ;   @r       -> for all actions for the request of type "r"
 
 index="@classic"
-
-admin="jacl2db_admin~*@classic, jauthdb_admin~*@classic, master_admin~*@classic, jpref_admin~*@classic, saml~*@classic"
+admin="jacl2db~*@classic, jauth~*@classic, jacl2db_admin~*@classic, jauthdb_admin~*@classic, master_admin~*@classic, jpref_admin~*@classic, saml~*@classic"
 
 [basic_significant_urlengine_entrypoints]
 ; for each entry point, it indicates if the entry point name

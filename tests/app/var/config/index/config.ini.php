@@ -8,7 +8,17 @@ startAction="default:index"
 
 [modules]
 
+jacl2.access=2
 [coordplugins]
 auth="saml/saml.coord.ini.php"
 
 
+
+
+jacl2=1
+[coordplugin_jacl2]
+on_error=2
+error_message="jacl2~errors.action.right.needed"
+on_error_action="jelix~error:badright"
+[acl2]
+driver=db

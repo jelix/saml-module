@@ -142,6 +142,9 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
         }
         else {
             // authentication with login/password
+            if (!$user) {
+                return false;
+            }
             $result = $this->checkPassword($password, $user->password);
             if ($result === false)
                 return false;
