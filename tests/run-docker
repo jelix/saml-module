@@ -26,7 +26,7 @@ fi
 # Create a .env file so that we may use subsequent docker-compose
 # commands directly
 cat > .env << End-of-env
-JELIX_VERSION=${JELIX_VERSION:-1.6.34}
+JELIX_VERSION=${JELIX_VERSION:-1.6.35-pre}
 End-of-env
 
 

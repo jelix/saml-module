@@ -51,7 +51,7 @@ bad_ip_action = "jauth~login:out"
 on_error_sleep = 0
 
 ; action to redirect after the login
-after_login = "jauth~login:form"
+after_login = "app~default:index"
 
 ; action to redirect after a logout
 after_logout = "jauth~login:form"

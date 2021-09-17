@@ -32,8 +32,10 @@ domainName=
 jelix.access=2
 
 jacl2db.access=1
+jacl2db.installparam="defaultuser;defaultgroups"
 jauth.access=1
 jauthdb.access=1
+jauthdb.installparam="defaultuser"
 
 app.access=2
 
