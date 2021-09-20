@@ -103,9 +103,6 @@ class samlModuleInstaller extends jInstallerModule {
                 }
                 $authConfig->setValue('uploadsDirectory', $driverConfig['uploadsDirectory'], 'saml');
             }
-
-            $epConfig = $this->entryPoint->getEpConfigIni();
-            $epConfig->setValue('auth', $authConfigFileName, 'coordplugins');
         }
         else {
             // the current auth coord file has already a saml section
@@ -115,14 +112,14 @@ class samlModuleInstaller extends jInstallerModule {
         }
 
         // declare the coord plugin saml
-        //$epConfig = $this->entryPoint->getEpConfigIni();
-        //$samlconfig = $epConfig->getValue('saml','coordplugins');
-        //$samlconfigMaster = $epConfig->getValue('saml','coordplugins', null, true);
-        //if (!$samlconfig && !$samlconfigMaster) {
-        //    $epConfig->setValue('saml', $authConfigFileName, 'coordplugins');
-        //    $epConfig->setValue('saml.name', 'auth', 'coordplugins');
-        //    $epConfig->setValue('auth', '', 'coordplugins');
-        //}
+        $epConfig = $this->entryPoint->getEpConfigIni();
+        $samlconfig = $epConfig->getValue('saml','coordplugins');
+        $samlconfigMaster = $epConfig->getValue('saml','coordplugins', null, true);
+        if (!$samlconfig && !$samlconfigMaster) {
+            $epConfig->setValue('saml', $authConfigFileName, 'coordplugins');
+            $epConfig->setValue('saml.name', 'auth', 'coordplugins');
+            $epConfig->setValue('auth', '', 'coordplugins');
+        }
 
         // import SAML configuration into localconfig or mainconfig
         $appConfig = $this->getAppConfig();

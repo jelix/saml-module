@@ -1,21 +1,41 @@
 <?php
 /**
 * @author  Laurent Jouanneau
-* @copyright  2019 3liz
+* @copyright  2019-2021 3liz
 * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
 */
-require(JELIX_LIB_PATH.'plugins/coord/auth/auth.coord.php');
-
-require(JELIX_LIB_PATH.'auth/jAuth.class.php');
-require(JELIX_LIB_PATH.'auth/jAuthDummyUser.class.php');
-
+require_once(JELIX_LIB_PATH.'plugins/coord/auth/auth.coord.php');
 
 /**
  * the plugin for the coordinator, that checks authentication at each page call
- * @deprecated this plugin exists only to ease upgrade from the 1.0 version of
- * the module
  */
 class samlCoordPlugin extends AuthCoordPlugin {
 
+    public function beforeAction ($params)
+    {
+        $currentAction = jApp::coord()->originalAction;
+        if (
+            (
+                $currentAction->module == 'jauth' &&
+                $currentAction->controller == 'login' &&
+                $currentAction->method == 'out'
+            ) || (
+                $currentAction->module == 'jcommunity' &&
+                $currentAction->controller == 'login' &&
+                $currentAction->method == 'out'
+            )
+        ) {
+            if (
+                isset($_SESSION['samlUserdata']) &&
+                isset($_SESSION['samlNameId']) &&
+                isset($_SESSION['IdPSessionIndex'])
+            ) {
+                // if the user is in a SAML session, logout with SAML
+                $selector = new jSelectorAct('saml~auth:logout');
+                return $selector;
+            }
+        }
 
+        return parent::beforeAction($params);
+    }
 }
