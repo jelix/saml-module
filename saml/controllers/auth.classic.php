@@ -44,10 +44,19 @@ class authCtrl extends jController {
             // or the internal redirection is made during a non GET request.
             // we will then redirect the user to the default page to display
             // after a login.
-            $afterLoginAction = (jApp::config()->{'saml:sp'})['after_login'];
-            if ($afterLoginAction) {
-                // page indicated into the after_login option
-                $relayState = jUrl::getFull($afterLoginAction);
+            $conf = jApp::coord()->getPlugin('auth')->config;
+
+            $auth_url_return = $this->param('auth_url_return');
+            if ($conf['enable_after_login_override']
+                && $auth_url_return != ''
+                && method_exists('jAuth','checkReturnUrl')
+                && jAuth::checkReturnUrl($auth_url_return)
+            ) {
+                $relayState = $auth_url_return;
+
+            }
+            else if ($conf['after_login'] != '') {
+                $relayState = jUrl::getFull($conf['after_login']);
             } else {
                 // home page
                 $relayState = $this->request->getServerURI() . jApp::urlBasePath();
@@ -108,9 +117,9 @@ class authCtrl extends jController {
         if (!$hasSAMLSession) {
             // to avoid error "unknown session" on the IdP side
             $rep = $this->getResponse('redirect');
-            $afterLogoutAction = (jApp::config()->{'saml:sp'})['after_logout'];
-            if ($afterLogoutAction) {
-                $rep->action = $afterLogoutAction;
+            $conf = jApp::coord()->getPlugin('auth')->config;
+            if ($conf['after_logout']) {
+                $rep->action = $conf['after_logout'];
             } else {
                 $rep->action = 'saml~endpoint:logoutdone';
             }
@@ -124,10 +133,10 @@ class authCtrl extends jController {
         unset($_SESSION['samlNameIdNameQualifier']);
         unset($_SESSION['samlNameIdSPNameQualifier']);
 
-        $afterLogoutAction = (jApp::config()->{'saml:sp'})['after_logout'];
-        if ($afterLogoutAction) {
+        $conf = jApp::coord()->getPlugin('auth')->config;
+        if ($conf['after_logout']) {
             // page indicated into the after_login option
-            $relayState = jUrl::getFull($afterLogoutAction);
+            $relayState = jUrl::getFull($conf['after_logout']);
         } else {
             // home page
             $relayState = jUrl::getFull('saml~endpoint:logoutdone');

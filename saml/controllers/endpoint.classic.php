@@ -93,10 +93,11 @@ class endpointCtrl extends jController {
             $relayState = $_POST['RelayState'];
         }
         else {
-            $afterLoginAction = (jApp::config()->{'saml:sp'})['after_login'];
-            if ($afterLoginAction) {
+            $conf = jApp::coord()->getPlugin('auth')->config;
+
+            if ($conf['after_login'] != '') {
                 // page indicated into the after_login option
-                $relayState = jUrl::getFull($afterLoginAction);
+                $relayState = jUrl::getFull($conf['after_login']);
             } else {
                 // home page
                 $relayState = $this->request->getServerURI() . jApp::urlBasePath();
@@ -150,15 +151,14 @@ class endpointCtrl extends jController {
                 $rep->url = $relayState;
             }
             else {
-                $afterLogoutAction = (jApp::config()->{'saml:sp'})['after_logout'];
-                if ($afterLogoutAction) {
+                $conf = jApp::coord()->getPlugin('auth')->config;
+                if ($conf['after_logout'] != '') {
                     // page indicated into the after_logout option
-                    $url = jUrl::getFull($afterLogoutAction);
+                    $url = jUrl::getFull($conf['after_logout']);
                     /** @var jResponseRedirectUrl $rep */
                     $rep = $this->getResponse('redirectUrl');
                     $rep->url = $url;
-                }
-                else {
+                } else {
                     $rep = $this->logoutresult();
                 }
             }

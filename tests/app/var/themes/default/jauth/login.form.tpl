@@ -35,4 +35,5 @@
     <p>{$user->login} | <a href="{jurl 'jauth~login:out'}" >{@jauth~auth.buttons.logout@}</a></p>
     {hook 'JauthLoginFormExtraAuthenticated'}
 {/if}
+    <p><a href="{jurl "app~default:index"}">Return to home</a></p>
 </div>

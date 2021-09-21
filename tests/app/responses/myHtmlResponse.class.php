@@ -26,5 +26,6 @@ class myHtmlResponse extends jResponseHtml {
         // main template, the settings of the response etc..
 
         $this->body->assignIfNone('MAIN','<p>no content</p>');
+        $this->body->assign('profile_url', jUrl::get('app~pages:profile'));
     }
 }
