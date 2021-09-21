@@ -64,9 +64,12 @@ class authCtrl extends jController {
         }
 
         $configuration = new \Jelix\Saml\Configuration($this->request);
-        $auth = new Auth($configuration->getSettingsArray());
+        $saml = new Jelix\Saml\Saml(
+            $configuration,
+            jApp::coord()->getPlugin('auth')->config
+        );
 
-        $rep->url = $auth->login($relayState, array(), false, false, true);
+        $rep->url = $saml->startLoginProcess($relayState);
         $rep->addHttpHeader('Pragma', 'no-cache');
         $rep->addHttpHeader('Cache-Control', 'no-cache, must-revalidate');
         return $rep;
@@ -85,64 +88,12 @@ class authCtrl extends jController {
         $rep = $this->getResponse('redirectUrl');
 
         $configuration = new \Jelix\Saml\Configuration($this->request);
-        $auth = new Auth($configuration->getSettingsArray());
-
-        $sessionIndex = null;
-        $nameId = null;
-        $nameIdFormat = null;
-        $nameIdNameQualifier = null;
-        $nameIdSPNameQualifier = null;
-
-        $hasSAMLSession = false;
-        if (isset($_SESSION['IdPSessionIndex']) && !empty($_SESSION['IdPSessionIndex'])) {
-            $sessionIndex = $_SESSION['IdPSessionIndex'];
-            $hasSAMLSession = true;
-        }
-        if (isset($_SESSION['samlNameId'])) {
-            $nameId = $_SESSION['samlNameId'];
-            $hasSAMLSession = true;
-        }
-        if (isset($_SESSION['samlNameIdFormat'])) {
-            $nameIdFormat = $_SESSION['samlNameIdFormat'];
-        }
-        if (isset($_SESSION['samlNameIdNameQualifier'])) {
-            $nameIdNameQualifier = $_SESSION['samlNameIdNameQualifier'];
-        }
-        if (isset($_SESSION['samlNameIdSPNameQualifier'])) {
-            $nameIdSPNameQualifier = $_SESSION['samlNameIdSPNameQualifier'];
-        }
-
-        jAuth::logout();
-
-        if (!$hasSAMLSession) {
-            // to avoid error "unknown session" on the IdP side
-            $rep = $this->getResponse('redirect');
-            $conf = jApp::coord()->getPlugin('auth')->config;
-            if ($conf['after_logout']) {
-                $rep->action = $conf['after_logout'];
-            } else {
-                $rep->action = 'saml~endpoint:logoutdone';
-            }
-            return $rep;
-        }
-
-        unset($_SESSION['samlUserdata']);
-        unset($_SESSION['IdPSessionIndex']);
-        unset($_SESSION['samlNameId']);
-        unset($_SESSION['samlNameIdFormat']);
-        unset($_SESSION['samlNameIdNameQualifier']);
-        unset($_SESSION['samlNameIdSPNameQualifier']);
-
-        $conf = jApp::coord()->getPlugin('auth')->config;
-        if ($conf['after_logout']) {
-            // page indicated into the after_login option
-            $relayState = jUrl::getFull($conf['after_logout']);
-        } else {
-            // home page
-            $relayState = jUrl::getFull('saml~endpoint:logoutdone');
-        }
-        $rep->url = $auth->logout($relayState, array(), $nameId,
-            $sessionIndex, true, $nameIdFormat, $nameIdNameQualifier, $nameIdSPNameQualifier);
+        $saml = new Jelix\Saml\Saml(
+            $configuration,
+            jApp::coord()->getPlugin('auth')->config
+        );
+        $defaultRelayState = jUrl::getFull('saml~endpoint:logoutdone');
+        $rep->url = $saml->startLogoutProcess($defaultRelayState);
 
         $rep->addHttpHeader('Pragma', 'no-cache');
         $rep->addHttpHeader('Cache-Control', 'no-cache, must-revalidate');

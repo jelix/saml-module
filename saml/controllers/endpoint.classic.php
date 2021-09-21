@@ -38,72 +38,26 @@ class endpointCtrl extends jController {
      * Called when the user has been authenticated at the identity provider
      */
     function acs() {
-
         $configuration = new \Jelix\Saml\Configuration($this->request);
 
-        $samlSettings = $configuration->getSettingsArray();
-        $auth = new Auth($samlSettings);
-        $auth->processResponse();
+        $saml = new Jelix\Saml\Saml(
+            $configuration,
+            jApp::coord()->getPlugin('auth')->config
+        );
 
-        $errors = $auth->getErrors();
-        if (!empty($errors)) {
-            jLog::log(implode(', ', $errors)."\n".$auth->getLastErrorReason(),'error');
-            return $this->acsError(implode(', ', $errors));
+        try {
+            $relayState = $saml->processLoginResponse($this->request);
         }
-
-        if (!$auth->isAuthenticated()) {
-            return $this->acsError();
+        catch(\Jelix\Saml\ProcessException $e) {
+            jLog::log($e->getMessage(),'error');
+            return $this->acsError(implode(', ', $e->getSamlErrors()));
         }
-
-        $loginAttr = $configuration->getLoginAttribute();
-        $attributes = $auth->getAttributes();
-        if (empty($attributes)) {
-            return $this->acsError(jLocale::get('saml~auth.authentication.error.saml.attributes.missing', array($loginAttr)));
-        }
-
-        if (!isset($attributes[$loginAttr])) {
-            return $this->acsError(jLocale::get('saml~auth.authentication.error.saml.attribute.missing', array($loginAttr)));
-        }
-        $login = $attributes[$loginAttr];
-        if (is_array($login)) {
-            $login = $login[0];
-        }
-
-        // indicate the attributes to the driver
-        /** @var samlAuthDriver $samlDriver */
-        $samlDriver = jAuth::getDriver();
-        $samlDriver->setAttributesMapping($attributes, $configuration->getAttributesMapping());
-        $password = $samlDriver->activateAuthWithSaml();
-
-        // now we can login. A user will be probably created, with the saml attributes
-        // given to the driver
-
-        if (!jAuth::login($login, $password)) {
-            return $this->acsError(jLocale::get('saml~auth.authentication.error.not.authorized'));
-        }
-
-        $_SESSION['samlUserdata'] = $auth->getAttributes();
-        $_SESSION['IdPSessionIndex'] = $auth->getSessionIndex();
-        $_SESSION['samlNameId'] = $auth->getNameId();
-        $_SESSION['samlNameIdFormat'] = $auth->getNameIdFormat();
-        $_SESSION['samlNameIdNameQualifier'] = $auth->getNameIdNameQualifier();
-        $_SESSION['samlNameIdSPNameQualifier'] = $auth->getNameIdSPNameQualifier();
-
-        if (isset($_POST['RelayState']) && $_POST['RelayState'] != jUrl::getFull('saml~endpoint:acs')) {
-            $relayState = $_POST['RelayState'];
-        }
-        else {
-            $conf = jApp::coord()->getPlugin('auth')->config;
-
-            if ($conf['after_login'] != '') {
-                // page indicated into the after_login option
-                $relayState = jUrl::getFull($conf['after_login']);
-            } else {
-                // home page
-                $relayState = $this->request->getServerURI() . jApp::urlBasePath();
+        catch(\Jelix\Saml\LoginException $e) {
+            if ($e->getCode() == $saml::ACS_ERR_NOT_AUTHENTICATED) {
+                return $this->acsError();
             }
+            return $this->acsError($e->getMessage());
         }
-
 
         /** @var jResponseRedirectUrl $rep */
         $rep = $this->getResponse('redirectUrl');
@@ -114,58 +68,42 @@ class endpointCtrl extends jController {
     /**
      * SP Single Logout Service Endpoint
      *
+     * Called by the IdP, when the user has logout from the application
+     * (the controller receives an SAMLResponse and display a page), or
+     * when the user has logout from the IdP (the controller receives an
+     * SAMLRequest and returns an SAMLResponse).
+     *
      * @return jResponseHtml|jResponseRedirectUrl
      *
      * @throws Error
      */
     function sls() {
         $configuration = new \Jelix\Saml\Configuration($this->request);
-        $auth = new Auth($configuration->getSettingsArray());
 
+        $saml = new Jelix\Saml\Saml(
+            $configuration,
+            jApp::coord()->getPlugin('auth')->config
+        );
 
-        $url = $auth->processSLO(true, null, true, null, true);
-        $errors = $auth->getErrors();
-
-        if (empty($errors)) {
-            jAuth::logout();
-            unset($_SESSION);
-            /*
-            unset($_SESSION['samlUserdata']);
-            unset($_SESSION['IdPSessionIndex']);
-            unset($_SESSION['samlNameId']);
-            unset($_SESSION['samlNameIdFormat']);
-            unset($_SESSION['samlNameIdNameQualifier']);
-            unset($_SESSION['samlNameIdSPNameQualifier']);
-            */
-
-            if ($url) {
-                /** @var jResponseRedirectUrl $rep */
-                $rep = $this->getResponse('redirectUrl');
-                $rep->url = $url;
-                return $rep;
-            }
-            $relayState = $this->param('RelayState');
-            if ($relayState) {
-                /** @var jResponseRedirectUrl $rep */
-                $rep = $this->getResponse('redirectUrl');
-                $rep->url = $relayState;
-            }
-            else {
-                $conf = jApp::coord()->getPlugin('auth')->config;
-                if ($conf['after_logout'] != '') {
-                    // page indicated into the after_logout option
-                    $url = jUrl::getFull($conf['after_logout']);
-                    /** @var jResponseRedirectUrl $rep */
-                    $rep = $this->getResponse('redirectUrl');
-                    $rep->url = $url;
-                } else {
-                    $rep = $this->logoutresult();
-                }
-            }
-        } else {
-            $rep = $this->logoutresult(implode(', ', $errors)."\n".$auth->getLastErrorReason());
+        try {
+            $relayState = $saml->processLogout($this->request);
         }
-        return $rep;
+        catch(\Jelix\Saml\ProcessException $e) {
+            jLog::log($e->getMessage(),'error');
+            return $this->logoutresult(implode(', ', $e->getSamlErrors()));
+        }
+        catch(\Exception $e) {
+            return $this->logoutresult($e->getMessage());
+        }
+
+        if ($relayState) {
+            /** @var jResponseRedirectUrl $rep */
+            $rep = $this->getResponse('redirectUrl');
+            $rep->url = $relayState;
+            return $rep;
+        }
+
+        return $this->logoutresult();
     }
 
     protected function acsError($error = '') {
