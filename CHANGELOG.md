@@ -1,6 +1,11 @@
 Changes
 =======
 
+Version 1.0.3
+-------------
+
+- Composer: add autoconfiguration for the Lizmap application
+
 Version 1.0.2
 -------------
 
