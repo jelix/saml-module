@@ -10,6 +10,7 @@ namespace Jelix\Saml;
 
 use OneLogin\Saml2\Auth;
 use OneLogin\Saml2\Error;
+use OneLogin\Saml2\LogoutRequest;
 
 class Saml
 {
@@ -41,6 +42,30 @@ class Saml
         $this->authConfig = $authConf;
     }
 
+    protected function initCacheProfile()
+    {
+        try {
+            \jProfiles::get('jcache', 'saml', true);
+        }
+        catch(\Exception $e) {
+            try {
+                $profile = \jProfiles::get('jcache', 'default', false);
+                \jProfiles::createVirtualProfile('jcache', 'saml', $profile);
+            }
+            catch(\Exception $e) {
+                \jProfiles::createVirtualProfile('jcache', 'saml', array(
+                    'enabled' => true,
+                    'driver' => 'file',
+                    'ttl' => 60 * 60 * 24 ,
+                    'automatic_cleaning_factor' => 2,
+                    //'cache_dir' => '',
+                    'file_locking' => 1,
+                    'directory_level' => 3,
+                    'file_name_prefix' => 'saml_',
+                ));
+            }
+        }
+    }
 
     function startLoginProcess($returnUrl)
     {
@@ -116,6 +141,11 @@ class Saml
         $_SESSION['samlNameIdFormat'] = $auth->getNameIdFormat();
         $_SESSION['samlNameIdNameQualifier'] = $auth->getNameIdNameQualifier();
         $_SESSION['samlNameIdSPNameQualifier'] = $auth->getNameIdSPNameQualifier();
+
+        // we should store the correspondance between SAML session and PHP Session
+        // for logout by the IdP
+        $this->initCacheProfile();
+        \jCache::set('saml/session/'.$auth->getSessionIndex(), session_id(), null, 'saml');
 
         $relayState = $request->getParam('RelayState');
         if (!$request->isPostMethod()
@@ -224,16 +254,53 @@ class Saml
             throw new ProcessException($auth);
         }
 
-        \jAuth::logout();
-        unset($_SESSION);
-        /*
-        unset($_SESSION['samlUserdata']);
-        unset($_SESSION['IdPSessionIndex']);
-        unset($_SESSION['samlNameId']);
-        unset($_SESSION['samlNameIdFormat']);
-        unset($_SESSION['samlNameIdNameQualifier']);
-        unset($_SESSION['samlNameIdSPNameQualifier']);
-        */
+        if (isset($_GET['SAMLRequest'])) {
+            // this a logout request from the idp, not from the application
+            // we must logout from the right PHP session
+
+            // we don't have a way to retrieve the SAML session index from the
+            // $auth object, so, let's get by ourselves
+            $samlRequest = new LogoutRequest($this->config->getSettings(), $_GET['SAMLRequest']);
+            $samlSessions = LogoutRequest::getSessionIndexes($samlRequest->getXML());
+            $originalSessionId = session_id();
+            $this->initCacheProfile();
+
+            session_commit();
+            foreach($samlSessions as $samlSessionId) {
+
+                $phpSessionToDelete = \jCache::get('saml/session/'.$samlSessionId, 'saml');
+                if (!$phpSessionToDelete) {
+                    continue;
+                }
+                // hijack the session to destroy
+                session_id($phpSessionToDelete);
+                session_start();
+                \jAuth::logout();
+
+                unset($_SESSION['samlUserdata']);
+                unset($_SESSION['IdPSessionIndex']);
+                unset($_SESSION['samlNameId']);
+                unset($_SESSION['samlNameIdFormat']);
+                unset($_SESSION['samlNameIdNameQualifier']);
+                unset($_SESSION['samlNameIdSPNameQualifier']);
+
+                if (!isset($this->authConfig['session_destroy'])
+                    || $this->authConfig['session_destroy'] == ''
+                ) {
+                    session_destroy();
+                }
+                session_commit();
+            }
+
+            // restore current session
+            session_id($originalSessionId);
+            session_start();
+        }
+        else {
+            \jAuth::logout();
+            unset($_SESSION);
+        }
+
         if ($url) {
             return $url;
         }
@@ -250,5 +317,4 @@ class Saml
         }
         return '';
     }
-
 }
