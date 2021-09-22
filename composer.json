@@ -20,7 +20,16 @@
         "jelix" : {
             "modules": [
                 "saml"
-            ]
+            ],
+            "autoconfig-access-16" : {
+                "lizmap@3liz.com" : {
+                    "saml": {
+                        "__global": 1,
+                        "index" : 1,
+                        "admin" : 2
+                    }
+                }
+            }
         },
         "branch-alias": {
             "dev-master": "1.0.x-dev"
