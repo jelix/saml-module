@@ -5,8 +5,8 @@ This is an **experimental module** for now.
 Installation
 ============
 
-This module is for Jelix 1.6.21 and higher. It replaces the jauth module,
-and it is compatible with jauthdb, jauthdb_admin modules.
+This module is for Jelix 1.6.21 and higher. It is compatible with jauth, 
+jauthdb, jauthdb_admin and jcommunity modules.
 
 It uses the [onelogin/php-saml](https://github.com/onelogin/php-saml/) library. This 
 library requires:
@@ -26,12 +26,14 @@ You should use Composer to install the module. Run this commands in a shell:
 composer require "jelix/saml-module"
 ```
 
-The module `jauthdb` is required, and the `jauth` module should be deactivated.
+The module `jauthdb` as well as the `jauth` module are required, except if you
+are using the `jcommunity` module.
+
 In the `[modules]` section of `app/system/mainconfig.ini.php` or `var/config/localconfig.ini.php`,
 you should have:
 
 ```ini
-jauth.enable=0
+jauth.enable=1
 jauthdb.enable=1
 ```
 
@@ -74,8 +76,8 @@ In the `[modules]` section, add:
 saml.access=2
 ```
 
-Module `jauthdb` or `jcommunity` is required. If you are using jcommunity, you have
-to disable the `jauth` module.
+Module `jauthdb` or `jcommunity` is required. If you are using `jcommunity`, you have
+to disable the `jauth` and `jauthdb` module.
 In this same section you should then have:
 
 ```ini
@@ -115,22 +117,6 @@ Installing in an application already having user database
 =========================================================
 
 FIXME
-
-Working with jcommunity
-========================
-
-```ini
-[jcommunity]
-loginResponse = htmlauth
-registrationEnabled = off
-resetPasswordEnabled = off
-resetPasswordAdminEnabled = off
-verifyNickname = off
-passwordChangeEnabled=off
-accountDestroyEnabled=on
-useJAuthDbAdminRights=on
-
-```
 
 
 Launch the installer

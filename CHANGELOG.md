@@ -1,6 +1,31 @@
 Changes
 =======
 
+Version 2.0.0 (not released yet)
+--------------------------------
+
+It allows now to choice the authentication method : by the classical login/password
+(provided by the jauth or the jcommunity module), or by SAML. It means that
+instead of redirecting the user to the identity provider web site when authentication
+is required, it shows the classical login/password form with an additionnal button
+to authenticate with Saml.
+
+It fixes the logout initiated by the identity provider: PHP session linked to
+closed SAML session are now destroyed.
+
+
+For developers:
+- the jauth module is now required, except if you are using the jcommunity module
+- no more specific configuration for the jcommunity module
+- configuration changes:
+  - no more `after_login` and `after_logout` in the `saml:sp` section
+  - a `jcache:saml` profile can be setup to store correspondance between PHP session
+    id and SAML session id.
+- API changes: 
+  - `Jelix\Saml\Configuration` does not required anymore a `jRequest` object for
+     its constructor.
+
+
 Version 1.0.3
 -------------
 
