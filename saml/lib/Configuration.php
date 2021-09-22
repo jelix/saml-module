@@ -9,6 +9,9 @@ namespace Jelix\Saml;
 use OneLogin\Saml2\Settings;
 use OneLogin\Saml2\Constants;
 
+use jLocale;
+
+
 class Configuration {
 
     /**
@@ -28,11 +31,10 @@ class Configuration {
 
     /**
      * Configuration constructor.
-     * @param \jRequest $request
      * @param object $iniConfig typically jApp::config()
      * @throws \jException
      */
-    public function __construct(\jRequest $request, $iniConfig = null)
+    public function __construct($iniConfig = null)
     {
         if (!$iniConfig) {
             $iniConfig = \jApp::config();

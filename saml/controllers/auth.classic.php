@@ -63,7 +63,7 @@ class authCtrl extends jController {
             }
         }
 
-        $configuration = new \Jelix\Saml\Configuration($this->request);
+        $configuration = new \Jelix\Saml\Configuration();
         $saml = new Jelix\Saml\Saml(
             $configuration,
             jApp::coord()->getPlugin('auth')->config
@@ -87,7 +87,7 @@ class authCtrl extends jController {
     function logout() {
         $rep = $this->getResponse('redirectUrl');
 
-        $configuration = new \Jelix\Saml\Configuration($this->request);
+        $configuration = new \Jelix\Saml\Configuration();
         $saml = new Jelix\Saml\Saml(
             $configuration,
             jApp::coord()->getPlugin('auth')->config

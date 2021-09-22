@@ -21,7 +21,7 @@ class endpointCtrl extends jController {
     function metadata() {
         $xml = $this->getResponse('xml');
 
-        $configuration = new \Jelix\Saml\Configuration($this->request);
+        $configuration = new \Jelix\Saml\Configuration();
 
         $samlSettings = $configuration->getSettings();
 
@@ -38,7 +38,7 @@ class endpointCtrl extends jController {
      * Called when the user has been authenticated at the identity provider
      */
     function acs() {
-        $configuration = new \Jelix\Saml\Configuration($this->request);
+        $configuration = new \Jelix\Saml\Configuration();
 
         $saml = new Jelix\Saml\Saml(
             $configuration,
@@ -78,7 +78,7 @@ class endpointCtrl extends jController {
      * @throws Error
      */
     function sls() {
-        $configuration = new \Jelix\Saml\Configuration($this->request);
+        $configuration = new \Jelix\Saml\Configuration();
 
         $saml = new Jelix\Saml\Saml(
             $configuration,
