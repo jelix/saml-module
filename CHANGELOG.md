@@ -21,6 +21,7 @@ For developers:
   - no more `after_login` and `after_logout` in the `saml:sp` section
   - a `jcache:saml` profile can be setup to store correspondance between PHP session
     id and SAML session id.
+  - new `label` parameter into  `[saml:idp]` for the login button 
 - API changes: 
   - `Jelix\Saml\Configuration` does not required anymore a `jRequest` object for
      its constructor.

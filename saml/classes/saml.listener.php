@@ -17,6 +17,18 @@ class samlListener extends jEventListener{
         if (jApp::coord()->request) {
             $url = jApp::coord()->request->getParam('auth_url_return');
         }
+        $idpConfig = jApp::config()->{'saml:idp'};
+        if (isset($idpConfig['label']) && $idpConfig['label']) {
+            $label = $idpConfig['label'];
+        }
+        else {
+            $label = 'SAML';
+        }
+
+        $authLabel = jLocale::get('saml~auth.authentication.login.button', array($label));
+
+
+        $tpl->assign('button_label', $authLabel);
         $tpl->assign('auth_url_return', $url);
         $event->add($tpl->fetch('saml~loginform'));
 

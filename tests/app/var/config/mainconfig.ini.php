@@ -232,16 +232,6 @@ name=
 
 [saml:sp]
 
-; enable debug or not in the SAML library
-saml_debug=off
-
-; action to redirect to after a successfully login.
-after_login=
-
-; action to redirect to after a successfully logout
-after_logout=
-
-
 ; Contact information template, it is recommended to supply a technical and
 ; support contacts
 technicalContactPerson[givenName]= LaurentTech Jouanneau
@@ -262,6 +252,11 @@ compressResponses=on
 attrcs_service_name=
 attrcs_service_description=
 
+
+
+; enable debug or not in the SAML library
+saml_debug=off
+
 [saml:sp:requestedAttributes]
 ;<attribute name>[isRequired]=on or off
 ;<attribute name>[nameFormat]=  ; optional
@@ -281,6 +276,10 @@ email=mail
 
 ; identity provider
 [saml:idp]
+
+; label to display in the interface and in the login form
+label=
+
 ; Identifier of the IdP entity  (must be a URI)
 entityId=
 

@@ -13,6 +13,10 @@ forceHTTPPort=80
 forceHTTPSPort=443
 
 [saml:idp]
+
+; label to display in the interface and in the login form
+label= LemonLdapNG
+
 entityId=http://auth.lemon.local/saml/metadata
 
 singleSignOnServiceUrl=http://auth.lemon.local/saml/singleSignOn
