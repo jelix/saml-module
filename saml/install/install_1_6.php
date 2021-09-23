@@ -6,64 +6,11 @@
  * @licence     GNU Lesser General Public Licence see LICENCE file or http://www.gnu.org/licenses/lgpl.html
  */
 
+require_once(__DIR__.'/SamlAbstractInstaller.php');
 /**
  */
-class samlModuleInstaller extends jInstallerModule {
-
-    /**
-     * @return jIniFileModifier
-     */
-    protected function getAppConfig()
-    {
-        if ($this->getParameter('localconfig')) {
-            $appConfig = $this->entryPoint->localConfigIni->getMaster();
-        } else {
-            $appConfig = $this->entryPoint->configIni->getMaster();
-        }
-        if ($appConfig instanceof jIniMultiFilesModifier) {
-            $appConfig = $appConfig->getOverrider();
-        }
-        return $appConfig;
-    }
-
-    /**
-     * @return [jIniFileModifier, array]
-     * @throws jException
-     */
-    protected function getAuthConfAndDriver()
-    {
-        list($ini, $confFileName) = $this->getAuthConf();
-        if ($ini === null) {
-            return array(null, null, null);
-        }
-        $confIni = parse_ini_file($ini->getFileName(), true);
-
-        require_once(JELIX_LIB_PATH.'auth/jAuth.class.php');
-        $authConfig = jAuth::loadConfig($confIni);
-        $driverConfig = $authConfig[$authConfig['driver']];
-        if ($authConfig['driver'] == 'Db' ||
-            (isset($driverConfig['compatiblewithdb']) &&
-                $driverConfig['compatiblewithdb'])
-        ) {
-            return array($ini, $authConfig[$authConfig['driver']], $confFileName);
-        }
-        return array(null, null, null);
-    }
-
-    /**
-     * @return [jIniFileModifier, string]
-     * @throws Exception
-     */
-    protected function getAuthConf() {
-        $authconfig = $this->entryPoint->localConfigIni->getValue('auth','coordplugins');
-        if (!$authconfig) {
-            return array(null, null);
-        }
-        $confPath = jApp::configPath($authconfig);
-        $conf = new jIniFileModifier($confPath);
-        return array($conf, $authconfig);
-    }
-
+class samlModuleInstaller extends SamlAbstractInstaller
+{
 
     function install() {
         if ($this->entryPoint->type == 'cmdline') {
@@ -172,5 +119,8 @@ class samlModuleInstaller extends jInstallerModule {
                 }
             }
         }
+
+        $this->updateCacheProfile('profiles.ini.php');
+        $this->updateCacheProfile('profiles.ini.php.dist');
     }
 }

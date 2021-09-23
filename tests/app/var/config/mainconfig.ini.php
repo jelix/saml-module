@@ -35,7 +35,7 @@ jacl2db.access=1
 jacl2db.installparam="defaultuser;defaultgroups"
 jauth.access=1
 jauthdb.access=1
-jauthdb.installparam="defaultuser"
+jauthdb.installparam=defaultuser
 
 app.access=2
 
@@ -403,6 +403,7 @@ digestAlgorithm="http://www.w3.org/2001/04/xmlenc#sha256"
 ; ADFS URL-Encodes SAML data as lowercase, and the toolkit by default uses
 ; uppercase. Turn it True for ADFS compatibility on signature verification
 lowercaseUrlencoding=off
+
 
 
 
