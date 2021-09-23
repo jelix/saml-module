@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="http://jelix.org/ns/module/1.0">
+    <info id="samladmin@modules.jelix.org" name="samladmin" createdate="2021-09-23">
+        <version date="2021-09-23">2.0.0-pre</version>
+        <label lang="en_US">administration module to configure SAML parameters</label>
+        <description lang="en_US"></description>
+        <license URL="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">LGPL 2.1</license>
+        <copyright>2021 3liz</copyright>
+        <creator name="Laurent Jouanneau" email="laurent@jelix.org"/>
+    </info>
+    <dependencies>
+        <jelix minversion="1.6.21" maxversion="1.7.*"/>
+        <module name="saml"/>
+    </dependencies>
+</module>

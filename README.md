@@ -76,6 +76,14 @@ In the `[modules]` section, add:
 saml.access=2
 ```
 
+For the entrypoint dedicated to the administration (if you have one), 
+in its configuration file, in the `[modules]` section, add:
+
+```ini
+samladmin.access=2
+```
+
+
 Module `jauthdb` or `jcommunity` is required. If you are using `jcommunity`, you have
 to disable the `jauth` and `jauthdb` module.
 In this same section you should then have:

@@ -114,7 +114,7 @@ simple_urlengine_https=
 ;   @r       -> for all actions for the request of type "r"
 
 index="@classic"
-admin="jacl2db~*@classic, jauth~*@classic, jacl2db_admin~*@classic, jauthdb_admin~*@classic, master_admin~*@classic, jpref_admin~*@classic, saml~*@classic"
+admin="jacl2db~*@classic, jauth~*@classic, jacl2db_admin~*@classic, jauthdb_admin~*@classic, master_admin~*@classic, jpref_admin~*@classic, saml~*@classic, samladmin~*@classic"
 
 [basic_significant_urlengine_entrypoints]
 ; for each entry point, it indicates if the entry point name
