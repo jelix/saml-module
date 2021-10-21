@@ -9,11 +9,10 @@ html=adminHtmlResponse
 htmlauth=adminLoginHtmlResponse
 
 [coordplugins]
-auth=
 
 jacl2=1
-saml="saml/saml.coord.ini.php"
-saml.name=auth
+auth="admin/auth.coord.ini.php"
+auth.class=samlCoordPlugin
 
 [modules]
 jauth.access=2

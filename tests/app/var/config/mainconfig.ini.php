@@ -404,6 +404,3 @@ digestAlgorithm="http://www.w3.org/2001/04/xmlenc#sha256"
 ; uppercase. Turn it True for ADFS compatibility on signature verification
 lowercaseUrlencoding=off
 
-
-
-

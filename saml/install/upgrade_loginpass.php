@@ -17,6 +17,8 @@ class samlModuleUpgrader_loginpass extends SamlAbstractInstaller {
         $currentAfterLogin = '';
         $currentAfterLogout = '';
 
+        // remove after_login and after_logout from [saml:sp]
+        // we are now using after_login and after_logout from the auth configuration
         $ini = $this->entryPoint->getSingleMainConfigIni();
         if ($ini->getValue('after_login', 'saml:sp')) {
             $currentAfterLogin = $ini->getValue('after_login', 'saml:sp');
@@ -53,9 +55,12 @@ class samlModuleUpgrader_loginpass extends SamlAbstractInstaller {
          * @var jIniFileModifier $originalAuthConfigIni
          * @var array $driverConfig
          */
-        list($authConfigIni, $driverConfig, $authConfigFileName) = $this->getAuthConfAndDriver('saml');
+        list($authConfigIni,
+            $driverConfig,
+            $authConfigFileName,
+            $driverName) = $this->getAuthConfAndDriver();
 
-        if (!$authConfigIni) {
+        if (!$authConfigIni || $driverName != 'saml') {
             throw new Exception("no saml plugin activated?");
         }
 

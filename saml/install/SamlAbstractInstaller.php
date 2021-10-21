@@ -34,20 +34,32 @@ class SamlAbstractInstaller extends jInstallerModule {
     {
         list($ini, $confFileName) = $this->getAuthConf($pluginName);
         if ($ini === null) {
-            return array(null, null, null);
+            return array(null, null, null, null);
         }
         $confIni = parse_ini_file($ini->getFileName(), true);
 
         require_once(JELIX_LIB_PATH.'auth/jAuth.class.php');
         $authConfig = jAuth::loadConfig($confIni);
-        $driverConfig = $authConfig[$authConfig['driver']];
-        if ($authConfig['driver'] == 'Db' ||
+
+        $appConfig = $this->getAppConfig();
+
+        $driver = $appConfig->getValue('driver', 'coordplugin_auth');
+        if (!$driver) {
+            $driver = $authConfig['driver'];
+        }
+
+        if (!isset($authConfig[$driver])) {
+            return array($ini, null, $confFileName, $driver);
+        }
+
+        $driverConfig = $authConfig[$driver];
+        if ($driver == 'Db' ||
             (isset($driverConfig['compatiblewithdb']) &&
              $driverConfig['compatiblewithdb'])
         ) {
-            return array($ini, $authConfig[$authConfig['driver']], $confFileName);
+            return array($ini, $driverConfig, $confFileName, $driver);
         }
-        return array(null, null, null);
+        return array(null, null, null, null);
     }
 
     /**
