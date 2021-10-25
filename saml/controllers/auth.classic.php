@@ -63,13 +63,29 @@ class authCtrl extends jController {
             }
         }
 
-        $configuration = new \Jelix\Saml\Configuration();
-        $saml = new Jelix\Saml\Saml(
-            $configuration,
-            jApp::coord()->getPlugin('auth')->config
-        );
+        try {
+            $configuration = new \Jelix\Saml\Configuration();
+            $saml = new Jelix\Saml\Saml(
+                $configuration,
+                jApp::coord()->getPlugin('auth')->config
+            );
 
-        $rep->url = $saml->startLoginProcess($relayState);
+            $rep->url = $saml->startLoginProcess($relayState);
+
+        }
+        catch(\Exception $e) {
+            /** @var jResponseHtml $rep */
+            jLog::log($e->getMessage(), 'error');
+            $rep = $this->getResponse('htmlauth');
+            if ($rep->bodyTpl == '') {
+                $rep->bodyTpl = 'saml~main_error';
+            }
+            $rep->title = jLocale::get('saml~auth.authentication.error.title');
+            $tpl = new jTpl();
+            $rep->body->assign('MAIN', $tpl->fetch('configerror'));
+            return $rep;
+
+        }
         $rep->addHttpHeader('Pragma', 'no-cache');
         $rep->addHttpHeader('Cache-Control', 'no-cache, must-revalidate');
         return $rep;
