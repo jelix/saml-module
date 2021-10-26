@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form xmlns="http://jelix.org/ns/forms/1.1">
+
+	<input ref="organizationName" type="string" required="true">
+		<label locale="samladmin~admin.spconfig.form.organization.name.label"/>
+	</input>
+
+	<input ref="organizationDisplayName" type="string" >
+		<label locale="samladmin~admin.spconfig.form.organization.displayName.label"/>
+	</input>
+
+	<input ref="organizationUrl" type="string">
+		<label locale="samladmin~admin.spconfig.form.organization.url.label"/>
+	</input>
+
+	<input ref="supportContactPersonName" type="string">
+		<label locale="samladmin~admin.spconfig.form.supportContactPerson.name.label"/>
+	</input>
+
+	<input ref="supportContactPersonEmail" type="email">
+		<label locale="samladmin~admin.spconfig.form.supportContactPerson.email.label"/>
+	</input>
+
+	<input ref="technicalContactPersonName" type="string" >
+		<label locale="samladmin~admin.spconfig.form.technicalContactPerson.name.label"/>
+	</input>
+
+	<input ref="technicalContactPersonEmail" type="email">
+		<label locale="samladmin~admin.spconfig.form.technicalContactPerson.email.label"/>
+	</input>
+
+	<textarea ref="tlsPrivateKey" required="true">
+		<label locale="samladmin~admin.spconfig.form.tlsPrivateKey.label"/>
+	</textarea>
+
+	<textarea ref="tlsCertificate" required="true">
+		<label locale="samladmin~admin.spconfig.form.tlsCertificate.label"/>
+	</textarea>
+
+	<submit ref="_submit">
+		<label locale="jelix~ui.buttons.save"/>
+	</submit>
+</form>

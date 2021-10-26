@@ -154,14 +154,14 @@ class Configuration {
         );
 
         $spX509certFile = \jApp::configPath('saml/certs/sp.crt');
-        $spPrivateKey  = \jApp::configPath('saml/certs/sp.key');
+        $spPrivateKeyFile  = \jApp::configPath('saml/certs/sp.key');
 
         if (file_exists($spX509certFile)) {
             $serviceProvider['x509cert'] = file_get_contents($spX509certFile);
         }
 
-        if (file_exists($spPrivateKey)) {
-            $serviceProvider['privateKey'] = file_get_contents($spPrivateKey);
+        if (file_exists($spPrivateKeyFile)) {
+            $serviceProvider['privateKey'] = file_get_contents($spPrivateKeyFile);
         }
 
         $spX509certNewFile = \jApp::configPath('saml/certs/sp_new.crt');

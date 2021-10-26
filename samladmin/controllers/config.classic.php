@@ -23,10 +23,99 @@ class configCtrl extends jController
         $rep = $this->getResponse('html');
 
         $tpl = new jTpl();
+        $tpl->assign('sp_metadata_url', jUrl::getFull('saml~endpoint:metadata'));
+
+
         $rep->body->assign('MAIN', $tpl->fetch('config'));
         $rep->body->assign('selectedMenuItem', 'samlconfig');
 
         return $rep;
     }
 
+
+    public function spinit()
+    {
+        $config = new \Jelix\Saml\Configuration(jApp::config(), false);
+        $form = jForms::create('spconfig');
+
+        $org = $config->getOrganization();
+        $form->setData('organizationName', $org['name']);
+        $form->setData('organizationDisplayName', $org['displayname']);
+        $form->setData('organizationUrl', $org['url']);
+
+        $techContact = $config->getTechnicalContact();
+        $form->setData('technicalContactPersonName', $techContact['givenName']);
+        $form->setData('technicalContactPersonEmail', $techContact['emailAddress']);
+
+        $supportContact = $config->getSupportContact();
+        $form->setData('supportContactPersonName', $supportContact['givenName']);
+        $form->setData('supportContactPersonEmail', $supportContact['emailAddress']);
+
+        $form->setData('tlsPrivateKey', $config->getSpPrivateKey());
+        $form->setData('tlsCertificate', $config->getSpCertificate());
+        $rep = $this->getResponse('redirect');
+        $rep->action = 'samladmin~config:sp';
+        return $rep;
+    }
+
+
+    public function sp()
+    {
+        $rep = $this->getResponse('html');
+        $form = jForms::get('spconfig');
+        if (!$form) {
+            $rep = $this->getResponse('redirect');
+            $rep->action = 'samladmin~config:index';
+            return $rep;
+        }
+
+        $tpl = new jTpl();
+        $tpl->assign('spform', $form);
+        $rep->body->assign('MAIN', $tpl->fetch('spconfig'));
+        $rep->body->assign('selectedMenuItem', 'samlconfig');
+        return $rep;
+    }
+
+
+    function spsave()
+    {
+        $rep = $this->getResponse('redirect');
+
+        $form = jForms::get('spconfig');
+        if (!$form) {
+            jMessage::add('missing form', 'error');
+            $rep->action = 'samladmin~config:index';
+            return $rep;
+        }
+        $form->initFromRequest();
+        if (!$form->check()) {
+            $rep->action = 'samladmin~config:sp';
+            return $rep;
+        }
+
+        $config = new \Jelix\Saml\ConfigurationModifier();
+        $config->setOrganization(
+            $form->getData('organizationName'),
+            $form->getData('organizationDisplayName'),
+            $form->getData('organizationUrl')
+        );
+
+        $config->setSupportContact(
+            $form->getData('supportContactPersonName'),
+            $form->getData('supportContactPersonEmail')
+        );
+
+        $config->setTechnicalContact(
+            $form->getData('technicalContactPersonName'),
+            $form->getData('technicalContactPersonEmail')
+        );
+
+        $config->setPrivateKey($form->getData('tlsPrivateKey'));
+        $config->setCertificate($form->getData('tlsCertificate'));
+
+        $config->save();
+        jMessage::add(jLocale::get('samladmin~admin.spconfig.form.save.ok', 'notice'));
+        $rep->action = 'samladmin~config:index';
+        return $rep;
+    }
 }
