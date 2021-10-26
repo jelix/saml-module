@@ -29,12 +29,15 @@ class Configuration {
      */
     protected $attributesMapping = array();
 
+
+    protected $idpCertError = '';
+
     /**
      * Configuration constructor.
      * @param object $iniConfig typically jApp::config()
      * @throws \jException
      */
-    public function __construct($iniConfig = null)
+    public function __construct($iniConfig = null, $checkConfig = true)
     {
         if (!$iniConfig) {
             $iniConfig = \jApp::config();
@@ -100,27 +103,21 @@ class Configuration {
         );
 
         $attrConfig = $iniConfig->{'saml:attributes-mapping'};
-        if (!isset($attrConfig['__login']) || $attrConfig['__login'] == '') {
-            throw new \Exception('__login is missing into the attributes mapping configuration');
+        if (isset($attrConfig['__login']) && $attrConfig['__login'] != '') {
+            $this->loginAttribute = $attrConfig['__login'];
         }
-        $this->loginAttribute = $attrConfig['__login'];
         unset($attrConfig['__login']);
         $this->attributesMapping = $attrConfig;
+
+        if ($checkConfig) {
+            $this->checkSpConfig();
+            $this->checkIdpConfig();
+        }
     }
 
     protected function readSpConfig($iniConfig) {
         $spConfig = $iniConfig->{'saml:sp'};
 
-        $spX509certFile = \jApp::configPath('saml/certs/sp.crt');
-        $spPrivateKey  = \jApp::configPath('saml/certs/sp.key');
-
-        if (!file_exists($spX509certFile)) {
-            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.sp.cert'));
-        }
-
-        if (!file_exists($spPrivateKey)) {
-            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.sp.key'));
-        }
 
         // Service Provider Data that we are deploying
         $serviceProvider =array(
@@ -152,9 +149,20 @@ class Configuration {
             // Take a look on lib/Saml2/Constants.php to see the NameIdFormat supported
             'NameIDFormat' => Constants::NAMEID_UNSPECIFIED,
 
-            'x509cert' => file_get_contents($spX509certFile),
-            'privateKey' => file_get_contents($spPrivateKey),
+            'x509cert' => '',
+            'privateKey' => '',
         );
+
+        $spX509certFile = \jApp::configPath('saml/certs/sp.crt');
+        $spPrivateKey  = \jApp::configPath('saml/certs/sp.key');
+
+        if (file_exists($spX509certFile)) {
+            $serviceProvider['x509cert'] = file_get_contents($spX509certFile);
+        }
+
+        if (file_exists($spPrivateKey)) {
+            $serviceProvider['privateKey'] = file_get_contents($spPrivateKey);
+        }
 
         $spX509certNewFile = \jApp::configPath('saml/certs/sp_new.crt');
         if (file_exists($spX509certNewFile)) {
@@ -194,10 +202,13 @@ class Configuration {
         if ($idpConfig['certs_signing_files'] == '') {
             $idpX509certFile = \jApp::configPath('saml/certs/idp.crt');
 
-            if (!file_exists($idpX509certFile) && $idpConfig['certs_signing_files'] == '') {
-                throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.idp.cert', array('idp.crt')));
+            if (file_exists($idpX509certFile)) {
+                $idpX509cert = file_get_contents($idpX509certFile);
             }
-            $idpX509cert = file_get_contents($idpX509certFile);
+            else {
+                $idpX509cert = '';
+                $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.missing.idp.cert', array('idp.crt'));
+            }
         }
         else {
             $idpX509cert = '';
@@ -205,19 +216,27 @@ class Configuration {
             $certsSigning = array();
             foreach( $list as $file) {
                 $path = \jApp::configPath('saml/certs/'.$file);
-                if (!file_exists($path)) {
-                    throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.idp.key', array($path)));
+                if (file_exists($path)) {
+                    $certsSigning[] = file_get_contents($path);
                 }
-                $certsSigning[] = file_get_contents($path);
+                else {
+                    $certsSigning = array();
+                    $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.missing.idp.key', array($path));
+                    break;
+                }
             }
             $list = preg_split('/ *, */', $idpConfig['certs_encryption_files']);
             $certsEncryption = array();
             foreach( $list as $file) {
                 $path = \jApp::configPath('saml/certs/'.$file);
-                if (!file_exists($path)) {
-                    throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.idp.cert', array($path)));
+                if (file_exists($path)) {
+                    $certsEncryption[] = file_get_contents($path);
                 }
-                $certsEncryption[] = file_get_contents($path);
+                else {
+                    $certsEncryption = array();
+                    $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.missing.idp.cert', array($path));
+                    break;
+                }
             }
         }
 
@@ -228,26 +247,20 @@ class Configuration {
             'soap' => Constants::BINDING_SOAP,
             'deflate' => Constants::BINDING_DEFLATE,
         );
-        if (!isset($bindings[$idpConfig['singleSignOnServiceBinding']])) {
-            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.bad.parameter', array('singleSignOnServiceBinding')));
-        }
-
-        if (!isset($bindings[$idpConfig['singleLogoutServiceBinding']])) {
-            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.bad.parameter', array('singleLogoutServiceBinding')));
-        }
-
+        $singleSignOnServiceBinding = $bindings[$idpConfig['singleSignOnServiceBinding']] ?: '';
+        $singleLogoutServiceBinding = $bindings[$idpConfig['singleLogoutServiceBinding']] ?: '';
 
         // Identity Provider Data that we want connect with our SP
         $identityProvider = array(
             'entityId' => $idpConfig['entityId'],
             'singleSignOnService' => array(
                 'url' => $idpConfig['singleSignOnServiceUrl'],
-                'binding' => $bindings[$idpConfig['singleSignOnServiceBinding']],
+                'binding' => $singleSignOnServiceBinding,
             ),
             'singleLogoutService' => array(
                 'url' => $idpConfig['singleLogoutServiceUrl'],
                 'responseUrl' => $idpConfig['singleLogoutServiceResponseUrl'],
-                'binding' => $bindings[$idpConfig['singleLogoutServiceBinding']],
+                'binding' => $singleLogoutServiceBinding,
             ),
             // Public x509 certificate of the IdP
             'x509cert' => $idpX509cert,
@@ -260,6 +273,35 @@ class Configuration {
             );
         }
         return $identityProvider;
+    }
+
+
+    protected function checkSpConfig()
+    {
+        if ($this->loginAttribute == '') {
+            throw new \Exception('__login is missing into the attributes mapping configuration');
+        }
+
+        if ($this->settings['sp']['x509cert'] == '') {
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.sp.cert'));
+        }
+
+        if ($this->settings['sp']['privateKey'] == '') {
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.sp.key'));
+        }
+    }
+
+    protected function checkIdpConfig()
+    {
+        if ($this->idpCertError != '') {
+            throw new \Exception($this->idpCertError);
+        }
+        if ($this->settings['idp']['singleSignOnService']['binding'] == '') {
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.bad.parameter', array('singleSignOnServiceBinding')));
+        }
+        if ($this->settings['idp']['singleLogoutService']['binding'] == '') {
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.bad.parameter', array('singleLogoutServiceBinding')));
+        }
     }
 
     /**
@@ -280,6 +322,57 @@ class Configuration {
         return $this->settings;
     }
 
+    /**
+     * to get the TLS certificate of the service provider
+     * @return string the content of the certificate (PEM format)
+     */
+    function getSpCertificate()
+    {
+        return $this->settings['sp']['x509cert'];
+    }
+
+    /**
+     * to get the private key to sign the certificate of the service provider
+     * @return string the content of the private key
+     */
+    function getSpPrivateKey()
+    {
+        return $this->settings['sp']['privateKey'];
+    }
+
+    /**
+     * Name and email of the contact person for the support
+     * @return array  attributes: 'givenName' and 'emailAddress'
+     */
+    function getSupportContact()
+    {
+        return ($this->settings['contactPerson']['support'] ?:
+            array('givenName'=>'', 'emailAddress'=>''));
+    }
+
+    /**
+     * Name and email of the contact person for the technic
+     * @return array  attributes: 'givenName' and 'emailAddress'
+     */
+    function getTechnicalContact()
+    {
+        return ($this->settings['contactPerson']['technical'] ?:
+            array('givenName'=>'', 'emailAddress'=>''));
+    }
+
+    /**
+     * to get organisation properties
+     * @return array attributes: 'name', 'displayname', 'url'
+     */
+    function getOrganization()
+    {
+        $org =
+            array_merge(
+                array('name' => '', 'displayname' => '', 'url' => ''),
+                ($this->settings['organization']['en-US'] ?: array())
+            );
+        return $org;
+    }
 
     /**
      * Gives the SAML attribute that contains the user login
