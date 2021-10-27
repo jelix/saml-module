@@ -1,7 +1,7 @@
 <h1>{@samladmin~admin.spconfig.title@}</h1>
 
 
-{form $spform, 'samladmin~config:spsave'}
+{form $spform, 'samladmin~spconfig:save'}
 <fieldset>
     <legend>{@samladmin~admin.spconfig.form.organization@}</legend>
 
