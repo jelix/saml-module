@@ -49,10 +49,35 @@ class ConfigurationModifier extends Configuration
             array('name' => $name, 'displayname' => $displayName, 'url' => $url);
     }
 
+    public function setIdpLabel($label)
+    {
+        $this->idpLabel = $label;
+    }
+
+    public function setIdpUrls($singleSignOnServiceUrl, $singleLogoutServiceUrl, $singleLogoutServiceResponseUrl)
+    {
+        $this->settings['idp']['singleSignOnService']['url'] = $singleSignOnServiceUrl;
+        $this->settings['idp']['singleLogoutService']['url'] = $singleLogoutServiceUrl;
+        $this->settings['idp']['singleLogoutService']['responseUrl'] = $singleLogoutServiceResponseUrl;
+    }
+
+    public function setIdpSigningCertificate($certificate)
+    {
+        $this->settings['idp']['x509certMulti']['signing'] = array($certificate);
+    }
+
+    public function setIdpEncryptionCertificate($certificate)
+    {
+        $this->settings['idp']['x509certMulti']['encryption'] = array($certificate);
+    }
+
+
     public function save()
     {
         $appConfig = \jApp::config();
         $liveConfig = new \jIniFileModifier(\jApp::configPath('liveconfig.ini.php'));
+
+        // sp data
 
         $tech = $this->getTechnicalContact();
         $liveConfig->setValue('technicalContactPerson', $tech['givenName'], 'saml:sp', 'givenName');
@@ -73,16 +98,64 @@ class ConfigurationModifier extends Configuration
 
         $spPrivateKeyFile  = \jApp::configPath('saml/certs/sp.key');
         $spPK = $this->getSpPrivateKey();
-        if ($spPK != '') {
-            file_put_contents($spPrivateKeyFile, $spPK);
-        }
+        $this->saveConfigFile($spPrivateKeyFile, $spPK);
 
         $spX509certFile = \jApp::configPath('saml/certs/sp.crt');
         $spCert = $this->getSpCertificate();
-        if ($spPK != '') {
-            file_put_contents($spX509certFile, $spCert);
+        $this->saveConfigFile($spX509certFile, $spCert);
+
+        // idp data
+        $liveConfig->setValue('label', $this->getIdpLabel(), 'saml:idp');
+        $appConfig->{'saml:idp'}['label'] = $this->getIdpLabel();
+
+        $urls = $this->getIdpURL();
+
+        $liveConfig->setValue('singleSignOnServiceUrl', $urls['singleSignOnService'], 'saml:idp');
+        $appConfig->{'saml:idp'}['singleSignOnServiceUrl'] = $urls['singleSignOnService'];
+        $liveConfig->setValue('singleLogoutServiceUrl', $urls['singleLogoutService'], 'saml:idp');
+        $appConfig->{'saml:idp'}['singleLogoutServiceUrl'] = $urls['singleLogoutService'];
+        $liveConfig->setValue('singleLogoutServiceResponseUrl', $urls['singleLogoutServiceResponse'], 'saml:idp');
+        $appConfig->{'saml:idp'}['singleLogoutServiceResponseUrl'] = $urls['singleLogoutServiceResponse'];
+
+
+        $idpX509certFile = \jApp::configPath('saml/certs/idp.crt');
+        if (file_exists($idpX509certFile)) {
+            unlink($idpX509certFile);
         }
+
+        $idpSignCertFile = \jApp::configPath('saml/certs/idp_sig.pem');
+        $signCert = $this->getIdpSigningCertificate();
+        $this->saveConfigFile($idpSignCertFile, $signCert);
+        $appConfig->{'saml:idp'}['certs_signing_files'] = $signCert ? 'idp_sig.pem' : '';
+
+        $idpEncryptCertFile = \jApp::configPath('saml/certs/idp_encrypt.pem');
+        $cryptCert = $this->getIdpEncryptionCertificate();
+        $this->saveConfigFile($idpEncryptCertFile, $cryptCert);
+        $appConfig->{'saml:idp'}['certs_encryption_files'] = $signCert ? 'idp_encrypt.pem' : '';
 
         $liveConfig->save();
     }
+
+
+    protected function saveConfigFile($path, $content)
+    {
+        if ($content == '') {
+            if (file_exists($path)) {
+                unlink($path);
+            }
+            return;
+        }
+
+        if (file_exists($path)) {
+            $originalContent = file_get_contents($path);
+            if ($originalContent == $content) {
+                // don't modify the file if already exists
+                return;
+            }
+        }
+
+        file_put_contents($path, $content);
+    }
+
+
 }

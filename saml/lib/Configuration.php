@@ -32,6 +32,9 @@ class Configuration {
 
     protected $idpCertError = '';
 
+
+    protected $idpLabel = '';
+
     /**
      * Configuration constructor.
      * @param object $iniConfig typically jApp::config()
@@ -198,6 +201,8 @@ class Configuration {
 
     protected function readIdPConfig($iniConfig) {
         $idpConfig = $iniConfig->{'saml:idp'};
+
+        $this->idpLabel  = $idpConfig['label'];
 
         if ($idpConfig['certs_signing_files'] == '') {
             $idpX509certFile = \jApp::configPath('saml/certs/idp.crt');
@@ -373,6 +378,44 @@ class Configuration {
             );
         return $org;
     }
+
+    function getIdpURL()
+    {
+        return array(
+            'singleSignOnService' => $this->settings['idp']['singleSignOnService']['url'],
+            'singleLogoutService' => $this->settings['idp']['singleLogoutService']['url'],
+            'singleLogoutServiceResponse' => $this->settings['idp']['singleLogoutService']['responseUrl']
+        );
+    }
+
+
+    function getIdpLabel()
+    {
+        return $this->idpLabel;
+    }
+
+    function getIdpSigningCertificate()
+    {
+        if (isset($this->settings['idp']['x509certMulti']['signing'])) {
+            $certs = $this->settings['idp']['x509certMulti']['signing'];
+            if (count($certs)) {
+                return $certs[0];
+            }
+        }
+        return $this->settings['idp']['x509cert'];
+    }
+
+    function getIdpEncryptionCertificate()
+    {
+        if (isset($this->settings['idp']['x509certMulti']['encryption'])) {
+            $certs = $this->settings['idp']['x509certMulti']['encryption'];
+            if (count($certs)) {
+                return $certs[0];
+            }
+        }
+        return $this->settings['idp']['x509cert'];
+    }
+
 
     /**
      * Gives the SAML attribute that contains the user login

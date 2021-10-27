@@ -95,6 +95,7 @@ class spconfigCtrl extends jController
         $config->setCertificate($form->getData('tlsCertificate'));
 
         $config->save();
+        jForms::destroy('spconfig');
         jMessage::add(jLocale::get('samladmin~admin.spconfig.form.save.ok', 'notice'));
         $rep->action = 'samladmin~config:index';
         return $rep;
