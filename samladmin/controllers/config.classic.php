@@ -32,4 +32,21 @@ class configCtrl extends jController
         return $rep;
     }
 
+
+    public function asset() {
+
+        $rep = $this->getResponse('binary');
+        $rep->doDownload = false;
+        $dir = __DIR__.'/../www/';
+        $rep->fileName = realpath($dir.str_replace('..', '', $this->param('file')));
+
+        if (!is_file($rep->fileName)) {
+            $rep = $this->getResponse('html', true);
+            $rep->bodyTpl = 'jelix~404.html';
+            $rep->setHttpStatus('404', 'Not Found');
+            return $rep;
+        }
+        $rep->mimeType = jFile::getMimeTypeFromFilename($rep->fileName);
+        return $rep;
+    }
 }

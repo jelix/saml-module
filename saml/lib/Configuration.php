@@ -252,8 +252,8 @@ class Configuration {
             'soap' => Constants::BINDING_SOAP,
             'deflate' => Constants::BINDING_DEFLATE,
         );
-        $singleSignOnServiceBinding = $bindings[$idpConfig['singleSignOnServiceBinding']] ?: '';
-        $singleLogoutServiceBinding = $bindings[$idpConfig['singleLogoutServiceBinding']] ?: '';
+        $singleSignOnServiceBinding = $bindings[$idpConfig['singleSignOnServiceBinding']] ?: Constants::BINDING_HTTP_REDIRECT;
+        $singleLogoutServiceBinding = $bindings[$idpConfig['singleLogoutServiceBinding']] ?: Constants::BINDING_HTTP_REDIRECT;
 
         // Identity Provider Data that we want connect with our SP
         $identityProvider = array(

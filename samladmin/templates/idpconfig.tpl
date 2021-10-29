@@ -3,7 +3,17 @@
 
 {form $idpform, 'samladmin~idpconfig:save'}
 
-<table class="table">
+<fieldset>
+    <legend>{@samladmin~admin.idpconfig.form.autofill@}</legend>
+    <p><label for="metadataurl">{@samladmin~admin.idpconfig.form.metadata.url@}</label>
+    <input type="text" id="metadataurl" />
+        <button id="metadataurl-button"
+                type="button" data-url="{jurl 'samladmin~idpconfig:loadMetadata'}"
+        >{@samladmin~admin.idpconfig.form.metadata.button@}</button>
+    </p>
+</fieldset>
+
+<table class="jforms-table">
 {formcontrols array(
     'serviceLabel',
     'entityId',

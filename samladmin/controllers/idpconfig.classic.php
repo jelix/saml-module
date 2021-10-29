@@ -1,4 +1,7 @@
 <?php
+
+use OneLogin\Saml2\Constants;
+
 /**
  * SAML administration.
  *
@@ -48,6 +51,7 @@ class idpconfigCtrl extends jController
 
         $tpl = new jTpl();
         $tpl->assign('idpform', $form);
+        $rep->addJSLink(jUrl::get('samladmin~config:asset', array('file'=>'idp.js')));
         $rep->body->assign('MAIN', $tpl->fetch('idpconfig'));
         $rep->body->assign('selectedMenuItem', 'samlconfig');
         return $rep;
@@ -88,4 +92,63 @@ class idpconfigCtrl extends jController
         $rep->action = 'samladmin~config:index';
         return $rep;
     }
+
+    function loadMetadata()
+    {
+        /** @var jResponseJson $rep */
+        $rep = $this->getResponse('json');
+        $url = $this->param('metadata_url');
+        if (!$url) {
+            $rep->data = array('error'=>'url is missing');
+            $rep->setHttpStatus(400, 'Bad request');
+            return $rep;
+        }
+
+        try {
+            $parser   = new \OneLogin\Saml2\IdPMetadataParser();
+            $metadata = $parser->parseRemoteXML($url, null, null, Constants::BINDING_HTTP_REDIRECT, Constants::BINDING_HTTP_REDIRECT);
+        }
+        catch(Exception $e) {
+            $rep->data = array(
+                'error'=>jLocale::get('samladmin~admin.spconfig.form.error.metadata'),
+                'parserError'=> $e->getMessage()
+            );
+            $rep->setHttpStatus(500, 'Internal server error');
+            return $rep;
+        }
+
+        $metadata = $metadata['idp'];
+        $data = array(
+            'entityId' => $metadata['entityId'],
+            'singleSignOnServiceUrl' => $metadata['singleSignOnService']['url']?:'',
+            'singleLogoutServiceUrl' => $metadata['singleLogoutService']['url']?:'',
+            'singleLogoutServiceResponseUrl' => $metadata['singleLogoutService']['responseUrl']?:'',
+            'signingCertificate' => '',
+            'encryptionCertificate' => ''
+        );
+
+        if (isset($metadata['x509certMulti'])) {
+            $data['signingCertificate'] = $metadata['x509certMulti']['signing'][0]?:'';
+            $data['encryptionCertificate'] = $metadata['x509certMulti']['encryption'][0]?:'';
+        }
+        else if (isset($metadata['x509cert'])) {
+            $data['signingCertificate'] = $metadata['x509cert'];
+            $data['encryptionCertificate'] = $metadata['x509cert'];
+        }
+
+        $data['signingCertificate'] = trim($data['signingCertificate']);
+        $data['encryptionCertificate'] = trim($data['encryptionCertificate']);
+
+        if ($data['signingCertificate'] && strpos($data['signingCertificate'], "-----BEGIN CERTIFICATE-----") === false) {
+            $data['signingCertificate'] = "-----BEGIN CERTIFICATE-----\n".$data['signingCertificate']."\n-----END CERTIFICATE-----\n";
+        }
+
+        if ($data['encryptionCertificate'] && strpos($data['encryptionCertificate'], "-----BEGIN CERTIFICATE-----") === false) {
+            $data['encryptionCertificate'] = "-----BEGIN CERTIFICATE-----\n".$data['encryptionCertificate']."\n-----END CERTIFICATE-----\n";
+        }
+
+        $rep->data = $data;
+        return $rep;
+    }
+
 }
