@@ -6,6 +6,11 @@
         <help locale="samladmin~admin.idpconfig.form.servicename.help" />
     </input>
 
+    <input ref="entityId" type="url" required="true">
+        <label locale="samladmin~admin.idpconfig.form.entityId.label"/>
+        <help locale="samladmin~admin.idpconfig.form.entityId.help" />
+    </input>
+
     <input ref="singleSignOnServiceUrl" type="url" required="true" >
         <label locale="samladmin~admin.idpconfig.form.singleSignOnServiceUrl.label"/>
         <help locale="samladmin~admin.idpconfig.form.singleSignOnServiceUrl.help" />

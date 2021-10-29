@@ -54,6 +54,11 @@ class ConfigurationModifier extends Configuration
         $this->idpLabel = $label;
     }
 
+    public function setIdpEntityId($entityId)
+    {
+        $this->settings['idp']['entityId'] = $entityId;
+    }
+
     public function setIdpUrls($singleSignOnServiceUrl, $singleLogoutServiceUrl, $singleLogoutServiceResponseUrl)
     {
         $this->settings['idp']['singleSignOnService']['url'] = $singleSignOnServiceUrl;

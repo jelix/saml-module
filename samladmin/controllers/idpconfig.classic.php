@@ -20,6 +20,7 @@ class idpconfigCtrl extends jController
         $form = jForms::create('idpconfig');
 
         $form->setData('serviceLabel', $config->getIdpLabel());
+        $form->setData('entityId', $config->getIdpEntityId());
 
         $urls = $config->getIdpURL();
         $form->setData('singleSignOnServiceUrl', $urls['singleSignOnService']);
@@ -71,6 +72,7 @@ class idpconfigCtrl extends jController
 
         $config = new \Jelix\Saml\ConfigurationModifier();
         $config->setIdpLabel($form->getData('serviceLabel'));
+        $config->setIdpEntityId($form->getData('entityId'));
         $config->setIdpSigningCertificate($form->getData('signingCertificate'));
         $config->setIdpEncryptionCertificate($form->getData('encryptionCertificate'));
 

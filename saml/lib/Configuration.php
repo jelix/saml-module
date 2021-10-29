@@ -394,6 +394,11 @@ class Configuration {
         return $this->idpLabel;
     }
 
+    function getIdpEntityId()
+    {
+        return $this->settings['idp']['entityId'];
+    }
+
     function getIdpSigningCertificate()
     {
         if (isset($this->settings['idp']['x509certMulti']['signing'])) {

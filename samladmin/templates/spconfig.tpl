@@ -5,7 +5,7 @@
 <fieldset>
     <legend>{@samladmin~admin.spconfig.form.organization@}</legend>
 
-    <table class="table">
+    <table class="jforms-table">
     {formcontrols array('organizationName', 'organizationDisplayName', 'organizationUrl')}
         <tr>
             <th>{ctrl_label}</th><td>{ctrl_control}</td>
@@ -18,7 +18,7 @@
 <fieldset>
     <legend>{@samladmin~admin.spconfig.form.contacts@}</legend>
 
-    <table class="table">
+    <table class="jforms-table">
         {formcontrols array('supportContactPersonName',
         'supportContactPersonEmail',
         'technicalContactPersonName',
@@ -38,11 +38,11 @@
     <p>{@samladmin~admin.spconfig.form.certificate.help@}</p>
 
     {formcontrols array('tlsPrivateKey', 'tlsCertificate')}
-        <div>
+        <p>
             {ctrl_label}
             <br/>
             {ctrl_control}
-        </div>
+        </p>
     {/formcontrols}
 
 </fieldset>

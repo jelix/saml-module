@@ -6,6 +6,7 @@
 <table class="table">
 {formcontrols array(
     'serviceLabel',
+    'entityId',
     'singleSignOnServiceUrl',
     'singleLogoutServiceUrl',
     'singleLogoutServiceResponseUrl'
@@ -19,11 +20,11 @@
 
 
 {formcontrols array('signingCertificate', 'encryptionCertificate')}
-    <div>
+    <p>
         {ctrl_label}
         <br/>
         {ctrl_control}
-    </div>
+    </p>
 {/formcontrols}
 
 
