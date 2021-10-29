@@ -33,6 +33,7 @@ services:
     container_name: "jelix_saml_php"
     environment:
       - JELIX_VERSION
+      - JELIX_STABILITY
     volumes:
       - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
       - "../:/opt/"

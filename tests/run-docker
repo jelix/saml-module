@@ -27,6 +27,7 @@ fi
 # commands directly
 cat > .env << End-of-env
 JELIX_VERSION=${JELIX_VERSION:-1.6.35-pre}
+JELIX_STABILITY=${JELIX_STABILITY:-nightly}
 End-of-env
 
 

@@ -7,6 +7,7 @@ ARG group_id
 ENV FPM_USER_ID=${user_id}
 ENV FPM_GROUP_ID=${group_id}
 ENV JELIX_VERSION=1.6.34
+ENV JELIX_STABILITY=release
 
 RUN apk update && apk upgrade
 RUN apk --no-cache add git php7 php7-fpm \
