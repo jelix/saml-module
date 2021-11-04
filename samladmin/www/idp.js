@@ -4,7 +4,6 @@ window.addEventListener('load', function () {
     {
          let url = this.getAttribute('data-url');
          let metadataUrl = $("#metadataurl").val();
-         console.log(metadataUrl);
          $.ajax({
              data: {
                  metadata_url: metadataUrl

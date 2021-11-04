@@ -4,7 +4,8 @@
     "license": "LGPL",
     "require": {
       "php": ">=5.6",
-      "onelogin/php-saml": "3.6.1"
+      "onelogin/php-saml": "^3.6.1",
+      "phpseclib/phpseclib": "~3.0.11"
     },
     "minimum-stability": "stable"
 }

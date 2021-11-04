@@ -37,6 +37,13 @@
 		<label locale="samladmin~admin.spconfig.form.tlsCertificate.label"/>
 	</textarea>
 
+	<menulist ref="certKeyLength" required="true">
+		<label locale="samladmin~admin.spconfig.form.cert.keyLength.label"/>
+		<item value="2048">2048 bits</item>
+		<item value="3072">3072 bits</item>
+		<item value="4096">4096 bits</item>
+	</menulist>
+
 	<submit ref="_submit">
 		<label locale="jelix~ui.buttons.save"/>
 	</submit>

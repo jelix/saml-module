@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form xmlns="http://jelix.org/ns/forms/1.1">
+
+	<input ref="certCountryName" type="string" required="true">
+		<label locale="samladmin~admin.spconfig.form.cert.countryName.label"/>
+	</input>
+
+	<input ref="certStateOrProvinceName" type="string" required="true">
+		<label locale="samladmin~admin.spconfig.form.cert.stateOrProvinceName.label"/>
+	</input>
+
+	<input ref="certLocalityName" type="string">
+		<label locale="samladmin~admin.spconfig.form.cert.localityName.label"/>
+	</input>
+
+	<input ref="certOrganizationName" type="string" required="true">
+		<label locale="samladmin~admin.spconfig.form.cert.organizationName.label"/>
+	</input>
+
+	<input ref="certOrganizationalUnitName" type="string">
+		<label locale="samladmin~admin.spconfig.form.cert.organizationalUnitName.label"/>
+	</input>
+
+	<input ref="certCommonName" type="string" required="true">
+		<label locale="samladmin~admin.spconfig.form.cert.commonName.label"/>
+	</input>
+
+	<input ref="certDaysValidity" type="integer" required="true" defaultvalue="365">
+		<label locale="samladmin~admin.spconfig.form.cert.daysValidity.label"/>
+	</input>
+
+</form>
