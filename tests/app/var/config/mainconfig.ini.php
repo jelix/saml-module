@@ -226,9 +226,27 @@ name=
 ; define the default config for datepickers in jforms
 ;datepicker = default
 
-[datepickers]
-;default = jelix/js/jforms/datepickers/default/init.js
 
+[datepickers]
+default="$jelix/js/jforms/datepickers/default/init.js"
+default.js[]="jquery/ui-1.12.1/jquery-ui.min.js"
+default.js[]="$jelix/js/jforms/datepickers/default/ui.en.js"
+default.js[]="$jqueryPath/ui/i18n/jquery.ui.datepicker-$lang.js"
+default.js[]="$jelix/js/jforms/datepickers/default/ui.$lang.js"
+default.css[]="jquery/ui-1.12.1/jquery-ui.min.css"
+
+[datetimepickers]
+default="$jelix/js/jforms/datepickers/default/init.js"
+default.js[]="jquery/ui-1.12.1/jquery-ui.min.js"
+default.js[]="$jelix/js/jforms/datepickers/default/ui.en.js"
+default.js[]="$jqueryPath/ui/i18n/jquery.ui.datepicker-$lang.js"
+default.js[]="$jelix/js/jforms/datepickers/default/ui.$lang.js"
+default.css[]="jquery/ui-1.12.1/jquery-ui.min.css"
+
+[jquery]
+jquery="jquery/jquery-3.5.1.min.js"
+jqueryui.js[]="jquery/ui-1.12.1/jquery-ui.min.js"
+jqueryui.css[]="jquery/ui-1.12.1/jquery-ui.min.css"
 
 [saml:sp]
 
