@@ -76,6 +76,11 @@ class ConfigurationModifier extends Configuration
         $this->settings['idp']['x509certMulti']['encryption'] = array($certificate);
     }
 
+    public function setLoginAttribute($attr)
+    {
+        $this->loginAttribute = $attr;
+    }
+
 
     public function save()
     {
@@ -137,6 +142,9 @@ class ConfigurationModifier extends Configuration
         $cryptCert = $this->getIdpEncryptionCertificate();
         $this->saveConfigFile($idpEncryptCertFile, $cryptCert);
         $appConfig->{'saml:idp'}['certs_encryption_files'] = $signCert ? 'idp_encrypt.pem' : '';
+
+        $liveConfig->setValue('__login', $this->loginAttribute, 'saml:attributes-mapping');
+        $appConfig->{'saml:attributes-mapping'}['__login'] = $this->loginAttribute;
 
         $liveConfig->save();
     }

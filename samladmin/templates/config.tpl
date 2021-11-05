@@ -3,6 +3,7 @@
 <ul>
     <li><a href="{jurl 'samladmin~spconfig:initform'}">{@samladmin~admin.spconfig.title@}</a></li>
     <li><a href="{jurl 'samladmin~idpconfig:initform'}">{@samladmin~admin.idpconfig.title@}</a></li>
+    <li><a href="{jurl 'samladmin~attrmapping:initform'}">{@samladmin~admin.attrmapping.title@}</a></li>
 </ul>
 
 <p>{@samladmin~admin.sp.metadata.url@}
