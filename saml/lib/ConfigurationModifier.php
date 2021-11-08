@@ -82,6 +82,12 @@ class ConfigurationModifier extends Configuration
     }
 
 
+    public function setAttributesMapping(array $attributes)
+    {
+        $this->attributesMapping = $attributes;
+    }
+
+
     public function save()
     {
         $appConfig = \jApp::config();
@@ -143,8 +149,10 @@ class ConfigurationModifier extends Configuration
         $this->saveConfigFile($idpEncryptCertFile, $cryptCert);
         $appConfig->{'saml:idp'}['certs_encryption_files'] = $signCert ? 'idp_encrypt.pem' : '';
 
-        $liveConfig->setValue('__login', $this->loginAttribute, 'saml:attributes-mapping');
-        $appConfig->{'saml:attributes-mapping'}['__login'] = $this->loginAttribute;
+        $mapping = $this->attributesMapping;
+        $mapping['__login'] = $this->loginAttribute;
+        $liveConfig->setValues($mapping, 'saml:attributes-mapping');
+        $appConfig->{'saml:attributes-mapping'} = $mapping;
 
         $liveConfig->save();
     }

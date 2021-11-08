@@ -17,9 +17,28 @@ class attrmappingCtrl extends jController
 
     /**
      * @param jFormsBase $form
+     * @param \Jelix\Saml\Configuration $config
      */
-    protected function setupForm($form)
+    protected function setupForm($form, $config)
     {
+        /** @var jFormsControlGroup $groupCtrl */
+        $groupCtrl = $form->getControl('attrsgroup');
+
+        $defaultValues = $config->getAttributesMapping();
+        $userFormSelector = jAuth::getDriverParam('form');
+        $authForm = jForms::create($userFormSelector);
+        foreach ($authForm->getControls() as $ctrlName => $ctrl) {
+            if (! ($ctrl instanceof jFormsControlInput)) {
+                continue;
+            }
+
+            $attrCtrl = new jFormsControlInput('attr_'.$ctrl->ref);
+            $attrCtrl->label = $ctrl->label;
+            $attrCtrl->defaultValue = $defaultValues[$ctrl->ref] ?: '';
+            $groupCtrl->addChildControl($attrCtrl);
+        }
+        $form->addControl($groupCtrl);
+        jForms::destroy($userFormSelector);
 
     }
 
@@ -28,7 +47,7 @@ class attrmappingCtrl extends jController
     {
         $config = new \Jelix\Saml\Configuration(jApp::config(), false);
         $form = jForms::create('attrmapping');
-        $this->setupForm($form);
+        $this->setupForm($form, $config);
 
         $form->setData('login', $config->getSAMLAttributeForLogin());
         $rep = $this->getResponse('redirect');
@@ -46,7 +65,8 @@ class attrmappingCtrl extends jController
             $rep->action = 'samladmin~config:index';
             return $rep;
         }
-        $this->setupForm($form);
+        $config = new \Jelix\Saml\Configuration(jApp::config(), false);
+        $this->setupForm($form, $config);
 
         $tpl = new jTpl();
         $tpl->assign('attrform', $form);
@@ -67,6 +87,9 @@ class attrmappingCtrl extends jController
             $rep->action = 'samladmin~config:index';
             return $rep;
         }
+        $config = new \Jelix\Saml\Configuration(jApp::config(), false);
+        $this->setupForm($form, $config);
+
         $form->initFromRequest();
         if (!$form->check()) {
             $rep->action = 'samladmin~attrmapping:edit';
@@ -76,6 +99,20 @@ class attrmappingCtrl extends jController
         $config = new \Jelix\Saml\ConfigurationModifier();
         $config->setSAMLAttributeForLogin($form->getData('login'));
 
+        /** @var jFormsControlGroup $groupCtrl */
+        $groupCtrl = $form->getControl('attrsgroup');
+        $mapping = array();
+        foreach($groupCtrl->getChildControls() as $ctrl) {
+            if (!preg_match('/^attr_(.+)$/', $ctrl->ref, $m)) {
+                continue;
+            }
+            $daoAttr = $m[1];
+            $samlAttr = $form->getData($ctrl->ref);
+            if ($samlAttr) {
+                $mapping[$daoAttr] = $samlAttr;
+            }
+        }
+        $config->setAttributesMapping($mapping);
         $config->save();
         jForms::destroy('attrmapping');
         jMessage::add(jLocale::get('samladmin~admin.spconfig.form.save.ok', 'notice'));
