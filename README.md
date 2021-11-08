@@ -8,8 +8,9 @@ Installation
 This module is for Jelix 1.6.21 and higher. It is compatible with jauth, 
 jauthdb, jauthdb_admin and jcommunity modules.
 
-It uses the [onelogin/php-saml](https://github.com/onelogin/php-saml/) library. This 
-library requires:
+It uses the [onelogin/php-saml](https://github.com/onelogin/php-saml/) library. 
+
+The SAML module requires:
 
 - php 7.0 or more
 - some core PHP extensions like php-xml, php-date, php-zlib.
@@ -138,7 +139,7 @@ php yourapp/install/installer.php
 
 The installer:
 
-- deactivate the plugin `auth` for jCoordinator, and replace it by the `saml` plugin
+- configure the plugin `auth` for jCoordinator
 - create a `var/config/saml/saml.coord.ini.php` for the `saml` plugin or use the existing one 
 - setup an admin user if there is an install parameter useradmin and emailadmin
 
@@ -157,8 +158,10 @@ the [README.md file of php-saml](https://github.com/onelogin/php-saml/blob/3.4.1
 Certificates
 ------------
 
-You should put your service provider certificate and private key into 
-respectively `var/config/saml/certs/sp.crt` and `var/config/saml/certs/sp.key`.
+With the samladmin module, you can generate a private key and a certificate from a web interface.
+
+If you don't activate this module, you should put your service provider certificate 
+and private key into respectively `var/config/saml/certs/sp.crt` and `var/config/saml/certs/sp.key`.
 
 An example to create the certificate (only for tests, you probably have to generate
 them against an external or internal certificates authority)
@@ -178,6 +181,10 @@ The SAML Identity Provider will give you them some attributes about the user.
 If not, you should configure the Identity Provider so it will include some
 attributes into the login response.
 
+With the samladmin module, you can setup easily the mapping between SAML attributes
+and the user dao record properties.
+
+If you don't use the samladmin module, you should setup by hand.
 
 There should be at least one attribute, indicating the user login. You should
 indicate the name of this attribute into the `__login` option of the `saml:attributes-mapping`

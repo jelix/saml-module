@@ -7,12 +7,15 @@ Version 2.0.0 (not released yet)
 It allows now to choice the authentication method : by the classical login/password
 (provided by the jauth or the jcommunity module), or by SAML. It means that
 instead of redirecting the user to the identity provider web site when authentication
-is required, it shows the classical login/password form with an additionnal button
+is required, it shows the classical login/password form with an additional button
 to authenticate with Saml.
 
 It fixes the logout initiated by the identity provider: PHP session linked to
 closed SAML session are now destroyed.
 
+It provides a new module, samladmin, which allows to configure SAML within an
+administration web interface, with a generator of private key/certificate,
+with an automatic fill of idp parameters by retrieving a given metadata url of the idp.
 
 For developers:
 - the jauth module is now required, except if you are using the jcommunity module
