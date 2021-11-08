@@ -99,7 +99,7 @@ class Saml
             throw new LoginException('', self::ACS_ERR_NOT_AUTHENTICATED);
         }
 
-        $loginAttr = $this->config->getLoginAttribute();
+        $loginAttr = $this->config->getSAMLAttributeForLogin();
         $attributes = $auth->getAttributes();
         if (empty($attributes)) {
             throw new LoginException(

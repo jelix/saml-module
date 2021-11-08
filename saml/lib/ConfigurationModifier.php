@@ -76,7 +76,7 @@ class ConfigurationModifier extends Configuration
         $this->settings['idp']['x509certMulti']['encryption'] = array($certificate);
     }
 
-    public function setLoginAttribute($attr)
+    public function setSAMLAttributeForLogin($attr)
     {
         $this->loginAttribute = $attr;
     }

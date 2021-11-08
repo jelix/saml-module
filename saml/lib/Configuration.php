@@ -121,7 +121,6 @@ class Configuration {
     protected function readSpConfig($iniConfig) {
         $spConfig = $iniConfig->{'saml:sp'};
 
-
         // Service Provider Data that we are deploying
         $serviceProvider =array(
             // Identifier of the SP entity  (must be a URI)
@@ -427,12 +426,12 @@ class Configuration {
      *
      * @return string
      */
-    function getLoginAttribute() {
+    function getSAMLAttributeForLogin() {
         return $this->loginAttribute;
     }
 
     /**
-     * @return array
+     * @return array keys are dao attributes, values are SAML attributes
      */
     function getAttributesMapping() {
         return $this->attributesMapping;

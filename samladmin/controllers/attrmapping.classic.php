@@ -30,7 +30,7 @@ class attrmappingCtrl extends jController
         $form = jForms::create('attrmapping');
         $this->setupForm($form);
 
-        $form->setData('login', $config->getLoginAttribute());
+        $form->setData('login', $config->getSAMLAttributeForLogin());
         $rep = $this->getResponse('redirect');
         $rep->action = 'samladmin~attrmapping:edit';
         return $rep;
@@ -74,7 +74,7 @@ class attrmappingCtrl extends jController
         }
 
         $config = new \Jelix\Saml\ConfigurationModifier();
-        $config->setLoginAttribute($form->getData('login'));
+        $config->setSAMLAttributeForLogin($form->getData('login'));
 
         $config->save();
         jForms::destroy('attrmapping');

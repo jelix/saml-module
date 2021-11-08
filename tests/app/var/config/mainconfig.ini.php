@@ -284,7 +284,7 @@ saml_debug=off
 
 [saml:attributes-mapping]
 ; indicate on which properties of the DAO record, attributes given by the idp should be stored
-; __login is a not a property, but indicates which attribute contains the user login.
+; __login is a not a property, but indicates which SAML attribute contains the user login.
 __login=login
 ; <dao property>=<saml attribute>
 login=login
