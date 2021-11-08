@@ -29,6 +29,10 @@ class Configuration {
      */
     protected $attributesMapping = array();
 
+    /**
+     * @var array list of dao properties that can be used for mapping
+     */
+    protected $daoPropertiesForMapping = array();
 
     protected $idpCertError = '';
 
@@ -52,6 +56,10 @@ class Configuration {
         $this->settings['strict'] = !$spConfig['saml_debug'];
         $this->settings['debug'] = $spConfig['saml_debug'];
         $this->settings['baseurl'] = str_replace('/acs', '/', \jUrl::getFull('saml~endpoint:acs'));
+
+        if (isset($spConfig['daoPropertiesForMapping']) && $spConfig['daoPropertiesForMapping'] != '') {
+            $this->daoPropertiesForMapping = preg_split('/ *, */', $spConfig['daoPropertiesForMapping']);
+        }
 
         $this->settings['sp'] = $this->readSpConfig($iniConfig);
         $this->settings['idp'] = $this->readIdPConfig($iniConfig);
@@ -426,15 +434,28 @@ class Configuration {
      *
      * @return string
      */
-    function getSAMLAttributeForLogin() {
+    function getSAMLAttributeForLogin()
+    {
         return $this->loginAttribute;
     }
 
     /**
      * @return array keys are dao attributes, values are SAML attributes
      */
-    function getAttributesMapping() {
+    function getAttributesMapping()
+    {
         return $this->attributesMapping;
+    }
+
+
+    /**
+     * list of dao properties that could be mapped
+     *
+     * @return array dao properties names
+     */
+    function getAuthorizedDaoPropertiesForMapping()
+    {
+        return $this->daoPropertiesForMapping;
     }
 
     protected function fixConfigValues($iniConfig) {

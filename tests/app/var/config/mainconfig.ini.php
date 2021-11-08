@@ -275,6 +275,9 @@ attrcs_service_description=
 ; enable debug or not in the SAML library
 saml_debug=off
 
+; list of dao properties that can be used for mapping. Empty means all dao properties.
+daoPropertiesForMapping="login,email"
+
 [saml:sp:requestedAttributes]
 ;<attribute name>[isRequired]=on or off
 ;<attribute name>[nameFormat]=  ; optional

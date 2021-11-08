@@ -25,21 +25,30 @@ class attrmappingCtrl extends jController
         $groupCtrl = $form->getControl('attrsgroup');
 
         $defaultValues = $config->getAttributesMapping();
+
+        $daoProperties = $config->getAuthorizedDaoPropertiesForMapping();
+
         $userFormSelector = jAuth::getDriverParam('form');
         $authForm = jForms::create($userFormSelector);
+        $listOfField = array();
         foreach ($authForm->getControls() as $ctrlName => $ctrl) {
             if (! ($ctrl instanceof jFormsControlInput)) {
+                continue;
+            }
+            $listOfField[] = $ctrl->ref;
+            if (count($daoProperties) && !in_array($ctrl->ref, $daoProperties)) {
                 continue;
             }
 
             $attrCtrl = new jFormsControlInput('attr_'.$ctrl->ref);
             $attrCtrl->label = $ctrl->label;
             $attrCtrl->defaultValue = $defaultValues[$ctrl->ref] ?: '';
+            $attrCtrl->required = $ctrl->required;
             $groupCtrl->addChildControl($attrCtrl);
         }
         $form->addControl($groupCtrl);
         jForms::destroy($userFormSelector);
-
+        return $listOfField;
     }
 
 
@@ -88,7 +97,7 @@ class attrmappingCtrl extends jController
             return $rep;
         }
         $config = new \Jelix\Saml\Configuration(jApp::config(), false);
-        $this->setupForm($form, $config);
+        $listOfField = $this->setupForm($form, $config);
 
         $form->initFromRequest();
         if (!$form->check()) {
@@ -99,19 +108,20 @@ class attrmappingCtrl extends jController
         $config = new \Jelix\Saml\ConfigurationModifier();
         $config->setSAMLAttributeForLogin($form->getData('login'));
 
+        $daoProperties = $config->getAuthorizedDaoPropertiesForMapping();
+
         /** @var jFormsControlGroup $groupCtrl */
-        $groupCtrl = $form->getControl('attrsgroup');
         $mapping = array();
-        foreach($groupCtrl->getChildControls() as $ctrl) {
-            if (!preg_match('/^attr_(.+)$/', $ctrl->ref, $m)) {
-                continue;
+        foreach($listOfField as $ctrlRef) {
+            if (count($daoProperties) == 0  || in_array($ctrlRef, $daoProperties)) {
+                $samlAttr = $form->getData('attr_'.$ctrlRef);
             }
-            $daoAttr = $m[1];
-            $samlAttr = $form->getData($ctrl->ref);
-            if ($samlAttr) {
-                $mapping[$daoAttr] = $samlAttr;
+            else {
+                $samlAttr = '';
             }
+            $mapping[$ctrlRef] = $samlAttr;
         }
+
         $config->setAttributesMapping($mapping);
         $config->save();
         jForms::destroy('attrmapping');
