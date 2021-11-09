@@ -85,6 +85,23 @@ class samlModuleInstaller extends SamlAbstractInstaller
 
         if (!$appConfig->isSection('saml:sp')) {
             $samlIniConfig = new jIniFileModifier(__DIR__.'/config.ini');
+
+            if (strpos($appConfig->getFileName(), 'mainconfig.ini.php') === false) {
+                // import configuration from mainconfig into localconfig
+                // it can have parameters that are empty by default, and then
+                // values from mainconfig should not be set with empty values into localconfig
+                $mainConfig = $this->entryPoint->getSingleMainConfigIni();
+                if ($mainConfig->isSection('saml:sp')) {
+                    $samlIniConfig->setValues($mainConfig->getValues('saml:sp'), 'saml:sp');
+                }
+                if ($mainConfig->isSection('saml:idp')) {
+                    $samlIniConfig->setValues($mainConfig->getValues('saml:idp'), 'saml:idp');
+                }
+                if ($mainConfig->isSection('saml:security')) {
+                    $samlIniConfig->setValues($mainConfig->getValues('saml:security'), 'saml:security');
+                }
+            }
+
             $appConfig->import($samlIniConfig);
             $appConfig->save();
         }
