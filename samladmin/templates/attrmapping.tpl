@@ -1,7 +1,7 @@
 <h1>{@samladmin~admin.attrmapping.form.title@}</h1>
 {form $attrform, 'samladmin~attrmapping:save'}
     <p>
-        {ctrl_label 'login'} <br/>
+        {ctrl_label 'login'}
         {ctrl_control 'login'}
     </p>
 

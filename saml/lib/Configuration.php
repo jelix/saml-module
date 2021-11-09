@@ -123,6 +123,7 @@ class Configuration {
         if ($checkConfig) {
             $this->checkSpConfig();
             $this->checkIdpConfig();
+            $this->checkAttrConfig();
         }
     }
 
@@ -288,31 +289,45 @@ class Configuration {
     }
 
 
-    protected function checkSpConfig()
+    public function checkAttrConfig()
     {
-        if ($this->loginAttribute == '') {
-            throw new \Exception('__login is missing into the attributes mapping configuration');
-        }
-
-        if ($this->settings['sp']['x509cert'] == '') {
-            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.sp.cert'));
-        }
-
-        if ($this->settings['sp']['privateKey'] == '') {
-            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.sp.key'));
+        if ($this->loginAttribute == '' || count($this->attributesMapping) == 0) {
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.config.attributes.missing'), 1);
         }
     }
 
-    protected function checkIdpConfig()
+
+    public function checkSpConfig()
+    {
+        $org = $this->getOrganization();
+        if ($org['name'] == '') {
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.sp.organization'),2);
+        }
+
+        if ($this->settings['sp']['x509cert'] == '') {
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.sp.cert'),2);
+        }
+
+        if ($this->settings['sp']['privateKey'] == '') {
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.sp.key'), 2);
+        }
+    }
+
+    public function checkIdpConfig()
     {
         if ($this->idpCertError != '') {
-            throw new \Exception($this->idpCertError);
+            throw new \Exception($this->idpCertError, 10);
         }
+
+        if ($this->getIdpEntityId() == '') {
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.idp.identityId'),2);
+        }
+
         if ($this->settings['idp']['singleSignOnService']['binding'] == '') {
-            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.bad.parameter', array('singleSignOnServiceBinding')));
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.bad.parameter', array('singleSignOnServiceBinding')), 11);
         }
         if ($this->settings['idp']['singleLogoutService']['binding'] == '') {
-            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.bad.parameter', array('singleLogoutServiceBinding')));
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.bad.parameter', array('singleLogoutServiceBinding')), 11);
         }
     }
 

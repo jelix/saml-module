@@ -23,12 +23,38 @@ class configCtrl extends jController
         $rep = $this->getResponse('html');
 
         $tpl = new jTpl();
-        $tpl->assign('sp_metadata_url', jUrl::getFull('saml~endpoint:metadata'));
 
+        $config = new \Jelix\Saml\Configuration(null, false);
+
+        try {
+            $config->checkSpConfig();
+            $tpl->assign('sp_config_ok', true);
+        }
+        catch(\Exception $e) {
+            $tpl->assign('sp_config_ok', false);
+        }
+
+        try {
+            $config->checkIdpConfig();
+            $tpl->assign('idp_config_ok', true);
+        }
+        catch(\Exception $e) {
+            $tpl->assign('idp_config_ok', false);
+        }
+
+        try {
+            $config->checkAttrConfig();
+            $tpl->assign('attr_config_ok', true);
+        }
+        catch(\Exception $e) {
+            $tpl->assign('attr_config_ok', false);
+        }
+
+        $tpl->assign('sp_metadata_url', jUrl::getFull('saml~endpoint:metadata'));
 
         $rep->body->assign('MAIN', $tpl->fetch('config'));
         $rep->body->assign('selectedMenuItem', 'samlconfig');
-
+        $rep->addCSSLink(jUrl::get('samladmin~config:asset', array('file'=>'admin.css')));
         return $rep;
     }
 
