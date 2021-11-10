@@ -5,4 +5,4 @@
         <button>{$button_label|eschtml}</button>
     </div>
 </form>
-<p>or </p>
+<p>{@saml~auth.authentication.or.label@}</p>
