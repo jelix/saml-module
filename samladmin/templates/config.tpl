@@ -5,13 +5,7 @@
 <p> <a href="{jurl 'samladmin~spconfig:initform'}">{@samladmin~admin.spconfig.config.label@}</a>
         {if !$sp_config_ok}<span class="error">{@samladmin~admin.spconfig.error.not.set@}</span>{/if}
 </p>
-<p>{@samladmin~admin.sp.metadata.url@}
-    {if $sp_config_ok}
-        <a href="{$sp_metadata_url}">{$sp_metadata_url}</a>
-    {else}
-        <span class="error">{@samladmin~admin.sp.metadata.url.not.available@}</span>
-    {/if}
-</p>
+
 
 <h2>{@samladmin~admin.idpconfig.title@}</h2>
 <ul>
@@ -25,4 +19,11 @@
     </li>
 </ul>
 
-
+<h2>{@samladmin~admin.sp.metadata.url.title@}</h2>
+<p>{@samladmin~admin.sp.metadata.url@}
+    {if $sp_config_ok && $idp_config_ok}
+        <a href="{$sp_metadata_url}">{$sp_metadata_url}</a>
+    {else}
+        <span class="error">{@samladmin~admin.sp.metadata.url.not.available@}</span>
+    {/if}
+</p>

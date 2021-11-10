@@ -211,7 +211,7 @@ class Configuration {
         $idpConfig = $iniConfig->{'saml:idp'};
 
         $this->idpLabel  = $idpConfig['label'];
-
+        $certsSigning = array();
         if ($idpConfig['certs_signing_files'] == '') {
             $idpX509certFile = \jApp::configPath('saml/certs/idp.crt');
 
@@ -226,7 +226,7 @@ class Configuration {
         else {
             $idpX509cert = '';
             $list = preg_split('/ *, */', $idpConfig['certs_signing_files']);
-            $certsSigning = array();
+
             foreach( $list as $file) {
                 $path = \jApp::configPath('saml/certs/'.$file);
                 if (file_exists($path)) {

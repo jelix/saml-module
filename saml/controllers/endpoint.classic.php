@@ -21,11 +21,25 @@ class endpointCtrl extends jController {
     function metadata() {
         $xml = $this->getResponse('xml');
 
-        $configuration = new \Jelix\Saml\Configuration();
+        try {
+            $configuration = new \Jelix\Saml\Configuration(null, false);
+            // we don't check saml attributes, no need to generate metadata.
+            $configuration->checkSpConfig();
+            $configuration->checkIdpConfig();
 
-        $samlSettings = $configuration->getSettings();
+            $samlSettings = $configuration->getSettings();
 
-        $xml->content = $samlSettings->getSPMetadata();
+            $xml->content = $samlSettings->getSPMetadata();
+        }
+        catch(\Exception $e) {
+
+            $response = $this->getResponse('basichtml');
+            $response->htmlFile = JELIX_LIB_CORE_PATH.'response/error.en_US.php';
+            $response->addContent('<p>'.htmlspecialchars($e->getMessage()).'</p>');
+
+            $response->setHttpStatus('500', 'Internal server error');
+            return $response;
+        }
 
         $xml->sendXMLHeader = false;
         $xml->checkValidity = false;
