@@ -3,6 +3,13 @@
 
 {form $idpform, 'samladmin~idpconfig:save'}
 
+
+    <table class="jforms-table">
+    <tr>
+        <th>{ctrl_label 'serviceLabel'}</th><td>{ctrl_control 'serviceLabel'}</td>
+    </tr>
+    </table>
+
 <fieldset>
     <legend>{@samladmin~admin.idpconfig.form.autofill@}</legend>
     <p><label for="metadataurl">{@samladmin~admin.idpconfig.form.metadata.url@}</label>
@@ -15,7 +22,6 @@
 
 <table class="jforms-table">
 {formcontrols array(
-    'serviceLabel',
     'entityId',
     'singleSignOnServiceUrl',
     'singleLogoutServiceUrl',
