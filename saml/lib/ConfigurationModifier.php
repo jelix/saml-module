@@ -133,7 +133,6 @@ class ConfigurationModifier extends Configuration
         $liveConfig->setValue('singleLogoutServiceResponseUrl', $urls['singleLogoutServiceResponse'], 'saml:idp');
         $appConfig->{'saml:idp'}['singleLogoutServiceResponseUrl'] = $urls['singleLogoutServiceResponse'];
 
-
         $idpX509certFile = \jApp::configPath('saml/certs/idp.crt');
         if (file_exists($idpX509certFile)) {
             unlink($idpX509certFile);
@@ -142,12 +141,14 @@ class ConfigurationModifier extends Configuration
         $idpSignCertFile = \jApp::configPath('saml/certs/idp_sig.pem');
         $signCert = $this->getIdpSigningCertificate();
         $this->saveConfigFile($idpSignCertFile, $signCert);
+        $liveConfig->setValue('certs_signing_files', ($signCert ? 'idp_sig.pem' : ''), 'saml:idp');
         $appConfig->{'saml:idp'}['certs_signing_files'] = $signCert ? 'idp_sig.pem' : '';
 
         $idpEncryptCertFile = \jApp::configPath('saml/certs/idp_encrypt.pem');
         $cryptCert = $this->getIdpEncryptionCertificate();
         $this->saveConfigFile($idpEncryptCertFile, $cryptCert);
-        $appConfig->{'saml:idp'}['certs_encryption_files'] = $signCert ? 'idp_encrypt.pem' : '';
+        $liveConfig->setValue('certs_encryption_files', ($cryptCert ? 'idp_encrypt.pem' : ''), 'saml:idp');
+        $appConfig->{'saml:idp'}['certs_encryption_files'] = $cryptCert ? 'idp_encrypt.pem' : '';
 
         $mapping = $this->attributesMapping;
         $mapping['__login'] = $this->loginAttribute;
