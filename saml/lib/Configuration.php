@@ -260,8 +260,8 @@ class Configuration {
             'soap' => Constants::BINDING_SOAP,
             'deflate' => Constants::BINDING_DEFLATE,
         );
-        $singleSignOnServiceBinding = $bindings[$idpConfig['singleSignOnServiceBinding']] ?: Constants::BINDING_HTTP_REDIRECT;
-        $singleLogoutServiceBinding = $bindings[$idpConfig['singleLogoutServiceBinding']] ?: Constants::BINDING_HTTP_REDIRECT;
+        $singleSignOnServiceBinding = $bindings[$idpConfig['singleSignOnServiceBinding']] ?? Constants::BINDING_HTTP_REDIRECT;
+        $singleLogoutServiceBinding = $bindings[$idpConfig['singleLogoutServiceBinding']] ?? Constants::BINDING_HTTP_REDIRECT;
 
         // Identity Provider Data that we want connect with our SP
         $identityProvider = array(
@@ -373,7 +373,7 @@ class Configuration {
      */
     function getSupportContact()
     {
-        return ($this->settings['contactPerson']['support'] ?:
+        return ($this->settings['contactPerson']['support'] ??
             array('givenName'=>'', 'emailAddress'=>''));
     }
 
@@ -383,7 +383,7 @@ class Configuration {
      */
     function getTechnicalContact()
     {
-        return ($this->settings['contactPerson']['technical'] ?:
+        return ($this->settings['contactPerson']['technical'] ??
             array('givenName'=>'', 'emailAddress'=>''));
     }
 
@@ -396,7 +396,7 @@ class Configuration {
         $org =
             array_merge(
                 array('name' => '', 'displayname' => '', 'url' => ''),
-                ($this->settings['organization']['en-US'] ?: array())
+                ($this->settings['organization']['en-US'] ?? array())
             );
         return $org;
     }

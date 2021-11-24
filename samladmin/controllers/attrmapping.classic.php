@@ -42,7 +42,7 @@ class attrmappingCtrl extends jController
 
             $attrCtrl = new jFormsControlInput('attr_'.$ctrl->ref);
             $attrCtrl->label = $ctrl->label;
-            $attrCtrl->defaultValue = $defaultValues[$ctrl->ref] ?: '';
+            $attrCtrl->defaultValue = $defaultValues[$ctrl->ref] ?? '';
             $attrCtrl->required = $ctrl->required;
             $groupCtrl->addChildControl($attrCtrl);
         }

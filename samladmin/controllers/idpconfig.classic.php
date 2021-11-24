@@ -120,16 +120,16 @@ class idpconfigCtrl extends jController
         $metadata = $metadata['idp'];
         $data = array(
             'entityId' => $metadata['entityId'],
-            'singleSignOnServiceUrl' => $metadata['singleSignOnService']['url']?:'',
-            'singleLogoutServiceUrl' => $metadata['singleLogoutService']['url']?:'',
-            'singleLogoutServiceResponseUrl' => $metadata['singleLogoutService']['responseUrl']?:'',
+            'singleSignOnServiceUrl' => $metadata['singleSignOnService']['url']??'',
+            'singleLogoutServiceUrl' => $metadata['singleLogoutService']['url']??'',
+            'singleLogoutServiceResponseUrl' => $metadata['singleLogoutService']['responseUrl']??'',
             'signingCertificate' => '',
             'encryptionCertificate' => ''
         );
 
         if (isset($metadata['x509certMulti'])) {
-            $data['signingCertificate'] = $metadata['x509certMulti']['signing'][0]?:'';
-            $data['encryptionCertificate'] = $metadata['x509certMulti']['encryption'][0]?:'';
+            $data['signingCertificate'] = $metadata['x509certMulti']['signing'][0]??'';
+            $data['encryptionCertificate'] = $metadata['x509certMulti']['encryption'][0]??'';
         }
         else if (isset($metadata['x509cert'])) {
             $data['signingCertificate'] = $metadata['x509cert'];
