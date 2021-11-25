@@ -153,6 +153,10 @@ class ConfigurationModifier extends Configuration
         $liveConfig->setValue('label', $this->getIdpLabel(), 'saml:idp');
         $appConfig->{'saml:idp'}['label'] = $this->getIdpLabel();
 
+        $idpEid = $this->getIdpEntityId();
+        $liveConfig->setValue('entityId', $idpEid, 'saml:idp');
+        $appConfig->{'saml:idp'}['entityId'] = $idpEid;
+
         $urls = $this->getIdpURL();
 
         $liveConfig->setValue('singleSignOnServiceUrl', $urls['singleSignOnService'], 'saml:idp');
