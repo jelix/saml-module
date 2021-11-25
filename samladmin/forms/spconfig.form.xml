@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form xmlns="http://jelix.org/ns/forms/1.1">
 
-	<input ref="organizationName" type="string" required="true">
+	<input ref="entityId" type="string" required="true">
+		<label locale="samladmin~admin.spconfig.form.entityId.label"/>
+		<help locale="samladmin~admin.spconfig.form.entityId.help" />
+	</input>
+
+	<input ref="organizationName" type="string">
 		<label locale="samladmin~admin.spconfig.form.organization.name.label"/>
 	</input>
 

@@ -22,6 +22,8 @@ class spconfigCtrl extends jController
         $config = new \Jelix\Saml\Configuration(jApp::config(), false);
         $form = jForms::create('spconfig');
 
+        $form->setData('entityId', $config->getSpEntityId());
+
         $org = $config->getOrganization();
         $form->setData('organizationName', $org['name']);
         $form->setData('organizationDisplayName', $org['displayname']);
@@ -82,6 +84,9 @@ class spconfigCtrl extends jController
         }
 
         $config = new \Jelix\Saml\ConfigurationModifier();
+
+        $config->setSpEntityId($form->getData('entityId'));
+
         $config->setOrganization(
             $form->getData('organizationName'),
             $form->getData('organizationDisplayName'),

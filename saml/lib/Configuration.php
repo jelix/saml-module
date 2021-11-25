@@ -132,8 +132,8 @@ class Configuration {
 
         // Service Provider Data that we are deploying
         $serviceProvider =array(
-            // Identifier of the SP entity  (must be a URI)
-            'entityId' => \jUrl::getFull('saml~endpoint:metadata'),
+            // Identifier of the SP entity
+            'entityId' => ($spConfig['entityId'] ?? ''),
             // Specifies info about where and how the <AuthnResponse> message MUST be
             // returned to the requester, in this case our SP.
             'assertionConsumerService' => array(
@@ -299,6 +299,11 @@ class Configuration {
 
     public function checkSpConfig()
     {
+
+        if ($this->settings['sp']['entityId'] == '') {
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.sp.entityId'),2);
+        }
+
         $org = $this->getOrganization();
         if ($org['name'] == '') {
             throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.sp.organization'),2);
@@ -347,6 +352,15 @@ class Configuration {
      */
     function getSettingsArray() {
         return $this->settings;
+    }
+
+    /**
+     * to get the application entity id
+     * @return string the entity Id
+     */
+    function getSpEntityId()
+    {
+        return $this->settings['sp']['entityId'];
     }
 
     /**

@@ -4,6 +4,15 @@
 
 {form $spform, 'samladmin~spconfig:save'}
 <fieldset>
+    <table class="jforms-table">
+        {formcontrols array('entityId')}
+            <tr>
+                <th>{ctrl_label}</th><td>{ctrl_control}</td>
+            </tr>
+        {/formcontrols}
+    </table>
+</fieldset>
+<fieldset>
     <legend>{@samladmin~admin.spconfig.form.organization@}</legend>
 
     <table class="jforms-table">

@@ -20,6 +20,10 @@ class ConfigurationModifier extends Configuration
         parent::__construct($config, false);
     }
 
+    public function setSpEntityId($entityId)
+    {
+        $this->settings['sp']['entityId'] = $entityId;
+    }
 
     public function setCertificate($certificate)
     {
@@ -94,6 +98,9 @@ class ConfigurationModifier extends Configuration
         $liveConfig = new \jIniFileModifier(\jApp::configPath('liveconfig.ini.php'));
 
         // sp data
+        $spEid = $this->getSpEntityId();
+        $liveConfig->setValue('entityId', $spEid, 'saml:sp');
+        $appConfig->{'saml:sp'}['entityId'] = $spEid;
 
         $tech = $this->getTechnicalContact();
         $liveConfig->setValue('technicalContactPerson', $tech['givenName'], 'saml:sp', 'givenName');
