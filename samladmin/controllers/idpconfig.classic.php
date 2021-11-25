@@ -19,7 +19,7 @@ class idpconfigCtrl extends jController
 
     public function initform()
     {
-        $config = new \Jelix\Saml\Configuration(jApp::config(), false);
+        $config = new \Jelix\Saml\Configuration(false);
         $form = jForms::create('idpconfig');
 
         $form->setData('serviceLabel', $config->getIdpLabel());

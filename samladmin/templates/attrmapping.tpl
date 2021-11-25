@@ -9,7 +9,11 @@
         {ctrl_label 'attrsgroup'}
         {ctrl_control 'attrsgroup'}
     </div>
+    <p>
+        {ctrl_control 'automaticAccountCreation'}
+        {ctrl_label 'automaticAccountCreation'}
 
+    </p>
     <div>
         {formsubmit}
         <a href="{jurl 'samladmin~config:index'}">{@jelix~ui.buttons.cancel@}</a>

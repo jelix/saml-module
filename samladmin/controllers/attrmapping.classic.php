@@ -54,11 +54,12 @@ class attrmappingCtrl extends jController
 
     public function initform()
     {
-        $config = new \Jelix\Saml\Configuration(jApp::config(), false);
+        $config = new \Jelix\Saml\Configuration(false);
         $form = jForms::create('attrmapping');
         $this->setupForm($form, $config);
 
         $form->setData('login', $config->getSAMLAttributeForLogin());
+        $form->setData('automaticAccountCreation', $config->isAutomaticAccountCreation());
         $rep = $this->getResponse('redirect');
         $rep->action = 'samladmin~attrmapping:edit';
         return $rep;
@@ -74,7 +75,7 @@ class attrmappingCtrl extends jController
             $rep->action = 'samladmin~config:index';
             return $rep;
         }
-        $config = new \Jelix\Saml\Configuration(jApp::config(), false);
+        $config = new \Jelix\Saml\Configuration(false);
         $this->setupForm($form, $config);
 
         $tpl = new jTpl();
@@ -96,7 +97,7 @@ class attrmappingCtrl extends jController
             $rep->action = 'samladmin~config:index';
             return $rep;
         }
-        $config = new \Jelix\Saml\Configuration(jApp::config(), false);
+        $config = new \Jelix\Saml\Configuration(false);
         $listOfField = $this->setupForm($form, $config);
 
         $form->initFromRequest();
@@ -107,6 +108,7 @@ class attrmappingCtrl extends jController
 
         $config = new \Jelix\Saml\ConfigurationModifier();
         $config->setSAMLAttributeForLogin($form->getData('login'));
+        $config->setAutomaticAccountCreation($form->getData('automaticAccountCreation'));
 
         $daoProperties = $config->getAuthorizedDaoPropertiesForMapping();
 

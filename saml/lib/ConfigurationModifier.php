@@ -15,9 +15,17 @@ use jLocale;
 class ConfigurationModifier extends Configuration
 {
 
-    public function __construct($config = null)
+    public function __construct($config = null, $authPluginConfig=null)
     {
-        parent::__construct($config, false);
+        parent::__construct(false, $config, $authPluginConfig);
+    }
+
+    /**
+     * @param bool $automatic
+     */
+    public function setAutomaticAccountCreation($automatic)
+    {
+        $this->automaticAccountCreation = !!$automatic;
     }
 
     public function setSpEntityId($entityId)
@@ -161,6 +169,9 @@ class ConfigurationModifier extends Configuration
         $mapping['__login'] = $this->loginAttribute;
         $liveConfig->setValues($mapping, 'saml:attributes-mapping');
         $appConfig->{'saml:attributes-mapping'} = $mapping;
+
+        $liveConfig->setValue('automaticAccountCreation', $this->automaticAccountCreation, 'saml');
+        $appConfig->saml['automaticAccountCreation'] = $this->automaticAccountCreation;
 
         $liveConfig->save();
     }

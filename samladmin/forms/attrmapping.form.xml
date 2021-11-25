@@ -9,6 +9,10 @@
         <label locale="samladmin~admin.attrmapping.form.attrsgroup.label" />
     </group>
 
+    <checkbox ref="automaticAccountCreation">
+        <label locale="samladmin~admin.attrmapping.form.automaticAccountCreation.label"/>
+    </checkbox>
+
     <submit ref="_submit">
         <label locale="jelix~ui.buttons.save"/>
     </submit>

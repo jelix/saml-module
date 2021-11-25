@@ -24,7 +24,7 @@ class configCtrl extends jController
 
         $tpl = new jTpl();
 
-        $config = new \Jelix\Saml\Configuration(null, false);
+        $config = new \Jelix\Saml\Configuration(false);
 
         try {
             $config->checkSpConfig();

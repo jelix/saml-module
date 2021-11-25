@@ -30,6 +30,11 @@ class Configuration {
     protected $attributesMapping = array();
 
     /**
+     * @var bool indicates if accounts are created automatically after authentication
+     */
+    protected $automaticAccountCreation = true;
+
+    /**
      * @var array list of dao properties that can be used for mapping
      */
     protected $daoPropertiesForMapping = array();
@@ -42,12 +47,28 @@ class Configuration {
     /**
      * Configuration constructor.
      * @param object $iniConfig typically jApp::config()
+     * @param bool $isAutomaticAccountCreation true if accounts should be created automatically
      * @throws \jException
      */
-    public function __construct($iniConfig = null, $checkConfig = true)
+    public function __construct($checkConfig = true, $iniConfig = null, $isAutomaticAccountCreation=null)
     {
         if (!$iniConfig) {
             $iniConfig = \jApp::config();
+        }
+
+        if ($isAutomaticAccountCreation !== null) {
+            $this->automaticAccountCreation = $isAutomaticAccountCreation;
+        }
+        else {
+            if (isset($iniConfig->saml['automaticAccountCreation'])) {
+                $this->automaticAccountCreation = $iniConfig->saml['automaticAccountCreation'];
+            }
+            else {
+                $isAutomaticAccountCreation = \jAuth::getDriverParam('automaticAccountCreation');
+                if ($isAutomaticAccountCreation !== null) {
+                    $this->automaticAccountCreation = $isAutomaticAccountCreation;
+                }
+            }
         }
 
         $this->fixConfigValues($iniConfig);
@@ -413,6 +434,16 @@ class Configuration {
                 ($this->settings['organization']['en-US'] ?? array())
             );
         return $org;
+    }
+
+    /**
+     * indicates if accounts should be created after authentication if they
+     * don't exist.
+     * @return bool true if yes
+     */
+    function isAutomaticAccountCreation()
+    {
+        return $this->automaticAccountCreation;
     }
 
     function getIdpURL()

@@ -22,7 +22,7 @@ class endpointCtrl extends jController {
         $xml = $this->getResponse('xml');
 
         try {
-            $configuration = new \Jelix\Saml\Configuration(null, false);
+            $configuration = new \Jelix\Saml\Configuration(false);
             // we don't check saml attributes, no need to generate metadata.
             $configuration->checkSpConfig();
             $configuration->checkIdpConfig();

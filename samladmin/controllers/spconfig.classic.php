@@ -19,7 +19,7 @@ class spconfigCtrl extends jController
 
     public function initform()
     {
-        $config = new \Jelix\Saml\Configuration(jApp::config(), false);
+        $config = new \Jelix\Saml\Configuration(false);
         $form = jForms::create('spconfig');
 
         $form->setData('entityId', $config->getSpEntityId());
