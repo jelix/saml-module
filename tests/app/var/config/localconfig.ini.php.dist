@@ -12,9 +12,19 @@ chmodDir=0775
 forceHTTPPort=80
 forceHTTPSPort=443
 
-[saml:idp]
 
-; label to display in the interface and in the login form
+[saml:sp]
+entityId="http://appsaml.local/admin.php/saml/endpoint/metadata"
+technicalContactPerson[givenName]="LaurentTech Jouanneau"
+technicalContactPerson[emailAddress]="laurent+samltech@3liz.com"
+supportContactPerson[givenName]="LaurentSupport Jouanneau"
+supportContactPerson[emailAddress]="laurent+samlsupport@3liz.com"
+organization[name] = Jelix_SAML
+organization[displayname] = Jelix SAML
+organization[url] = "https://jelix.org"
+
+
+[saml:idp]
 label= LemonLdapNG
 
 entityId=http://auth.lemon.local/saml/metadata
@@ -25,3 +35,11 @@ singleLogoutServiceResponseUrl=http://auth.lemon.local/saml/singleLogoutReturn
 
 certs_signing_files=idp_sig.pem
 certs_encryption_files=idp_encrypt.pem
+
+[saml:attributes-mapping]
+__login=login
+login=login
+email=mail
+
+[saml]
+automaticAccountCreation=on

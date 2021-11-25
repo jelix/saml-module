@@ -252,14 +252,14 @@ jqueryui.css[]="jquery/ui-1.12.1/jquery-ui.min.css"
 
 ; Contact information template, it is recommended to supply a technical and
 ; support contacts
-technicalContactPerson[givenName]= LaurentTech Jouanneau
-technicalContactPerson[emailAddress]= laurent+samltech@jelix.org
-supportContactPerson[givenName]= LaurentSupport Jouanneau
-supportContactPerson[emailAddress]= laurent+samlsupport@jelix.org
+technicalContactPerson[givenName]=
+technicalContactPerson[emailAddress]=
+supportContactPerson[givenName]=
+supportContactPerson[emailAddress]=
 
-organization[name] = Jelix_SAML
-organization[displayname] = Jelix SAML
-organization[url] = "https://jelix.org"
+organization[name] =
+organization[displayname] =
+organization[url] =
 
 compressRequests=on
 compressResponses=on
@@ -288,10 +288,9 @@ daoPropertiesForMapping="login,email"
 [saml:attributes-mapping]
 ; indicate on which properties of the DAO record, attributes given by the idp should be stored
 ; __login is a not a property, but indicates which SAML attribute contains the user login.
-__login=login
+__login=
 ; <dao property>=<saml attribute>
-login=login
-email=mail
+
 
 
 
@@ -329,8 +328,8 @@ singleLogoutServiceBinding=http-redirect
 ; If there is only one certificate file for signing/encryption, just leave
 ; following parameter empty, and put a idp.crt file into var/config/saml/certs/
 
-certs_signing_files=idp_sig.crt
-certs_encryption_files=idp_encrypt.crt
+certs_signing_files=idp_sig.pem
+certs_encryption_files=idp_encrypt.pem
 
 ; signatures and encryptions offered
 [saml:security]
