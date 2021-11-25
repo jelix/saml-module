@@ -87,11 +87,22 @@ class spconfigCtrl extends jController
 
         $config->setSpEntityId($form->getData('entityId'));
 
-        $config->setOrganization(
+        $ok = $config->setOrganization(
             $form->getData('organizationName'),
             $form->getData('organizationDisplayName'),
             $form->getData('organizationUrl')
         );
+        if (!$ok) {
+            if ($form->getData('organizationName') == '') {
+                $form->setErrorOn('organizationName', jLocale::get('samladmin~admin.spconfig.form.organization.error'));
+            }
+            if ($form->getData('organizationDisplayName') == '') {
+                $form->setErrorOn('organizationDisplayName', jLocale::get('samladmin~admin.spconfig.form.organization.error'));
+            }
+            if ($form->getData('organizationUrl') == '') {
+                $form->setErrorOn('organizationUrl', jLocale::get('samladmin~admin.spconfig.form.organization.error'));
+            }
+        }
 
         $config->setSupportContact(
             $form->getData('supportContactPersonName'),
@@ -102,6 +113,11 @@ class spconfigCtrl extends jController
             $form->getData('technicalContactPersonName'),
             $form->getData('technicalContactPersonEmail')
         );
+
+        if (!$ok) {
+            $rep->action = 'samladmin~spconfig:edit';
+            return $rep;
+        }
 
         $config->setPrivateKey($form->getData('tlsPrivateKey'));
         $config->setCertificate($form->getData('tlsCertificate'));

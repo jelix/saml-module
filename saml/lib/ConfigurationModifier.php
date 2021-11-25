@@ -55,10 +55,24 @@ class ConfigurationModifier extends Configuration
             array('givenName'=>$name, 'emailAddress'=>$email);
     }
 
+    /**
+     * @param $name
+     * @param $displayName
+     * @param $url
+     * @return bool true if values are ok, false if some values are missing
+     */
     public function setOrganization($name, $displayName, $url)
     {
         $this->settings['organization']['en-US'] =
             array('name' => $name, 'displayname' => $displayName, 'url' => $url);
+
+        if ($name === '' && $displayName === '' && $url === '') {
+            return true;
+        }
+        if ($name !== '' && $displayName !== '' && $url !== '') {
+            return true;
+        }
+        return false;
     }
 
     public function setIdpLabel($label)

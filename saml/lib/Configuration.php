@@ -326,7 +326,9 @@ class Configuration {
         }
 
         $org = $this->getOrganization();
-        if ($org['name'] == '') {
+        if ( !(($org['name'] == '' && $org['displayname'] == '' && $org['url'] == '')
+            ||($org['name'] != '' && $org['displayname'] != '' && $org['url'] != ''))
+            ) {
             throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.sp.organization'),2);
         }
 
