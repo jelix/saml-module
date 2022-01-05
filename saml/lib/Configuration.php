@@ -35,6 +35,11 @@ class Configuration {
     protected $automaticAccountCreation = true;
 
     /**
+     * @var bool indicates if a user created with SAML can use his local password to login
+     */
+    protected $allowSAMLAccountToUseLocalPassword = true;
+
+    /**
      * @var array list of dao properties that can be used for mapping
      */
     protected $daoPropertiesForMapping = array();
@@ -46,6 +51,8 @@ class Configuration {
 
     /**
      * Configuration constructor.
+     *
+     * @param bool $checkConfig indicates if the validity of the configuration parameters should be checked
      * @param object $iniConfig typically jApp::config()
      * @param bool $isAutomaticAccountCreation true if accounts should be created automatically
      * @throws \jException
@@ -69,6 +76,10 @@ class Configuration {
                     $this->automaticAccountCreation = $isAutomaticAccountCreation;
                 }
             }
+        }
+
+        if (isset($iniConfig->saml['allowSAMLAccountToUseLocalPassword'])) {
+            $this->allowSAMLAccountToUseLocalPassword = $iniConfig->saml['allowSAMLAccountToUseLocalPassword'];
         }
 
         $this->fixConfigValues($iniConfig);
@@ -447,6 +458,16 @@ class Configuration {
     {
         return $this->automaticAccountCreation;
     }
+
+    /**
+     * indicates if a user created with SAML can use his local password to login
+     * @return bool
+     */
+    function isAllowingSAMLAccountToUseLocalPassword()
+    {
+        return $this->allowSAMLAccountToUseLocalPassword;
+    }
+
 
     function getIdpURL()
     {

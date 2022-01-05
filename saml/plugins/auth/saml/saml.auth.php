@@ -1,7 +1,7 @@
 <?php
 /**
 * @author     Laurent Jouanneau
-* @copyright  2019 3liz
+* @copyright  2019-2022 3liz
 * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
 */
 
@@ -38,7 +38,23 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
     public function saveNewUser($user) {
         $dao = jDao::get($this->_params['dao'], $this->_params['profile']);
         $dao->insert($user);
+
+        if ($this->authWithSamlActivated) {
+            $this->createSAMLAccount($user);
+        }
+
         return true;
+    }
+
+    protected function createSAMLAccount($user)
+    {
+        $samlAccount = jDao::createRecord('saml~saml_account');
+        $samlAccount->login = $user->login;
+        $samlAccount->firstUsed = date('Y-m-d H:i:s');
+        $samlAccount->lastUsed = date('Y-m-d H:i:s');
+        $samlAccount->usageCount = 1;
+        $samlAccount->samlData = json_encode($this->samlAttributesValues);
+        jDao::get('saml~saml_account')->insert($samlAccount);
     }
 
     public function removeUser($login) {
@@ -46,6 +62,9 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
         if (function_exists('mb_strtolower')) {
             $login = mb_strtolower($login);
         }
+
+        jDao::get('saml~saml_account')->delete($login);
+
         $dao->deleteByLogin($login);
         return true;
     }
@@ -88,8 +107,9 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
         }
     }
 
-    public function canChangePassword($login) {
-        return true;
+    public function canChangePassword($login)
+    {
+        return $this->canUseLocalPassword($login);
     }
 
     public function changePassword($login, $newpassword) {
@@ -122,7 +142,6 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
                 return false;
             }
             $this->currentPassword = '';
-            $this->authWithSamlActivated = false;
 
             if (!$user) {
                 if ($this->automaticAccountCreation) {
@@ -135,16 +154,33 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
                         $user->$property = $value;
                     }
                     jAuth::saveNewUser($user);
-                } else {
-                    return false;
                 }
             }
+            else {
+                // update saml account data
+                $samlAccount = jDao::get('saml~saml_account')->get($login);
+                if ($samlAccount) {
+                    $samlAccount->lastUsed = date('Y-m-d H:i:s');
+                    $samlAccount->usageCount++;
+                    $samlAccount->samlData = json_encode($this->samlAttributesValues);
+                    jDao::get('saml~saml_account')->update($samlAccount);
+                }
+                else {
+                    $this->createSAMLAccount($user);
+                }
+            }
+            $this->authWithSamlActivated = false;
         }
         else {
             // authentication with login/password
             if (!$user) {
                 return false;
             }
+
+            if (!$this->canUseLocalPassword($login)) {
+                return false;
+            }
+
             $result = $this->checkPassword($password, $user->password);
             if ($result === false)
                 return false;
@@ -158,6 +194,26 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
         return $user;
     }
 
+
+    protected function canUseLocalPassword($login)
+    {
+        $config = jApp::config()->saml;
+        if (isset($config['allowSAMLAccountToUseLocalPassword']) && $config['allowSAMLAccountToUseLocalPassword']) {
+            return true;
+        }
+
+        // if the user has no SAML account, it can log with its local password
+        $samlAccount = jDao::get('saml~saml_account')->get($login);
+        if (!$samlAccount) {
+            return true;
+        }
+
+        // if the user has the right to administrate SAML configuration, it can login with local password
+        if (jAcl2::checkByUser($login, 'saml.config.access')) {
+            return true;
+        }
+        return false;
+    }
 
     protected $samlAttributesValues = array();
 

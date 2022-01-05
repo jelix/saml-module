@@ -28,6 +28,14 @@ class ConfigurationModifier extends Configuration
         $this->automaticAccountCreation = !!$automatic;
     }
 
+    /**
+     * @param bool $automatic
+     */
+    public function setAllowSAMLAccountToUseLocalPassword($allow)
+    {
+        $this->allowSAMLAccountToUseLocalPassword = !!$allow;
+    }
+
     public function setSpEntityId($entityId)
     {
         $this->settings['sp']['entityId'] = $entityId;
@@ -190,6 +198,9 @@ class ConfigurationModifier extends Configuration
 
         $liveConfig->setValue('automaticAccountCreation', $this->automaticAccountCreation, 'saml');
         $appConfig->saml['automaticAccountCreation'] = $this->automaticAccountCreation;
+
+        $liveConfig->setValue('allowSAMLAccountToUseLocalPassword', $this->allowSAMLAccountToUseLocalPassword, 'saml');
+        $appConfig->saml['allowSAMLAccountToUseLocalPassword'] = $this->allowSAMLAccountToUseLocalPassword;
 
         $liveConfig->save();
     }

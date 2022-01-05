@@ -60,6 +60,7 @@ class attrmappingCtrl extends jController
 
         $form->setData('login', $config->getSAMLAttributeForLogin());
         $form->setData('automaticAccountCreation', $config->isAutomaticAccountCreation());
+        $form->setData('allowSAMLAccountToUseLocalPassword', $config->isAllowingSAMLAccountToUseLocalPassword());
         $rep = $this->getResponse('redirect');
         $rep->action = 'samladmin~attrmapping:edit';
         return $rep;
@@ -109,6 +110,7 @@ class attrmappingCtrl extends jController
         $config = new \Jelix\Saml\ConfigurationModifier();
         $config->setSAMLAttributeForLogin($form->getData('login'));
         $config->setAutomaticAccountCreation($form->getData('automaticAccountCreation'));
+        $config->setAllowSAMLAccountToUseLocalPassword($form->getData('allowSAMLAccountToUseLocalPassword'));
 
         $daoProperties = $config->getAuthorizedDaoPropertiesForMapping();
 

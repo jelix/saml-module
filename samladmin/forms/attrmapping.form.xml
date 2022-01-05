@@ -13,6 +13,10 @@
         <label locale="samladmin~admin.attrmapping.form.automaticAccountCreation.label"/>
     </checkbox>
 
+    <checkbox ref="allowSAMLAccountToUseLocalPassword">
+        <label locale="samladmin~admin.attrmapping.form.allowSAMLAccountToUseLocalPassword.label"/>
+    </checkbox>
+
     <submit ref="_submit">
         <label locale="jelix~ui.buttons.save"/>
     </submit>

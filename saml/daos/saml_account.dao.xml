@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dao xmlns="http://jelix.org/ns/dao/1.0">
+    <datasources>
+        <primarytable name="sa" realname="saml_account" primarykey="login" />
+    </datasources>
+    <record>
+        <property name="login" fieldname="login"
+                  required="yes" datatype="string"  maxlength="50" />
+        <property name="firstUsed" fieldname="first_used" datatype="datetime" />
+        <property name="lastUsed" fieldname="last_used" datatype="datetime" />
+        <property name="usageCount" fieldname="usage_count" datatype="integer" default="0"/>
+        <property name="samlData" fieldname="saml_data" datatype="text" />
+    </record>
+</dao>

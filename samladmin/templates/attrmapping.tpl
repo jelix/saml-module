@@ -12,6 +12,10 @@
     <p>
         {ctrl_control 'automaticAccountCreation'}
         {ctrl_label 'automaticAccountCreation'}
+    </p>
+    <p>
+        {ctrl_control 'allowSAMLAccountToUseLocalPassword'}
+        {ctrl_label 'allowSAMLAccountToUseLocalPassword'}
 
     </p>
     <div>

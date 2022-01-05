@@ -2,7 +2,7 @@
 /**
  * @author      Laurent Jouanneau
  * @contributor
- * @copyright   2019 3liz
+ * @copyright   2019-2022 3liz
  * @licence     GNU Lesser General Public Licence see LICENCE file or http://www.gnu.org/licenses/lgpl.html
  */
 
@@ -116,6 +116,10 @@ class samlModuleInstaller extends SamlAbstractInstaller
             $appConfig->setValue('htmlauth', 'jResponseHtml', 'responses');
         }
 
+        $dbProfile = $originalAuthConfigIni->getValue('profile', 'saml');
+        $mapper = new jDaoDbMapper($dbProfile);
+        $mapper->createTableFromDao('saml~saml_account');
+
         // create a first user if indicated
         $login = $this->getParameter('useradmin');
         $email =  $this->getParameter('emailadmin');
@@ -124,7 +128,6 @@ class samlModuleInstaller extends SamlAbstractInstaller
             $dbProfile = $originalAuthConfigIni->getValue('profile', 'saml');
 
             // be sure the table is created
-            $mapper = new jDaoDbMapper($dbProfile);
             $mapper->createTableFromDao($daoSelector);
 
             $dao = jDao::get($daoSelector, $dbProfile);
