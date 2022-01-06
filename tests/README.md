@@ -25,6 +25,8 @@ You can then open in your browser:
 
 - `http://appsaml.local` to test the jelix application in which the SAML module is activated
 - `http://manager.lemon.local` to manage LemonLdap configuration
+- `http://auth.lemon.local` for the authentication portal, with `http://auth.lemon.local/saml/metadata`
+  as the url of the metadata.
 
 The default user (and administrator of lemonldap):
 - login: dwho

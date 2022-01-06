@@ -10,3 +10,7 @@
 #saml-index li {
     margin-top: 1em;
 }
+
+#metadata-loader {
+    display:none;
+}

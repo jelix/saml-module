@@ -94,13 +94,13 @@ certs_encryption_files=idp_encrypt.pem
 ```
 
 - sets some url of the portal, for SSO and SLO, as well as the entity id. Here
-the portal is accessible at the url `https://portal.lemon.local`.
+the portal is accessible at the url `http://auth.lemon.local`.
 
 ```
-entityId=https://portal.lemon.local/saml/metadata
+entityId=http://auth.lemon.local/saml/metadata
 
-singleSignOnServiceUrl=https://portal.lemon.local/saml/singleSignOn
-singleLogoutServiceUrl=https://portal.lemon.local/saml/singleLogout
+singleSignOnServiceUrl=http://auth.lemon.local/saml/singleSignOn
+singleLogoutServiceUrl=http://auth.lemon.local/saml/singleLogout
 ```
 
 You should set up the mapping of attributes. In an example below, we setup

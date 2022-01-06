@@ -52,6 +52,7 @@ class idpconfigCtrl extends jController
         $tpl = new jTpl();
         $tpl->assign('idpform', $form);
         $rep->addJSLink(jUrl::get('samladmin~config:asset', array('file'=>'idp.js')));
+        $rep->addCSSLink(jUrl::get('samladmin~config:asset', array('file'=>'admin.css')));
         $rep->body->assign('MAIN', $tpl->fetch('idpconfig'));
         $rep->body->assign('selectedMenuItem', 'samlconfig');
         return $rep;
@@ -98,22 +99,38 @@ class idpconfigCtrl extends jController
         /** @var jResponseJson $rep */
         $rep = $this->getResponse('json');
         $url = $this->param('metadata_url');
-        if (!$url) {
-            $rep->data = array('error'=>'url is missing');
+        $xmlContent = $this->param('metadata_content');
+        if ($url) {
+            try {
+                $parser   = new \OneLogin\Saml2\IdPMetadataParser();
+                $metadata = $parser->parseRemoteXML($url, null, null, Constants::BINDING_HTTP_REDIRECT, Constants::BINDING_HTTP_REDIRECT);
+            }
+            catch(Exception $e) {
+                $rep->data = array(
+                    'error'=>jLocale::get('samladmin~admin.spconfig.form.error.metadata'),
+                    'parserError'=> $e->getMessage()
+                );
+                $rep->setHttpStatus(500, 'Internal server error');
+                return $rep;
+            }
+        }
+        else if ($xmlContent) {
+            try {
+                $parser   = new \OneLogin\Saml2\IdPMetadataParser();
+                $metadata = $parser->parseXML($xmlContent, null, null, Constants::BINDING_HTTP_REDIRECT, Constants::BINDING_HTTP_REDIRECT);
+            }
+            catch(Exception $e) {
+                $rep->data = array(
+                    'error'=>jLocale::get('samladmin~admin.spconfig.form.error.metadata.parsing'),
+                    'parserError'=> $e->getMessage()
+                );
+                $rep->setHttpStatus(500, 'Internal server error');
+                return $rep;
+            }
+        }
+        else {
+            $rep->data = array('error'=>'url or xml content is missing');
             $rep->setHttpStatus(400, 'Bad request');
-            return $rep;
-        }
-
-        try {
-            $parser   = new \OneLogin\Saml2\IdPMetadataParser();
-            $metadata = $parser->parseRemoteXML($url, null, null, Constants::BINDING_HTTP_REDIRECT, Constants::BINDING_HTTP_REDIRECT);
-        }
-        catch(Exception $e) {
-            $rep->data = array(
-                'error'=>jLocale::get('samladmin~admin.spconfig.form.error.metadata'),
-                'parserError'=> $e->getMessage()
-            );
-            $rep->setHttpStatus(500, 'Internal server error');
             return $rep;
         }
 
