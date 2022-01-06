@@ -14,10 +14,13 @@ use jLocale;
 
 class ConfigurationModifier extends Configuration
 {
-
-    public function __construct($config = null, $authPluginConfig=null)
+    /**
+     * @param object $iniConfig typically jApp::config()
+     * @throws \jException
+     */
+    public function __construct($iniConfig = null)
     {
-        parent::__construct(false, $config, $authPluginConfig);
+        parent::__construct(false, $iniConfig);
     }
 
     /**

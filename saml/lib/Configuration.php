@@ -54,27 +54,21 @@ class Configuration {
      *
      * @param bool $checkConfig indicates if the validity of the configuration parameters should be checked
      * @param object $iniConfig typically jApp::config()
-     * @param bool $isAutomaticAccountCreation true if accounts should be created automatically
      * @throws \jException
      */
-    public function __construct($checkConfig = true, $iniConfig = null, $isAutomaticAccountCreation=null)
+    public function __construct($checkConfig = true, $iniConfig = null)
     {
         if (!$iniConfig) {
             $iniConfig = \jApp::config();
         }
 
-        if ($isAutomaticAccountCreation !== null) {
-            $this->automaticAccountCreation = $isAutomaticAccountCreation;
+        if (isset($iniConfig->saml['automaticAccountCreation'])) {
+            $this->automaticAccountCreation = $iniConfig->saml['automaticAccountCreation'];
         }
         else {
-            if (isset($iniConfig->saml['automaticAccountCreation'])) {
-                $this->automaticAccountCreation = $iniConfig->saml['automaticAccountCreation'];
-            }
-            else {
-                $isAutomaticAccountCreation = \jAuth::getDriverParam('automaticAccountCreation');
-                if ($isAutomaticAccountCreation !== null) {
-                    $this->automaticAccountCreation = $isAutomaticAccountCreation;
-                }
+            $isAutomaticAccountCreation = \jAuth::getDriverParam('automaticAccountCreation');
+            if ($isAutomaticAccountCreation !== null) {
+                $this->automaticAccountCreation = $isAutomaticAccountCreation;
             }
         }
 
