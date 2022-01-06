@@ -1,4 +1,4 @@
-<h1>{@samladmin~admin.attrmapping.form.title@}</h1>
+<h1>{@samladmin~admin.attrmapping.title@}</h1>
 {form $attrform, 'samladmin~attrmapping:save'}
     <p>
         {ctrl_label 'login'}

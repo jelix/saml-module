@@ -1,4 +1,12 @@
 
-.error {
+.saml-error {
     color: #fa2020;
+}
+
+.link-details {
+    font-style: italic;
+}
+
+#saml-index li {
+    margin-top: 1em;
 }
