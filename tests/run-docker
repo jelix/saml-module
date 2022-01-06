@@ -2,15 +2,22 @@
 
 set -e
 
-export FPM_USER_ID=${FPM_USER_ID:-$(id -u)}
-export FPM_GROUP_ID=${FPM_GROUP_ID:-$(id -g)}
-
 CMD="$1";
 if [ -z "$CMD" ]; then
     CMD="up"
 else
     shift
 fi
+
+# Create a .env file so that we may use subsequent docker-compose
+# commands directly
+cat > .env << End-of-env
+JELIX_VERSION=${JELIX_VERSION:-1.6.36-pre}
+JELIX_STABILITY=${JELIX_STABILITY:-nightly}
+FPM_USER_ID=${FPM_USER_ID:-$(id -u)}
+FPM_GROUP_ID=${FPM_GROUP_ID:-$(id -g)}
+PHP_VERSION=${PHP_VERSION:-7.4}
+End-of-env
 
 if [ "$CMD" == "reset" ]; then
     # Stop/Remove containers
@@ -22,13 +29,5 @@ if [ "$CMD" == "reset" ]; then
     rm -rf jelix app/vendor
     exit 0
 fi
-
-# Create a .env file so that we may use subsequent docker-compose
-# commands directly
-cat > .env << End-of-env
-JELIX_VERSION=${JELIX_VERSION:-1.6.35-pre}
-JELIX_STABILITY=${JELIX_STABILITY:-nightly}
-End-of-env
-
 
 docker-compose -p jelix-saml-tests $CMD "$@"

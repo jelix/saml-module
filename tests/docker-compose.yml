@@ -28,12 +28,14 @@ services:
     build:
       context: ./phpfpm
       args:
-        user_id: ${FPM_USER_ID}
-        group_id: ${FPM_GROUP_ID}
+        PHP_VERSION: ${PHP_VERSION}
     container_name: "jelix_saml_php"
     environment:
-      - JELIX_VERSION
-      - JELIX_STABILITY
+      JELIX_VERSION: ${JELIX_VERSION}
+      JELIX_STABILITY: ${JELIX_STABILITY}
+      APP_USER_ID: ${FPM_USER_ID}
+      APP_GROUP_ID: ${FPM_GROUP_ID}
+      DISPLAY_ERRORS: "on"
     volumes:
       - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
       - "../:/opt/"

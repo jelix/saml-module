@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 APPDIR="/opt/tests/app"
-APP_USER=usertest
-APP_GROUP=grouptest
+APP_USER=userphp
+APP_GROUP=groupphp
 
 COMMAND="$1"
 

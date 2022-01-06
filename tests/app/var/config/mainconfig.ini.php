@@ -6,7 +6,7 @@ startModule=app
 startAction="default:index"
 
 locale=en_US
-availableLocales=en_US,fr_FR
+availableLocales="en_US,fr_FR"
 charset=UTF-8
 
 ; see http://www.php.net/manual/en/timezones.php for supported values
@@ -257,9 +257,9 @@ technicalContactPerson[emailAddress]=
 supportContactPerson[givenName]=
 supportContactPerson[emailAddress]=
 
-organization[name] =
-organization[displayname] =
-organization[url] =
+organization[name]=
+organization[displayname]=
+organization[url]=
 
 compressRequests=on
 compressResponses=on
@@ -424,3 +424,6 @@ digestAlgorithm="http://www.w3.org/2001/04/xmlenc#sha256"
 ; uppercase. Turn it True for ADFS compatibility on signature verification
 lowercaseUrlencoding=off
 
+
+[coordplugin_auth]
+driver=saml
