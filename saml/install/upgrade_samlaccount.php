@@ -17,7 +17,7 @@ class samlModuleUpgrader_samlaccount extends SamlAbstractInstaller {
         $ini = $this->entryPoint->getSingleLocalConfigIni();
         $ini->setValue('allowSAMLAccountToUseLocalPassword', true, 'saml');
 
-        if ($this->firstDb()) {
+        if ($this->firstDbExec()) {
             /**
              * @var jIniFileModifier $originalAuthConfigIni
              * @var array $driverConfig
