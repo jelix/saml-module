@@ -5,6 +5,7 @@
  * @copyright   2022 3liz
  * @licence     GNU Lesser General Public Licence see LICENCE file or http://www.gnu.org/licenses/lgpl.html
  */
+require_once(__DIR__.'/SamlAbstractInstaller.php');
 
 class samlModuleUpgrader_samlaccount extends SamlAbstractInstaller {
 
