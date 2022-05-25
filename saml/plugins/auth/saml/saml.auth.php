@@ -9,7 +9,7 @@
 /**
 * authentification driver for authentification with a SAML server
 */
-class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
+class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
 
     protected $automaticAccountCreation = false;
 
@@ -107,10 +107,25 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver2 {
         }
     }
 
+    protected $reasonToForbiddenPasswordChange = '';
+
     public function canChangePassword($login)
     {
-        return $this->canUseLocalPassword($login);
+        $can = $this->canUseLocalPassword($login);
+        if (!$can) {
+            $this->reasonToForbiddenPasswordChange = jLocale::get('saml~auth.localpassword.error');
+        }
+        else {
+            $this->reasonToForbiddenPasswordChange = '';
+        }
+        return $can;
     }
+
+    public function getReasonToForbiddenPasswordChange()
+    {
+        return $this->reasonToForbiddenPasswordChange;
+    }
+
 
     public function changePassword($login, $newpassword) {
         $dao = jDao::get($this->_params['dao'], $this->_params['profile']);
