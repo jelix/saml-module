@@ -1,8 +1,8 @@
 Changes
 =======
 
-Version 2.0.0 (not released yet)
---------------------------------
+Version 2.0.0
+-------------
 
 It allows now to choice the authentication method : by the classical login/password
 (provided by the jauth or the jcommunity module), or by SAML. It means that
