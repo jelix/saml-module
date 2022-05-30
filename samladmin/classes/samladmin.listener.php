@@ -24,4 +24,21 @@ class samladminListener extends jEventListener
         }
     }
 
+    function onjauthdbAdminEditCreate(jEvent $event)
+    {
+        /** @var jFormsBase $form */
+        $form = $event->form;
+
+        if ($event->form->getControl('jcommFirstStatus')) {
+            // in the case where the jcommunity module is installed
+
+            $config = new \Jelix\Saml\Configuration(false);
+            if ($config->isAllowingSAMLAccountToUseLocalPassword()) {
+                $event->add('<p>'.jLocale::get('samladmin~admin.auth.account.create.email.password.with.saml').'</p>');
+            }
+            else {
+                $event->add('<p>'.jLocale::get('samladmin~admin.auth.account.create.email.password.no.saml').'</p>');
+            }
+        }
+    }
 }
