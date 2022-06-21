@@ -1,8 +1,8 @@
 Changes
 =======
 
-next
-----
+Version 2.0.1
+-------------
 
 - Fix: removing accounts having upper case letter in their login name, did not work.
 - Fix: installers for Jelix 1.7+ were missing
