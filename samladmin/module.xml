@@ -9,7 +9,7 @@
         <creator name="Laurent Jouanneau" email="laurent@jelix.org"/>
     </info>
     <dependencies>
-        <jelix minversion="1.6.35-pre" maxversion="1.7.*"/>
+        <jelix minversion="1.6.35-pre" maxversion="1.8.*"/>
         <module name="saml"/>
     </dependencies>
 </module>
