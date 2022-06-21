@@ -60,7 +60,13 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
     public function removeUser($login) {
         $dao = jDao::get($this->_params['dao'], $this->_params['profile']);
         if (function_exists('mb_strtolower')) {
-            $login = mb_strtolower($login);
+            $loginLegacy = mb_strtolower($login);
+            if ($loginLegacy != $login) {
+                // compatibility with an old version of the module, when
+                // logins were stored only in lowercase
+                jDao::get('saml~saml_account')->delete($loginLegacy);
+                $dao->deleteByLogin($loginLegacy);
+            }
         }
 
         jDao::get('saml~saml_account')->delete($login);
@@ -85,10 +91,19 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
 
     public function getUser($login) {
         $dao = jDao::get($this->_params['dao'], $this->_params['profile']);
-        if (function_exists('mb_strtolower')) {
-            $login = mb_strtolower($login);
+        $user = $dao->getByLogin($login);
+        if ($user) {
+            return $user;
         }
-        return $dao->getByLogin($login);
+        if (function_exists('mb_strtolower')) {
+            // compatibility with an old version of the module, when
+            // logins were stored only in lowercase
+            $loginLegacy = mb_strtolower($login);
+            if ($loginLegacy != $login) {
+                return $dao->getByLogin($loginLegacy);
+            }
+        }
+        return false;
     }
 
     public function createUserObject($login, $password) {

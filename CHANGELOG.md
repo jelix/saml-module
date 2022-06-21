@@ -1,6 +1,11 @@
 Changes
 =======
 
+next
+----
+
+- Fix: removing accounts having upper case letter in their login name, did not work.
+
 Version 2.0.0
 -------------
 
