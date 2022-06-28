@@ -46,11 +46,20 @@ jauthdb.enable=0
 ```
 
 
-Launch the configurator for your application to enable the module
+If you are the developer of the application, launch the configurator to enable 
+the module with this command:
 
 ```bash
 php yourapp/dev.php module:configure saml
 ```
+
+If you install the module into an application you are using (like Lizmap), launch the configurator 
+to enable the module, with this command:
+
+```bash
+php yourapp/install/configurator.php saml
+```
+
 
 Install files with Jelix 1.6.*
 ------------------------------
@@ -58,7 +67,7 @@ Install files with Jelix 1.6.*
 It works with Jelix 1.6.21 minimum.
 If you are using Composer in your application, you should indicate the package
 into your composer.json:
-                                               
+
 ```
 composer require "jelix/saml-module"
 ```
