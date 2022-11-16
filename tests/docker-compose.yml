@@ -3,6 +3,8 @@ services:
   nginx-proxy:
     image: jwilder/nginx-proxy:alpine
     container_name: "jelix_saml_nginx_proxy"
+    environment:
+      - DHPARAM_GENERATION=false
     ports:
       - "80:80"
     volumes:
@@ -11,7 +13,7 @@ services:
     image: nginx:alpine
     container_name: "jelix_saml_nginx"
     volumes:
-      - "./etc/nginx/default.conf:/etc/nginx/conf.d/default.conf"
+      - "./docker-conf/etc/nginx/default.conf:/etc/nginx/conf.d/default.conf"
       - "../:/opt/"
     environment:
       - VIRTUAL_HOST=appsaml.local
@@ -26,7 +28,7 @@ services:
           - appsaml.local
   php:
     build:
-      context: ./phpfpm
+      context: ./docker-conf/phpfpm
       args:
         PHP_VERSION: ${PHP_VERSION}
     container_name: "jelix_saml_php"
@@ -37,12 +39,12 @@ services:
       APP_GROUP_ID: ${FPM_GROUP_ID}
       DISPLAY_ERRORS: "on"
     volumes:
-      - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
+      - "./docker-conf/etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
       - "../:/opt/"
     expose:
       - "9000"
   lemon:
-    build: ./llng
+    build: ./docker-conf/llng
     container_name: "jelix_saml_lemon"
     environment:
       - VIRTUAL_HOST=lemon.local,auth.lemon.local,manager.lemon.local,handler.lemon.local,test1.lemon.local,test2.lemon.local

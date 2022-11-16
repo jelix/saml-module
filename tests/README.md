@@ -21,6 +21,11 @@ Then launch the containers for tests
 ./app-ctl reset
 ``` 
 
+During the startup, there can be errors from the nginx-proxy, containers, like
+`error: open /etc/nginx/certs: no such file or directory` or like
+`worker process 35 exited with code 0`. Ignore them.
+
+
 You can then open in your browser:
 
 - `http://appsaml.local` to test the jelix application in which the SAML module is activated
