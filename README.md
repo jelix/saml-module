@@ -58,6 +58,7 @@ to enable the module, with this command:
 
 ```bash
 php yourapp/install/configurator.php saml
+php yourapp/install/configurator.php samladmin
 ```
 
 
