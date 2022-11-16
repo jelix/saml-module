@@ -65,6 +65,7 @@ function resetApp() {
 
 
 function launchInstaller() {
+    su $APP_USER -c "php $APPDIR/install/configurator.php --verbose"
     su $APP_USER -c "php $APPDIR/install/installer.php --verbose"
 }
 

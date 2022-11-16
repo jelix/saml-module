@@ -4,8 +4,14 @@
     "license": "LGPL",
     "require": {
       "php": ">=5.6",
-      "onelogin/php-saml": "^3.6.1",
-      "phpseclib/phpseclib": "~3.0.11"
+      "jelix/jelix": "1.8.0-beta.1",
+      "onelogin/php-saml": "^4.0.1",
+      "phpseclib/phpseclib": "~3.0.17"
+    },
+    "config": {
+      "allow-plugins": {
+        "jelix/composer-module-setup": true
+      }
     },
     "minimum-stability": "stable"
 }

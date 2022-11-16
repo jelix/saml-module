@@ -8,7 +8,6 @@
 * @license    All rights reserved
 */
 
-require (__DIR__.'/../jelix/lib/jelix/init.php');
 require (__DIR__.'/vendor/autoload.php');
 jApp::initPaths(
     __DIR__.'/',
@@ -19,3 +18,11 @@ jApp::initPaths(
     __DIR__.'/scripts/'
 );
 jApp::setTempBasePath(realpath(__DIR__.'/temp/').'/');
+require (__DIR__.'/vendor/jelix_app_path.php');
+
+jApp::declareModulesDir(array(
+                        __DIR__.'/modules/'
+                    ));
+jApp::declarePluginsDir(array(
+                        __DIR__.'/plugins'
+                    ));

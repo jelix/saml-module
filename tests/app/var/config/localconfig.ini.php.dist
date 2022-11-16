@@ -19,19 +19,19 @@ technicalContactPerson[givenName]="LaurentTech Jouanneau"
 technicalContactPerson[emailAddress]="laurent+samltech@3liz.com"
 supportContactPerson[givenName]="LaurentSupport Jouanneau"
 supportContactPerson[emailAddress]="laurent+samlsupport@3liz.com"
-organization[name] = Jelix_SAML
-organization[displayname] = Jelix SAML
-organization[url] = "https://jelix.org"
+organization[name]=Jelix_SAML
+organization[displayname]="Jelix SAML"
+organization[url]="https://jelix.org"
 
 
 [saml:idp]
-label= LemonLdapNG
+label=LemonLdapNG
 
-entityId=http://auth.lemon.local/saml/metadata
+entityId="http://auth.lemon.local/saml/metadata"
 
-singleSignOnServiceUrl=http://auth.lemon.local/saml/singleSignOn
-singleLogoutServiceUrl=http://auth.lemon.local/saml/singleLogout
-singleLogoutServiceResponseUrl=http://auth.lemon.local/saml/singleLogoutReturn
+singleSignOnServiceUrl="http://auth.lemon.local/saml/singleSignOn"
+singleLogoutServiceUrl="http://auth.lemon.local/saml/singleLogout"
+singleLogoutServiceResponseUrl="http://auth.lemon.local/saml/singleLogoutReturn"
 
 certs_signing_files=idp_sig.pem
 certs_encryption_files=idp_encrypt.pem

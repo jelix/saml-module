@@ -27,7 +27,7 @@ case $COMMAND in
     #unittests)
     #    docker exec -t -i $CONTAINER appctl.sh unittests;;
     shell)
-       docker exec -it --user usertest $CONTAINER  /bin/sh -l;;
+       docker exec -it --user userphp $CONTAINER  /bin/bash -l;;
     shellroot)
        docker exec -it $CONTAINER  /bin/sh  -l;;
     *)
