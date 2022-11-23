@@ -7,6 +7,7 @@
  */
 
 /**
+ * base class for installers/updaters for Jelix 1.6
  */
 class SamlAbstractInstaller extends jInstallerModule {
 
@@ -82,10 +83,10 @@ class SamlAbstractInstaller extends jInstallerModule {
     {
 
         if (method_exists('jApp', 'varConfigPath')) {
-            $filePath = jApp::varConfigPath('profiles.ini.php');
+            $filePath = jApp::varConfigPath($fileName);
         }
         else {
-            $filePath = jApp::configPath('profiles.ini.php');
+            $filePath = jApp::configPath($fileName);
         }
 
         if (!file_exists($filePath)) {

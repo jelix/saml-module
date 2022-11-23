@@ -8,6 +8,7 @@
 
 require_once(__DIR__.'/SamlAbstractInstaller.php');
 /**
+ * Installer for Jelix 1.6
  */
 class samlModuleInstaller extends SamlAbstractInstaller
 {

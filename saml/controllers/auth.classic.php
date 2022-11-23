@@ -101,6 +101,7 @@ class authCtrl extends jController {
      * @throws \OneLogin\Saml2\Error
      */
     function logout() {
+        /** @var jResponseRedirectUrl $rep */
         $rep = $this->getResponse('redirectUrl');
 
         $configuration = new \Jelix\Saml\Configuration();

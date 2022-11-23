@@ -35,13 +35,11 @@ master_admin.enabled=on
 jacl2.enabled=on
 
 saml.path="/opt/saml/"
-saml.enabled=on
 saml.installparam[useradmin]=dwho
 saml.installparam[emailadmin]="dwho@lemon.local"
-
+saml.installparam[authep]="admin"
 
 samladmin.path="/opt/samladmin/"
-samladmin.enabled=on
 
 [coordplugins]
 ;name = file_ini_name or 1

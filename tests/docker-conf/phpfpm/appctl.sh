@@ -49,6 +49,9 @@ function resetApp() {
     if [ -f $APPDIR/var/config/liveconfig.ini.php ]; then
         rm -f $APPDIR/var/config/liveconfig.ini.php
     fi
+    if [ -f $APPDIR/var/config/localurls.xml ]; then
+        rm -f $APPDIR/var/config/localurls.xml
+    fi
     rm -rf $APPDIR/var/log/*
     rm -rf $APPDIR/var/db/*
     rm -rf $APPDIR/var/mails/*
