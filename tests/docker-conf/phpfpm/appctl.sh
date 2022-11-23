@@ -65,7 +65,8 @@ function resetApp() {
 
 
 function launchInstaller() {
-    su $APP_USER -c "php $APPDIR/install/configurator.php --verbose"
+    su $APP_USER -c "php $APPDIR/install/configurator.php --verbose saml"
+    su $APP_USER -c "php $APPDIR/install/configurator.php --verbose samladmin"
     su $APP_USER -c "php $APPDIR/install/installer.php --verbose"
 }
 

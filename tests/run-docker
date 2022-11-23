@@ -12,7 +12,7 @@ fi
 # Create a .env file so that we may use subsequent docker-compose
 # commands directly
 cat > .env << End-of-env
-JELIX_VERSION=${JELIX_VERSION:-1.6.37-pre}
+JELIX_VERSION=${JELIX_VERSION:-1.8.0-beta.1}
 JELIX_STABILITY=${JELIX_STABILITY:-nightly}
 FPM_USER_ID=${FPM_USER_ID:-$(id -u)}
 FPM_GROUP_ID=${FPM_GROUP_ID:-$(id -g)}
@@ -25,7 +25,7 @@ if [ "$CMD" == "reset" ]; then
     rm -f app/var/config/localconfig.ini.php app/var/config/profiles.ini.php
     rm -f app/var/config/installer.ini.php app/var/config/liveconfig.ini.php
     rm -f app/composer.lock app/var/db/jelix.sqlite
-    rm -rf app/temp/app/www
+    rm -rf app/temp/www
     rm -rf jelix app/vendor
     exit 0
 fi

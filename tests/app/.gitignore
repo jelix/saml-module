@@ -5,6 +5,7 @@ var/config/profiles.ini.php
 var/config/localconfig.ini.php
 var/config/liveconfig.ini.php
 var/config/installer.bak.ini.php
+var/config/localurls.xml
 var/db/*
 !var/db/.dummy
 var/log/*

@@ -3,7 +3,8 @@
     <entrypoint type="classic" name="index" default="true">
         <url pathinfo="/" module="app" action="default:index">
         </url>
-        <url module="samladmin" pathinfo="/samladmin"/>
+        <url pathinfo="/app" module="app">
+        </url>
     </entrypoint>
 
     <entrypoint type="classic" name="admin">
