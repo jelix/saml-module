@@ -1,6 +1,14 @@
 Changes
 =======
 
+Version 2.1.0
+-------------
+
+- new installers for Jelix 1.7 and 1.8
+- compatibility with Jelix 1.8
+- Upgrade PHP-SAML to 4.0.1
+- Compatiblity with PHP 7.4 minimum
+
 Version 2.0.1
 -------------
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module xmlns="http://jelix.org/ns/module/1.0">
     <info id="saml@modules.jelix.org" name="saml" createdate="2019-06-20">
-        <version date="2022-11-16">2.1.0-pre</version>
+        <version date="2022-11-23">2.1.0</version>
         <label lang="en_US">module to authenticate with a SAML server</label>
         <description lang="en_US"></description>
         <license URL="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">LGPL 2.1</license>
@@ -9,7 +9,7 @@
         <creator name="Laurent Jouanneau" email="laurent@jelix.org"/>
     </info>
     <dependencies>
-        <jelix minversion="1.6.37-pre" maxversion="1.8.*"/>
+        <jelix minversion="1.6.37" maxversion="1.8.*"/>
         <choice>
             <module name="jauthdb"/>
             <module name="jcommunity"/>
