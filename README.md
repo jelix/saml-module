@@ -18,8 +18,8 @@ The SAML module requires:
 - gettext. Install that library and its php driver. It handles translations.
 - curl. Install that library and its php driver if you plan to use the IdP Metadata parser.
 
-Install files with Jelix 1.7
-----------------------------
+Install files with Jelix 1.7 or higher
+---------------------------------------
 
 You should use Composer to install the module. Run this commands in a shell:
                                                
@@ -45,9 +45,10 @@ jauth.enable=0
 jauthdb.enable=0
 ```
 
+Then you must enable the module.
 
 If you are the developer of the application, launch the configurator to enable 
-the module with this command:
+the module permanently with this command:
 
 ```bash
 php yourapp/dev.php module:configure saml
@@ -62,8 +63,8 @@ php yourapp/install/configurator.php samladmin
 ```
 
 
-Install files with Jelix 1.6.*
-------------------------------
+Install files with Jelix 1.6
+----------------------------
 
 It works with Jelix 1.6.21 minimum.
 If you are using Composer in your application, you should indicate the package
