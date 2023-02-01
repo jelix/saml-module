@@ -1,7 +1,5 @@
 This is a module for Jelix, providing authentication for jAuth against SAML servers 
 
-This is an **experimental module** for now.
-
 Installation
 ============
 
