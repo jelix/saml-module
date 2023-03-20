@@ -28,8 +28,11 @@ class samlModuleUpgrader_loginpass extends SamlAbstractInstaller {
             $currentAfterLogout = $ini->getValue('after_logout', 'saml:sp');
         }
 
-        $ini->removeValue('after_login', 'saml:sp');
-        $ini->removeValue('after_logout', 'saml:sp');
+        if (method_exists($ini, 'removeValue')) {
+            // the method does not exist into Jelix 1.8
+            $ini->removeValue('after_login', 'saml:sp');
+            $ini->removeValue('after_logout', 'saml:sp');
+        }
 
         $ini = $this->entryPoint->getSingleLocalConfigIni();
         if ($ini->getValue('after_login', 'saml:sp')) {
@@ -120,6 +123,5 @@ class samlModuleUpgrader_loginpass extends SamlAbstractInstaller {
 
         $this->updateCacheProfile('profiles.ini.php');
         $this->updateCacheProfile('profiles.ini.php.dist');
-
     }
 }
