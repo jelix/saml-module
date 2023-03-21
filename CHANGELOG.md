@@ -1,8 +1,8 @@
 Changes
 =======
 
-Version 2.1.1
--------------
+Version 2.1.1 and 2.1.2
+------------------------
 
 - Fix upgrade with Jelix 1.7/1.8
 

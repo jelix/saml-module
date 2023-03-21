@@ -28,8 +28,9 @@ class samlModuleUpgrader_loginpass extends SamlAbstractInstaller {
             $currentAfterLogout = $ini->getValue('after_logout', 'saml:sp');
         }
 
-        if (method_exists($ini, 'removeValue')) {
-            // the method does not exist into Jelix 1.8
+        if (!method_exists('jApp', 'varConfigPath')) {
+            // the modifier of mainconfig is in read only mode into Jelix 1.8,
+            // so we don't call it.
             $ini->removeValue('after_login', 'saml:sp');
             $ini->removeValue('after_logout', 'saml:sp');
         }
