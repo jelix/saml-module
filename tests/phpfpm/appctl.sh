@@ -109,7 +109,7 @@ function launch() {
     if [ ! -f $APPDIR/var/config/profiles.ini.php ]; then
         cp $APPDIR/var/config/profiles.ini.php.dist $APPDIR/var/config/profiles.ini.php
     fi
-    if [ -f $APPDIR/var/config/localconfig.ini.php ]; then
+    if [ ! -f $APPDIR/var/config/localconfig.ini.php ]; then
         cp $APPDIR/var/config/localconfig.ini.php.dist $APPDIR/var/config/localconfig.ini.php
     fi
     chown -R $APP_USER:$APP_GROUP $APPDIR/var/config/profiles.ini.php $APPDIR/var/config/localconfig.ini.php
@@ -124,8 +124,8 @@ function launch() {
     if [ ! -d /opt/tests/jelix ]; then
         wget -O /opt/tests/jelix.tar.gz $jelix_archive
         (cd /opt/tests/ && tar xzf jelix.tar.gz && chown -R $APP_USER:$APP_GROUP $jelix_directory)
-        mv $jelix_directory jelix
-        rm jelix.tar.gz
+        mv /opt/tests/$jelix_directory /opt/tests/jelix
+        rm /opt/tests/jelix.tar.gz
     fi
 
     if [ ! -f $APPDIR/var/config/saml/certs/sp.crt ]; then
