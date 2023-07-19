@@ -1,8 +1,15 @@
 Changes
 =======
 
-Version 2.1.1, 2.1.2 and 2.1.3
--------------------------------
+
+Version 2.1.5
+-------------
+
+- add an uninstaller script, which remove the SAML configuration and restore
+  previous authentication configuration.
+
+Version 2.1.1, 2.1.2, 2.1.3 and 2.1.4
+-------------------------------------
 
 - Fix upgrade with Jelix 1.7/1.8
 

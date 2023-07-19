@@ -29,6 +29,8 @@ class samlModuleUninstaller extends \Jelix\Installer\Module\Uninstaller
             $epConfig->removeValue('auth.class', 'coordplugins');
             $epConfig->save();
         }
+
+        $helpers->removeDirectoryContent('varconfig:saml');
     }
 
 
