@@ -10,11 +10,11 @@ class samlModuleUninstaller extends \Jelix\Installer\Module\Uninstaller
 {
     public function uninstall(Jelix\Installer\Module\API\InstallHelpers $helpers)
     {
-        //$this->removeCacheProfile();
+        $this->removeCacheProfile();
 
         $appConfig = $helpers->getConfigIni();
         $appConfig->removeValue('auth.class', 'coordplugins');
-        $appConfig->removeValue('driver', 'saml', 'coordplugin_auth');
+        $appConfig->removeValue('driver', 'coordplugin_auth');
         $appConfig->removeSection('saml:sp');
         $appConfig->removeSection('saml:idp');
         $appConfig->removeSection('saml:security');
