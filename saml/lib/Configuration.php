@@ -153,6 +153,18 @@ class Configuration {
         }
     }
 
+    protected function configPath($file)
+    {
+        if (method_exists('\\jApp', 'varConfigPath')) {
+            // jelix 1.7+
+            return \jApp::varConfigPath($file);
+        }
+        else {
+            // jelix 1.6
+            return \jApp::configPath();
+        }
+    }
+
     protected function readSpConfig($iniConfig) {
         $spConfig = $iniConfig->{'saml:sp'};
 
@@ -190,8 +202,8 @@ class Configuration {
             'privateKey' => '',
         );
 
-        $spX509certFile = \jApp::configPath('saml/certs/sp.crt');
-        $spPrivateKeyFile  = \jApp::configPath('saml/certs/sp.key');
+        $spX509certFile = $this->configPath('saml/certs/sp.crt');
+        $spPrivateKeyFile  = $this->configPath('saml/certs/sp.key');
 
         if (file_exists($spX509certFile)) {
             $serviceProvider['x509cert'] = file_get_contents($spX509certFile);
@@ -201,7 +213,7 @@ class Configuration {
             $serviceProvider['privateKey'] = file_get_contents($spPrivateKeyFile);
         }
 
-        $spX509certNewFile = \jApp::configPath('saml/certs/sp_new.crt');
+        $spX509certNewFile = $this->configPath('saml/certs/sp_new.crt');
         if (file_exists($spX509certNewFile)) {
             $serviceProvider['x509certNew'] = file_get_contents($spX509certNewFile);
         }
@@ -239,7 +251,7 @@ class Configuration {
         $this->idpLabel  = $idpConfig['label'];
         $certsSigning = array();
         if ($idpConfig['certs_signing_files'] == '') {
-            $idpX509certFile = \jApp::configPath('saml/certs/idp.crt');
+            $idpX509certFile = $this->configPath('saml/certs/idp.crt');
 
             if (file_exists($idpX509certFile)) {
                 $idpX509cert = file_get_contents($idpX509certFile);
@@ -254,7 +266,7 @@ class Configuration {
             $list = preg_split('/ *, */', $idpConfig['certs_signing_files']);
 
             foreach( $list as $file) {
-                $path = \jApp::configPath('saml/certs/'.$file);
+                $path = $this->configPath('saml/certs/'.$file);
                 if (file_exists($path)) {
                     $certsSigning[] = file_get_contents($path);
                 }
@@ -267,7 +279,7 @@ class Configuration {
             $list = preg_split('/ *, */', $idpConfig['certs_encryption_files']);
             $certsEncryption = array();
             foreach( $list as $file) {
-                $path = \jApp::configPath('saml/certs/'.$file);
+                $path = $this->configPath('saml/certs/'.$file);
                 if (file_exists($path)) {
                     $certsEncryption[] = file_get_contents($path);
                 }

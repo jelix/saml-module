@@ -128,7 +128,7 @@ class ConfigurationModifier extends Configuration
     public function save()
     {
         $appConfig = \jApp::config();
-        $liveConfig = new \jIniFileModifier(\jApp::configPath('liveconfig.ini.php'));
+        $liveConfig = new \jIniFileModifier($this->configPath('liveconfig.ini.php'));
 
         // sp data
         $spEid = $this->getSpEntityId();
@@ -152,11 +152,11 @@ class ConfigurationModifier extends Configuration
         $appConfig->{'saml:sp'}['organization'] = $org;
 
 
-        $spPrivateKeyFile  = \jApp::configPath('saml/certs/sp.key');
+        $spPrivateKeyFile  = $this->configPath('saml/certs/sp.key');
         $spPK = $this->getSpPrivateKey();
         $this->saveConfigFile($spPrivateKeyFile, $spPK);
 
-        $spX509certFile = \jApp::configPath('saml/certs/sp.crt');
+        $spX509certFile = $this->configPath('saml/certs/sp.crt');
         $spCert = $this->getSpCertificate();
         $this->saveConfigFile($spX509certFile, $spCert);
 
@@ -177,18 +177,18 @@ class ConfigurationModifier extends Configuration
         $liveConfig->setValue('singleLogoutServiceResponseUrl', $urls['singleLogoutServiceResponse'], 'saml:idp');
         $appConfig->{'saml:idp'}['singleLogoutServiceResponseUrl'] = $urls['singleLogoutServiceResponse'];
 
-        $idpX509certFile = \jApp::configPath('saml/certs/idp.crt');
+        $idpX509certFile = $this->configPath('saml/certs/idp.crt');
         if (file_exists($idpX509certFile)) {
             unlink($idpX509certFile);
         }
 
-        $idpSignCertFile = \jApp::configPath('saml/certs/idp_sig.pem');
+        $idpSignCertFile = $this->configPath('saml/certs/idp_sig.pem');
         $signCert = $this->getIdpSigningCertificate();
         $this->saveConfigFile($idpSignCertFile, $signCert);
         $liveConfig->setValue('certs_signing_files', ($signCert ? 'idp_sig.pem' : ''), 'saml:idp');
         $appConfig->{'saml:idp'}['certs_signing_files'] = $signCert ? 'idp_sig.pem' : '';
 
-        $idpEncryptCertFile = \jApp::configPath('saml/certs/idp_encrypt.pem');
+        $idpEncryptCertFile = $this->configPath('saml/certs/idp_encrypt.pem');
         $cryptCert = $this->getIdpEncryptionCertificate();
         $this->saveConfigFile($idpEncryptCertFile, $cryptCert);
         $liveConfig->setValue('certs_encryption_files', ($cryptCert ? 'idp_encrypt.pem' : ''), 'saml:idp');
