@@ -19,10 +19,9 @@
 
 <h3>{@samladmin~admin.sp.metadata.url.title@}</h3>
 
-    {if $sp_config_ok && $idp_config_ok}
-    <p>{@samladmin~admin.sp.metadata.url@}<br>
-        <a href="{$sp_metadata_url}">{$sp_metadata_url}</a></p>
-    {else}
-        <p class="saml-error">{@samladmin~admin.sp.metadata.url.not.available@}
-        </p>
+
+    <p>{@samladmin~admin.sp.metadata.url@} : <a href="{$sp_metadata_url}">{$sp_metadata_url}</a></p>
+    {if ! $sp_config_ok || ! $idp_config_ok}
+    <p class="saml-error">{@samladmin~admin.sp.metadata.url.not.available@}
+    </p>
     {/if}
