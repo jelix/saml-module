@@ -3,5 +3,6 @@
     <listener name="samladmin">
         <event name="masteradminGetMenuContent" />
         <event name="jauthdbAdminEditCreate" />
+        <event name="jauthdbAdminGetViewInfo" />
     </listener>
 </events>

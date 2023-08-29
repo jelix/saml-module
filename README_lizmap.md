@@ -46,4 +46,4 @@ Configuration
 =============
 
 Go to the administration pages of Lizmap with your browser, you will see a new menu entry "SAML configuration".
-Click on this item and then you'll fill different forms to configure the SAML access. 
+Click on this item, then you'll fill different forms to configure the SAML access.

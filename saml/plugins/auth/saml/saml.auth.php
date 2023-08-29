@@ -245,6 +245,33 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
         return false;
     }
 
+    const AUTH_NOT_ALLOWED = 0;
+    const AUTH_SAML_ALLOWED = 2;
+    const AUTH_PASSWORD_ALLOWED = 4;
+
+    public function getAuthenticationPermissions($login)
+    {
+        $perms = self::AUTH_NOT_ALLOWED;
+
+        $samlAccount = jDao::get('saml~saml_account')->get($login);
+        if ($samlAccount) {
+            $perms |= self::AUTH_SAML_ALLOWED;
+        }
+        else {
+            // if the user has the right to administrate SAML configuration, it can login with local password
+            if (jAcl2::checkByUser($login, 'saml.config.access')) {
+                $perms |= self::AUTH_PASSWORD_ALLOWED;
+            }
+        }
+
+        $config = jApp::config()->saml;
+        if (isset($config['allowSAMLAccountToUseLocalPassword']) && $config['allowSAMLAccountToUseLocalPassword']) {
+            $perms |= self::AUTH_PASSWORD_ALLOWED;
+        }
+
+        return $perms;
+    }
+
     protected $samlAttributesValues = array();
 
     protected $userAttributesValues = array();
