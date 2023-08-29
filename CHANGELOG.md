@@ -1,6 +1,14 @@
 Changes
 =======
 
+Version 2.2.0
+-------------
+
+- admin: Display the URL of endpoint even if configuration is not done
+- admin, accounts: show authentication type in users details page
+- Configuration option to redirect directly to the SAML authentication page
+- Try to fix configuration cache issue
+- Fix some PHP warnings about `jApp::configPath()`
 
 Version 2.1.5
 -------------
