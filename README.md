@@ -6,15 +6,20 @@ Installation
 This module is for Jelix 1.6.21 and higher. It is compatible with jauth, 
 jauthdb, jauthdb_admin and jcommunity modules.
 
-It uses the [onelogin/php-saml](https://github.com/onelogin/php-saml/) library. 
+It uses the [onelogin/php-saml](https://github.com/onelogin/php-saml/) library which is installed automatically when using Composer.
 
 The SAML module requires:
 
-- php 7.0 or more
+- php 7.4 or more
 - some core PHP extensions like php-xml, php-date, php-zlib.
 - openssl. Install the openssl library. It handles x509 certificates.
 - gettext. Install that library and its php driver. It handles translations.
 - curl. Install that library and its php driver if you plan to use the IdP Metadata parser.
+
+To install the SAML module into Lizmap, read the file [README_lizmap.md](README_lizmap.md) instead of
+reading next section here.
+
+
 
 Install files with Jelix 1.7 or higher
 ---------------------------------------
