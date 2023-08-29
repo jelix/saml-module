@@ -40,6 +40,12 @@ class Configuration {
     protected $allowSAMLAccountToUseLocalPassword = true;
 
     /**
+     * @var bool says if the user should be redirected directly to SAML auth (true) or
+     *                the classical form (false) when he visits a private page whereas he is not authenticated
+     */
+    protected $forceSAMLAuthOnPrivatePage = false;
+
+    /**
      * @var array list of dao properties that can be used for mapping
      */
     protected $daoPropertiesForMapping = array();
@@ -74,6 +80,10 @@ class Configuration {
 
         if (isset($iniConfig->saml['allowSAMLAccountToUseLocalPassword'])) {
             $this->allowSAMLAccountToUseLocalPassword = $iniConfig->saml['allowSAMLAccountToUseLocalPassword'];
+        }
+
+        if (isset($iniConfig->saml['forceSAMLAuthOnPrivatePage'])) {
+            $this->forceSAMLAuthOnPrivatePage = $iniConfig->saml['forceSAMLAuthOnPrivatePage'];
         }
 
         $this->fixConfigValues($iniConfig);
@@ -474,6 +484,15 @@ class Configuration {
         return $this->allowSAMLAccountToUseLocalPassword;
     }
 
+    /**
+     * says if the user should be redirected directly to SAML auth (true) or
+     * the classical form (false) when he visits a private page whereas he is not authenticated
+     * @return bool
+     */
+    function mustForceSAMLAuthOnPrivatePage()
+    {
+        return $this->forceSAMLAuthOnPrivatePage;
+    }
 
     function getIdpURL()
     {

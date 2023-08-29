@@ -36,6 +36,20 @@ class samlCoordPlugin extends AuthCoordPlugin {
             }
         }
 
+        if (!isset($_SESSION[$this->config['session_name']])) {
+            $notLogged = true;
+        } else {
+            $notLogged = !jAuth::isConnected();
+        }
+        $needAuth = isset($params['auth.required']) ? ($params['auth.required'] == true) : $this->config['auth_required'];
+
+        if ($needAuth && $notLogged) {
+            $samlConf = jApp::config()->saml;
+            if (isset($samlConf['forceSAMLAuthOnPrivatePage']) && $samlConf['forceSAMLAuthOnPrivatePage']) {
+                return new jSelectorAct('saml~auth:login');
+            }
+        }
+
         return parent::beforeAction($params);
     }
 }

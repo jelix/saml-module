@@ -39,6 +39,14 @@ class ConfigurationModifier extends Configuration
         $this->allowSAMLAccountToUseLocalPassword = !!$allow;
     }
 
+    /**
+     * @param bool $automatic
+     */
+    public function setForceSAMLAuthOnPrivatePage($allow)
+    {
+        $this->forceSAMLAuthOnPrivatePage = !!$allow;
+    }
+
     public function setSpEntityId($entityId)
     {
         $this->settings['sp']['entityId'] = $entityId;
@@ -204,6 +212,9 @@ class ConfigurationModifier extends Configuration
 
         $liveConfig->setValue('allowSAMLAccountToUseLocalPassword', $this->allowSAMLAccountToUseLocalPassword, 'saml');
         $appConfig->saml['allowSAMLAccountToUseLocalPassword'] = $this->allowSAMLAccountToUseLocalPassword;
+
+        $liveConfig->setValue('forceSAMLAuthOnPrivatePage', $this->forceSAMLAuthOnPrivatePage, 'saml');
+        $appConfig->saml['forceSAMLAuthOnPrivatePage'] = $this->forceSAMLAuthOnPrivatePage;
 
         $liveConfig->save();
 

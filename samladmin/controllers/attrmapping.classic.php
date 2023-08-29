@@ -61,6 +61,7 @@ class attrmappingCtrl extends jController
         $form->setData('login', $config->getSAMLAttributeForLogin());
         $form->setData('automaticAccountCreation', $config->isAutomaticAccountCreation());
         $form->setData('allowSAMLAccountToUseLocalPassword', $config->isAllowingSAMLAccountToUseLocalPassword());
+        $form->setData('forceSAMLAuthOnPrivatePage', $config->mustForceSAMLAuthOnPrivatePage());
         $rep = $this->getResponse('redirect');
         $rep->action = 'samladmin~attrmapping:edit';
         return $rep;
@@ -111,6 +112,7 @@ class attrmappingCtrl extends jController
         $config->setSAMLAttributeForLogin($form->getData('login'));
         $config->setAutomaticAccountCreation($form->getData('automaticAccountCreation'));
         $config->setAllowSAMLAccountToUseLocalPassword($form->getData('allowSAMLAccountToUseLocalPassword'));
+        $config->setForceSAMLAuthOnPrivatePage($form->getData('forceSAMLAuthOnPrivatePage'));
 
         $daoProperties = $config->getAuthorizedDaoPropertiesForMapping();
 

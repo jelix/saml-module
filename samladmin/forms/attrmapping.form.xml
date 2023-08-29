@@ -17,6 +17,10 @@
         <label locale="samladmin~admin.attrmapping.form.allowSAMLAccountToUseLocalPassword.label"/>
     </checkbox>
 
+    <checkbox ref="forceSAMLAuthOnPrivatePage">
+        <label locale="samladmin~admin.attrmapping.form.forceSAMLAuthOnPrivatePage.label"/>
+    </checkbox>
+
     <submit ref="_submit">
         <label locale="jelix~ui.buttons.save"/>
     </submit>

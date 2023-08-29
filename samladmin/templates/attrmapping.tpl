@@ -18,6 +18,11 @@
         {ctrl_label 'allowSAMLAccountToUseLocalPassword'}
 
     </p>
+    <p>
+        {ctrl_control 'forceSAMLAuthOnPrivatePage'}
+        {ctrl_label 'forceSAMLAuthOnPrivatePage'}
+
+    </p>
     <div>
         {formsubmit}
         <a href="{jurl 'samladmin~config:index'}">{@jelix~ui.buttons.cancel@}</a>
