@@ -206,6 +206,11 @@ class ConfigurationModifier extends Configuration
         $appConfig->saml['allowSAMLAccountToUseLocalPassword'] = $this->allowSAMLAccountToUseLocalPassword;
 
         $liveConfig->save();
+
+        // touch the file into the futur, so there is a chance that the cache file is older than liveconfig,
+        // and so it is refreshed.
+        touch($this->configPath('liveconfig.ini.php'), time()+2);
+        clearstatcache();
     }
 
 
