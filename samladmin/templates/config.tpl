@@ -25,7 +25,7 @@
 <dl class="saml-url">
     <dt>{@samladmin~admin.sp.metadata.url@}</dt>
     <dd> <a href="{$sp_metadata_url}">{$sp_metadata_url}</a></dd>
-    {if ! $sp_config_ok || ! $idp_config_ok}
+    {if ! $sp_config_ok}
         <dd class="saml-error">{@samladmin~admin.sp.metadata.url.not.available@}</dd>
     {/if}
     <dt>{@samladmin~admin.sp.sls.url@}</dt>

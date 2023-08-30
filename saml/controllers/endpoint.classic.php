@@ -23,11 +23,9 @@ class endpointCtrl extends jController {
 
         try {
             $configuration = new \Jelix\Saml\Configuration(false);
-            // we don't check saml attributes, no need to generate metadata.
+            // we don't check saml attributes and idp settings, no need to generate metadata.
             $configuration->checkSpConfig();
-            $configuration->checkIdpConfig();
-
-            $samlSettings = $configuration->getSettings();
+            $samlSettings = $configuration->getSettings(true);
 
             $xml->content = $samlSettings->getSPMetadata();
         }

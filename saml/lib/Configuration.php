@@ -392,8 +392,8 @@ class Configuration {
      * @return Settings
      * @throws \OneLogin\Saml2\Error
      */
-    function getSettings() {
-        return new Settings($this->settings);
+    function getSettings($spValidationOnly = false) {
+        return new Settings($this->settings, $spValidationOnly);
     }
 
     /**
