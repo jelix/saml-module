@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module xmlns="http://jelix.org/ns/module/1.0">
     <info id="saml@modules.jelix.org" name="saml" createdate="2019-06-20">
-        <version date="2023-08-29">2.2.0</version>
+        <version date="2023-08-30">2.2.1</version>
         <label lang="en_US">module to authenticate with a SAML server</label>
         <description lang="en_US"></description>
         <license URL="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">LGPL 2.1</license>

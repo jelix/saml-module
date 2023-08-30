@@ -1,6 +1,12 @@
 Changes
 =======
 
+Version 2.2.1
+-------------
+
+- Show ACS and SLS adresses on the configuration panel
+- Fix: the metadata content is now available, even if the IDP properties are not set yet.
+
 Version 2.2.0
 -------------
 
