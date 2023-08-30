@@ -51,6 +51,8 @@ class configCtrl extends jController
         }
 
         $tpl->assign('sp_metadata_url', jUrl::getFull('saml~endpoint:metadata'));
+        $tpl->assign('sp_acs_url', jUrl::getFull('saml~endpoint:acs'));
+        $tpl->assign('sp_sls_url', jUrl::getFull('saml~endpoint:sls'));
 
         $rep->body->assign('MAIN', $tpl->fetch('config'));
         $rep->body->assign('selectedMenuItem', 'samlconfig');

@@ -17,11 +17,20 @@
     </li>
 </ul>
 
-<h3>{@samladmin~admin.sp.metadata.url.title@}</h3>
+<h3>{@samladmin~admin.sp.url.list.title@}</h3>
+
+    <p>{@samladmin~admin.sp.url.list.description@}</p>
 
 
-    <p>{@samladmin~admin.sp.metadata.url@} : <a href="{$sp_metadata_url}">{$sp_metadata_url}</a></p>
+<dl class="saml-url">
+    <dt>{@samladmin~admin.sp.metadata.url@}</dt>
+    <dd> <a href="{$sp_metadata_url}">{$sp_metadata_url}</a></dd>
     {if ! $sp_config_ok || ! $idp_config_ok}
-    <p class="saml-error">{@samladmin~admin.sp.metadata.url.not.available@}
-    </p>
+        <dd class="saml-error">{@samladmin~admin.sp.metadata.url.not.available@}</dd>
     {/if}
+    <dt>{@samladmin~admin.sp.sls.url@}</dt>
+    <dd> {$sp_sls_url}</dd>
+    <dt>{@samladmin~admin.sp.acs.url@}</dt>
+    <dd> {$sp_acs_url}</dd>
+</dl>
+

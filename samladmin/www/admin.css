@@ -14,3 +14,12 @@
 #metadata-loader {
     display:none;
 }
+
+dl.saml-url dd {
+    margin-top: 0.3em;
+    margin-bottom: 0.5em;
+}
+
+dl.saml-url dt {
+
+}
