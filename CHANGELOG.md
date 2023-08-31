@@ -1,6 +1,11 @@
 Changes
 =======
 
+Version 2.2.2
+-------------
+
+- Improve the presentation of the main configuration page.
+
 Version 2.2.1
 -------------
 
