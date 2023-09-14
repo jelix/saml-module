@@ -30,3 +30,8 @@ h2 span.saml-step {
     padding: 0 0.3em;
 
 }
+
+.jforms-ctrl-textarea {
+    font-family: monospace;
+    width:40em;
+}

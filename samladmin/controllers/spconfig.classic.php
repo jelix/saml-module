@@ -61,6 +61,7 @@ class spconfigCtrl extends jController
         $tpl->assign('spform', $form);
         $tpl->assign('certForm', $certForm);
         $rep->addJSLink(jUrl::get('samladmin~config:asset', array('file'=>'sp.js')));
+        $rep->addCSSLink(jUrl::get('samladmin~config:asset', array('file'=>'admin.css')));
         $rep->body->assign('MAIN', $tpl->fetch('spconfig'));
         $rep->body->assign('selectedMenuItem', 'samlconfig');
         return $rep;
