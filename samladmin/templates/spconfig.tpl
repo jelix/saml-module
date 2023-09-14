@@ -96,4 +96,5 @@
 
 <div id="dialogTlsCertificateGenerate" title="{@samladmin~admin.spconfig.form.cert.generate.title@}">
     <p>{@samladmin~admin.spconfig.form.cert.generate.process@}</p>
+    <p><progress></progress></p>
 </div>

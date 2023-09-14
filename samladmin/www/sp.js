@@ -47,17 +47,21 @@ window.addEventListener('load', function () {
         }
     });
 
+    let divDialogTLSGenerate = $( "#dialogTlsCertificateGenerate" );
+    let dialogGenerate = divDialogTLSGenerate.dialog({
+        autoOpen: false,
+        height: 200,
+        width: 350,
+        modal: true,
+    });
+
+
     function createCert()
     {
         let certform = jFormsJQ.getForm('jforms_samladmin_cert').element;
         if (jFormsJQ.verifyForm(certform)) {
             dialog.dialog( "close" );
-
-            let dialogGenerate = $( "#dialogTlsCertificateGenerate" ).dialog({
-                height: 200,
-                width: 350,
-                modal: true,
-            });
+            dialogGenerate.dialog('open');
 
             let formData = new FormData(certform);
             formData.append('privKey', jFormsJQ.getForm('jforms_samladmin_spconfig').element.tlsPrivateKey.value);

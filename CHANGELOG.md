@@ -1,6 +1,12 @@
 Changes
 =======
 
+Version 2.2.3
+-------------
+
+- Admin: hide the content of the dialog about certificate generation, that was
+  always visible on the SP config page. 
+
 Version 2.2.2
 -------------
 
