@@ -1,7 +1,7 @@
 <?php
 /**
  * @author  Laurent Jouanneau
- * @copyright  2019-2021 3Liz
+ * @copyright  2019-2023 3Liz
  * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
  */
 namespace Jelix\Saml;
@@ -268,35 +268,43 @@ class Configuration {
             }
             else {
                 $idpX509cert = '';
-                $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.missing.idp.cert', array('idp.crt'));
+                $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.missing.idp.cert');
             }
         }
         else {
             $idpX509cert = '';
             $list = preg_split('/ *, */', $idpConfig['certs_signing_files']);
 
-            foreach( $list as $file) {
-                $path = $this->configPath('saml/certs/'.$file);
+            foreach ($list as $file) {
+                if ($file == '') {
+                    continue;
+                }
+                $path = $this->configPath('saml/certs/' . $file);
                 if (file_exists($path)) {
                     $certsSigning[] = file_get_contents($path);
-                }
-                else {
+                } else {
                     $certsSigning = array();
-                    $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.missing.idp.key', array($path));
+                    $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.missing.idp.key');
                     break;
                 }
             }
-            $list = preg_split('/ *, */', $idpConfig['certs_encryption_files']);
+
             $certsEncryption = array();
-            foreach( $list as $file) {
-                $path = $this->configPath('saml/certs/'.$file);
-                if (file_exists($path)) {
-                    $certsEncryption[] = file_get_contents($path);
-                }
-                else {
-                    $certsEncryption = array();
-                    $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.missing.idp.cert', array($path));
-                    break;
+            if ($idpConfig['certs_encryption_files'] != '') {
+                $list = preg_split('/ *, */', $idpConfig['certs_encryption_files']);
+                foreach( $list as $file) {
+                    if ($file == '') {
+                        continue;
+                    }
+                    $path = $this->configPath('saml/certs/'.$file);
+                    if (file_exists($path)) {
+                        $certsEncryption[] = file_get_contents($path);
+                    }
+                    else {
+                        $certsEncryption = array();
+                        $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.missing.idp.cert');
+                        break;
+                    }
                 }
             }
         }
@@ -347,7 +355,6 @@ class Configuration {
 
     public function checkSpConfig()
     {
-
         if ($this->settings['sp']['entityId'] == '') {
             throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.sp.entityId'),2);
         }

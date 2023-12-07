@@ -1,6 +1,17 @@
 Changes
 =======
 
+Version 2.2.5
+-------------
+
+- Fix: there was a php error when `certs_encryption_files` was empty
+
+Version 2.2.4
+-------------
+
+- SAML admin: improve the appearance of content of certificates and keys.
+- Update authentication plugin for Jelix 1.8.3+
+
 Version 2.2.3
 -------------
 
