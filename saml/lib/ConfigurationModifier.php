@@ -126,12 +126,15 @@ class ConfigurationModifier extends Configuration
         $this->loginAttribute = $attr;
     }
 
-
     public function setAttributesMapping(array $attributes)
     {
         $this->attributesMapping = $attributes;
     }
 
+    public function setUserGroupsSetting(array $setting)
+    {
+        $this->userGroupsSetting = $setting;
+    }
 
     public function save()
     {
@@ -206,6 +209,10 @@ class ConfigurationModifier extends Configuration
         $mapping['__login'] = $this->loginAttribute;
         $liveConfig->setValues($mapping, 'saml:attributes-mapping');
         $appConfig->{'saml:attributes-mapping'} = $mapping;
+
+        $ugSetting = $this->userGroupsSetting;
+        $liveConfig->setValues($ugSetting, 'saml:userGroups-setting');
+        $appConfig->{'saml:userGroups-setting'} = $ugSetting;
 
         $liveConfig->setValue('automaticAccountCreation', $this->automaticAccountCreation, 'saml');
         $appConfig->saml['automaticAccountCreation'] = $this->automaticAccountCreation;

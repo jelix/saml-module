@@ -30,6 +30,11 @@ class Configuration {
     protected $attributesMapping = array();
 
     /**
+     * @var array Setting to let SAML provides user groups, attributes: 'enabled', 'attribute', 'separator' and 'prefix'
+     */
+    protected $userGroupsSetting = array();
+
+    /**
      * @var bool indicates if accounts are created automatically after authentication
      */
     protected $automaticAccountCreation = true;
@@ -155,6 +160,15 @@ class Configuration {
         }
         unset($attrConfig['__login']);
         $this->attributesMapping = $attrConfig;
+
+        $userGroupsConfig = array('enabled' => False);
+        if (isset($iniConfig->{'saml:userGroups-setting'})) {
+            $userGroupsConfig = $iniConfig->{'saml:userGroups-setting'};
+            if (!isset($userGroupsConfig['enabled'])) {
+                $userGroupsConfig['enabled'] = False;
+            }
+        }
+        $this->userGroupsSetting = $userGroupsConfig;
 
         if ($checkConfig) {
             $this->checkSpConfig();
@@ -562,6 +576,23 @@ class Configuration {
         return $this->attributesMapping;
     }
 
+    /**
+     * Is SAML provides user groups enabled ?
+     * @return bool
+     */
+    function isUserGroupsSettingEnabled()
+    {
+        return (isset($this->userGroupsSetting['enabled']) && $this->userGroupsSetting['enabled']);
+    }
+
+    /**
+     * Setting to let SAML provides user groups
+     * @return array  attributes: 'enabled', 'attribute', 'separator' and 'prefix'
+     */
+    function getUserGroupsSetting()
+    {
+        return $this->userGroupsSetting;
+    }
 
     /**
      * list of dao properties that could be mapped

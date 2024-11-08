@@ -9,6 +9,12 @@
         {ctrl_label 'attrsgroup'}
         {ctrl_control 'attrsgroup'}
     </div>
+
+    <div>
+        {ctrl_label 'groupsfromsaml'}
+        {ctrl_control 'groupsfromsaml'}
+    </div>
+
     <p>
         {ctrl_control 'automaticAccountCreation'}
         {ctrl_label 'automaticAccountCreation'}

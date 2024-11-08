@@ -58,6 +58,14 @@ class attrmappingCtrl extends jController
         $form = jForms::create('attrmapping');
         $this->setupForm($form, $config);
 
+        $userGroupsSetting = $config->getUserGroupsSetting();
+        if (isset($userGroupsSetting['enabled']) && $userGroupsSetting['enabled']) {
+            $form->setData('groupsfromsaml', $userGroupsSetting['enabled']);
+            $form->setData('groupsfromsamlattr', $userGroupsSetting['attribute'] ?? '');
+            $form->setData('groupsfromsamlsep', $userGroupsSetting['separator'] ?? '');
+            $form->setData('groupsfromsamlprefix', $userGroupsSetting['prefix'] ?? '');
+        }
+
         $form->setData('login', $config->getSAMLAttributeForLogin());
         $form->setData('automaticAccountCreation', $config->isAutomaticAccountCreation());
         $form->setData('allowSAMLAccountToUseLocalPassword', $config->isAllowingSAMLAccountToUseLocalPassword());
@@ -129,6 +137,18 @@ class attrmappingCtrl extends jController
         }
 
         $config->setAttributesMapping($mapping);
+
+        $userGroupsSetting = array('enabled' => $form->getData('groupsfromsaml'));
+        $userGroupsSetting['attribute'] = '';
+        $userGroupsSetting['separator'] = '';
+        $userGroupsSetting['prefix'] = '';
+        if ($userGroupsSetting['enabled']) {
+            $userGroupsSetting['attribute'] = $form->getData('groupsfromsamlattr');
+            $userGroupsSetting['separator'] = $form->getData('groupsfromsamlsep');
+            $userGroupsSetting['prefix'] = $form->getData('groupsfromsamlprefix');
+        }
+        $config->setUserGroupsSetting($userGroupsSetting);
+
         $config->save();
         jForms::destroy('attrmapping');
         jMessage::add(jLocale::get('samladmin~admin.spconfig.form.save.ok', 'notice'));

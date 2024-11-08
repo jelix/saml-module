@@ -135,6 +135,72 @@ class Saml
             );
         }
 
+        if ($this->config->isUserGroupsSettingEnabled()) {
+            $samlUserGroupsSetting = $this->config->getUserGroupsSetting();
+            if (isset($samlUserGroupsSetting['attribute']) && $samlUserGroupsSetting['attribute'] != ''
+                && isset($samlUserGroupsSetting['separator']) && $samlUserGroupsSetting['separator'] != ''
+                && isset($attributes[$samlUserGroupsSetting['attribute']])) {
+
+                // Get all groups
+                $allGroups = array_map(
+                    function($g) {
+                        return $group->id_aclgrp;
+                    },
+                    jAcl2DbUserGroup::getGroupList()
+                );
+                // Get login groups without private or default group to keep them
+                $loginGroups = array_map(
+                    function($g) {
+                        return $group->id_aclgrp;
+                    },
+                    array_filter(jAcl2DbUserGroup::getGroupList($login), function($g) {
+                        // exclude private group and default group
+                        return $group->grouptype == jAcl2DbUserGroup::GROUPTYPE_NORMAL;
+                    })
+                );
+
+                // Get user groups provided by SAML
+                $userGroups = array_map('trim', explode($samlUserGroupsSetting['separator'], $attributes[$samlUserGroupsSetting['attribute']]));
+                // Update user groups if prefix is defined
+                if (isset($samlUserGroupsSetting['prefix']) && $samlUserGroupsSetting['prefix'] != '') {
+                    $prefix = $samlUserGroupsSetting['prefix'];
+                    $userGroups = array_filter(
+                        $userGroups,
+                        function($g) use ($prefix) {
+                            return substr($g, 0, strlen($prefix)) == $prefix;
+                        }
+                    );
+                }
+                // Filter user groups against all groups
+                // Remove user groups provided by SAML not in the application
+                $userGroups = array_filter($userGroups,function($g) use ($allGroups) {
+                    return array_search($g, $allGroups);
+                });
+
+                // Get the list of login groups not in user groups to remove them
+                $groupsToRemove = array_filter($loginGroups, function($g) use ($userGroups) {
+                    return !array_search($g, $userGroups);
+                });
+                // Get the list of user groups not in login groups to add them
+                $groupsToAdd = array_filter($userGroups,function($g) use ($loginGroups) {
+                    return !array_search($g, $loginGroups);
+                });
+
+                // Update
+                if (count($groupsToRemove) != 0 || count($groupsToAdd) != 0) {
+                    foreach($groupToRemove as $grpId) {
+                        jAcl2DbUserGroup::removeUserFromGroup($login, $grpId);
+                    }
+
+                    foreach($groupsToAdd as $grpId) {
+                        jAcl2DbUserGroup::addUserToGroup($login, $grpId);
+                    }
+
+                    jAcl2::clearCache();
+                }
+            }
+        }
+
         $_SESSION['samlUserdata'] = $auth->getAttributes();
         $_SESSION['IdPSessionIndex'] = $auth->getSessionIndex();
         $_SESSION['samlNameId'] = $auth->getNameId();
