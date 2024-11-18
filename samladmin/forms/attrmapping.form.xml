@@ -9,6 +9,22 @@
         <label locale="samladmin~admin.attrmapping.form.attrsgroup.label" />
     </group>
 
+    <group ref="groupsfromsaml" withcheckbox="true">
+        <label locale="samladmin~admin.attrmapping.form.groupsfromsaml.label"/>
+        <input ref="groupsfromsamlattr" type="string" required="true">
+            <label locale="samladmin~admin.attrmapping.form.groupsfromsamlattr.label"/>
+            <help locale="samladmin~admin.attrmapping.form.groupsfromsamlattr.help"/>
+        </input>
+        <input ref="groupsfromsamlsep" type="string" required="true">
+            <label locale="samladmin~admin.attrmapping.form.groupsfromsamlsep.label"/>
+            <help locale="samladmin~admin.attrmapping.form.groupsfromsamlsep.help"/>
+        </input>
+        <input ref="groupsfromsamlprefix" type="string">
+            <label locale="samladmin~admin.attrmapping.form.groupsfromsamlprefix.label"/>
+            <help locale="samladmin~admin.attrmapping.form.groupsfromsamlprefix.help"/>
+        </input>
+    </group>
+
     <checkbox ref="automaticAccountCreation">
         <label locale="samladmin~admin.attrmapping.form.automaticAccountCreation.label"/>
     </checkbox>

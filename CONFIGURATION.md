@@ -65,6 +65,7 @@ you certainly have to give these values:
 - First name: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`
 - Last name: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`
 
+You can also activate the fact that SAML provides user groups through an attribute.
 
 
 Configuration without samladmin
