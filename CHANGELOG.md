@@ -1,6 +1,9 @@
 Changes
 =======
 
+
+- Improve html with ids and div to ease CSS styling
+
 Version 2.2.5
 -------------
 
