@@ -144,18 +144,18 @@ class Saml
                 // Get all groups
                 $allGroups = array_map(
                     function($g) {
-                        return $group->id_aclgrp;
+                        return $g->id_aclgrp;
                     },
-                    jAcl2DbUserGroup::getGroupList()
+                    \jAcl2DbUserGroup::getGroupList()
                 );
                 // Get login groups without private or default group to keep them
                 $loginGroups = array_map(
                     function($g) {
-                        return $group->id_aclgrp;
+                        return $g->id_aclgrp;
                     },
-                    array_filter(jAcl2DbUserGroup::getGroupList($login), function($g) {
+                    array_filter(\jAcl2DbUserGroup::getGroupList($login), function($g) {
                         // exclude private group and default group
-                        return $group->grouptype == jAcl2DbUserGroup::GROUPTYPE_NORMAL;
+                        return $g->grouptype == \jAcl2DbUserGroup::GROUPTYPE_NORMAL;
                     })
                 );
 
@@ -167,7 +167,7 @@ class Saml
                     $userGroups = array_filter(
                         $userGroups,
                         function($g) use ($prefix) {
-                            return substr($g, 0, strlen($prefix)) == $prefix;
+                            return strpos($g, $prefix) === 0;
                         }
                     );
                 }
@@ -189,14 +189,14 @@ class Saml
                 // Update
                 if (count($groupsToRemove) != 0 || count($groupsToAdd) != 0) {
                     foreach($groupToRemove as $grpId) {
-                        jAcl2DbUserGroup::removeUserFromGroup($login, $grpId);
+                        \jAcl2DbUserGroup::removeUserFromGroup($login, $grpId);
                     }
 
                     foreach($groupsToAdd as $grpId) {
-                        jAcl2DbUserGroup::addUserToGroup($login, $grpId);
+                        \jAcl2DbUserGroup::addUserToGroup($login, $grpId);
                     }
 
-                    jAcl2::clearCache();
+                    \jAcl2::clearCache();
                 }
             }
         }
