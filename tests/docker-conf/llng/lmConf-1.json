@@ -14,6 +14,7 @@
    "applicationList" : {
       "1sample" : {
          "catname" : "Sample applications",
+         "order" : 1,
          "test1" : {
             "options" : {
                "description" : "A simple application displaying authenticated user",
@@ -22,6 +23,7 @@
                "name" : "Application Test 1",
                "uri" : "http://test1.lemon.local/"
             },
+            "order" : 2,
             "type" : "application"
          },
          "test2" : {
@@ -32,6 +34,7 @@
                "name" : "Application Test 2",
                "uri" : "http://test2.lemon.local/"
             },
+            "order" : 3,
             "type" : "application"
          },
          "type" : "category"
@@ -46,6 +49,7 @@
                "name" : "WebSSO Manager",
                "uri" : "http://manager.lemon.local/manager.html"
             },
+            "order" : 5,
             "type" : "application"
          },
          "notifications" : {
@@ -56,8 +60,10 @@
                "name" : "Notifications explorer",
                "uri" : "http://manager.lemon.local/notifications.html"
             },
+            "order" : 6,
             "type" : "application"
          },
+         "order" : 4,
          "sessions" : {
             "options" : {
                "description" : "Explore WebSSO sessions",
@@ -66,6 +72,7 @@
                "name" : "Sessions explorer",
                "uri" : "http://manager.lemon.local/sessions.html"
             },
+            "order" : 7,
             "type" : "application"
          },
          "type" : "category"
@@ -80,6 +87,7 @@
                "name" : "Local documentation",
                "uri" : "http://manager.lemon.local/doc/"
             },
+            "order" : 9,
             "type" : "application"
          },
          "officialwebsite" : {
@@ -90,14 +98,16 @@
                "name" : "Official Website",
                "uri" : "http://lemonldap-ng.org/"
             },
+            "order" : 10,
             "type" : "application"
          },
+         "order" : 8,
          "type" : "category"
       }
    },
    "authChoiceModules" : {},
    "authChoiceParam" : "lmAuth",
-   "authentication" : "Demo",
+   "authentication" : "LDAP",
    "autoSigninRules" : {},
    "available2F" : "TOTP,REST,Mail2F,Ext2F,WebAuthn,Yubikey,Radius,Password,Okta",
    "available2FSelfRegistration" : "Password,TOTP,WebAuthn,Yubikey",
@@ -128,8 +138,8 @@
    "certificateResetByMailURL" : "http://auth.lemon.local/certificateReset",
    "certificateResetByMailValidityDelay" : 0,
    "cfgAuthor" : "dwho",
-   "cfgAuthorIP" : "192.168.208.3 (maybe 192.168.208.1)",
-   "cfgDate" : 1732113461,
+   "cfgAuthorIP" : "172.21.0.3 (maybe 172.21.0.1)",
+   "cfgDate" : 1732204389,
    "cfgLog" : "",
    "cfgNum" : "1",
    "cfgVersion" : "2.20.1",
@@ -189,6 +199,8 @@
    "domain" : "lemon.local",
    "eventQueueName" : "llng_events",
    "exportedHeaders" : {
+      "auth.lemon.local" : {},
+      "manager.lemon.local" : {},
       "test1.lemon.local" : {
          "Auth-User" : "$uid"
       },
@@ -257,27 +269,36 @@
    "key" : "VV3kDwS_y&dx'Bpk",
    "krbAuthnLevel" : 3,
    "krbRemoveDomain" : 1,
+   "ldapAllowResetExpiredPassword" : 0,
    "ldapAuthnLevel" : 2,
-   "ldapBase" : "dc=example,dc=com",
+   "ldapBase" : "ou=people,dc=tests,dc=jelix",
+   "ldapChangePasswordAsUser" : 0,
    "ldapExportedVars" : {
       "cn" : "cn",
       "mail" : "mail",
       "uid" : "uid"
    },
+   "ldapGetUserBeforePasswordChange" : 0,
    "ldapGroupAttributeName" : "member",
    "ldapGroupAttributeNameGroup" : "dn",
    "ldapGroupAttributeNameSearch" : "cn",
    "ldapGroupAttributeNameUser" : "dn",
+   "ldapGroupBase" : "ou=groups,dc=tests,dc=jelix",
+   "ldapGroupDecodeSearchedValue" : 0,
    "ldapGroupObjectClass" : "groupOfNames",
+   "ldapGroupRecursive" : 0,
    "ldapIOTimeout" : 10,
+   "ldapITDS" : 0,
    "ldapPasswordResetAttribute" : "pwdReset",
    "ldapPasswordResetAttributeValue" : "TRUE",
+   "ldapPpolicyControl" : 0,
    "ldapPwdEnc" : "utf-8",
    "ldapSearchDeref" : "find",
-   "ldapServer" : "ldap://localhost",
+   "ldapServer" : "ldap://openldap",
+   "ldapSetPassword" : 0,
    "ldapTimeout" : 10,
    "ldapUsePasswordResetAttribute" : 1,
-   "ldapVerify" : "require",
+   "ldapVerify" : "none",
    "ldapVersion" : 3,
    "linkedInAuthnLevel" : 1,
    "linkedInFields" : "id,first-name,last-name,email-address",
@@ -328,8 +349,8 @@
    "mailSessionKey" : "mail",
    "mailTimeout" : 0,
    "mailUrl" : "http://auth.lemon.local/resetpwd",
-   "managerDn" : "",
-   "managerPassword" : "",
+   "managerDn" : "cn=admin,dc=tests,dc=jelix",
+   "managerPassword" : "passjelix",
    "max2FDevices" : 10,
    "max2FDevicesNameLength" : 20,
    "messageBrokerOptions" : {},
@@ -357,12 +378,12 @@
    "notifyDeleted" : 1,
    "nullAuthnLevel" : 0,
    "oidcAuthnLevel" : 1,
-   "oidcOPMetaDataExportedVars" : null,
+   "oidcOPMetaDataExportedVars" : {},
    "oidcOPMetaDataJSON" : {},
    "oidcOPMetaDataJWKS" : {},
    "oidcOPMetaDataOptions" : {},
    "oidcRPCallbackGetParam" : "openidconnectcallback",
-   "oidcRPMetaDataExportedVars" : null,
+   "oidcRPMetaDataExportedVars" : {},
    "oidcRPMetaDataMacros" : null,
    "oidcRPMetaDataOptions" : {},
    "oidcRPMetaDataOptionsExtraClaims" : null,
@@ -414,7 +435,7 @@
    "password2fActivation" : 0,
    "password2fSelfRegistration" : 0,
    "password2fUserCanRemoveKey" : 1,
-   "passwordDB" : "Demo",
+   "passwordDB" : "LDAP",
    "passwordPolicyActivation" : 1,
    "passwordPolicyMaxSize" : 0,
    "passwordPolicyMinDigit" : 0,
@@ -453,7 +474,12 @@
    "portalSkinBackground" : "1280px-Cedar_Breaks_National_Monument_partially.jpg",
    "portalSkinRules" : {},
    "portalUserAttr" : "_user",
-   "post" : null,
+   "post" : {
+      "auth.lemon.local" : {},
+      "manager.lemon.local" : {},
+      "test1.lemon.local" : {},
+      "test2.lemon.local" : {}
+   },
    "proxyAuthServiceChoiceParam" : "lmAuth",
    "proxyAuthnLevel" : 2,
    "radius2fActivation" : 0,
@@ -464,7 +490,7 @@
    "radiusRequestAttributes" : {},
    "randomPasswordRegexp" : "[A-Z]{3}[a-z]{5}.\\d{2}",
    "redirectFormMethod" : "get",
-   "registerDB" : "Demo",
+   "registerDB" : "Null",
    "registerTimeout" : 0,
    "registerUrl" : "http://auth.lemon.local/register",
    "reloadTimeout" : 5,
@@ -493,9 +519,8 @@
    "samlAuthnContextMapPassword" : 2,
    "samlAuthnContextMapPasswordProtectedTransport" : 3,
    "samlAuthnContextMapTLSClient" : 5,
+   "samlCommonDomainCookieActivation" : 0,
    "samlEntityID" : "#PORTAL#/saml/metadata",
-   "samlIDPMetaDataExportedAttributes" : null,
-   "samlIDPMetaDataOptions" : {},
    "samlIDPMetaDataXML" : {},
    "samlIDPSSODescriptorArtifactResolutionServiceArtifact" : "1;0;urn:oasis:names:tc:SAML:2.0:bindings:SOAP;#PORTAL#/saml/artifact",
    "samlIDPSSODescriptorSingleLogoutServiceHTTPPost" : "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST;#PORTAL#/saml/singleLogout;#PORTAL#/saml/singleLogoutReturn",
@@ -518,6 +543,7 @@
    "samlSPMetaDataExportedAttributes" : {
       "appsaml" : {
          "cn" : "0;username",
+         "groups" : "0;groups",
          "mail" : "0;mail",
          "uid" : "0;login"
       }
@@ -602,8 +628,13 @@
    "useRedirectOnError" : 1,
    "useSafeJail" : 1,
    "userControl" : "^[\\w\\.\\-@]+$",
-   "userDB" : "Same",
-   "vhostOptions" : {},
+   "userDB" : "LDAP",
+   "vhostOptions" : {
+      "auth.lemon.local" : {},
+      "manager.lemon.local" : {},
+      "test1.lemon.local" : {},
+      "test2.lemon.local" : {}
+   },
    "viewerHiddenKeys" : "samlIDPMetaDataNodes, samlSPMetaDataNodes",
    "webIDAuthnLevel" : 1,
    "webIDExportedVars" : {},

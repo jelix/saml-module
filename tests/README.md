@@ -19,6 +19,7 @@ Then launch the containers for tests
 ./run-docker build
 ./run-docker up
 ./app-ctl reset
+./app-ctl ldap-reset
 ``` 
 
 During the startup, there can be errors from the nginx-proxy, containers, like
@@ -36,6 +37,10 @@ You can then open in your browser:
 The default user (and administrator of lemonldap):
 - login: dwho
 - password: dwho
+
+Other users : 
+- john / passjohn (who is into two groups: group1 and group2)
+- jane / passjane (who is into the group1 group)
 
 To reset all data and docker containers, run `./run-docker reset`
 

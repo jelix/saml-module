@@ -6,7 +6,8 @@ shift
 if [ "$COMMAND" == "" ]; then
     echo "Error: command is missing"
     echo "Possible commands: clean-tmp, reset, install, rights, composer-install, composer-update"
-    echo " shell, shellroot"
+    echo "   ldap-reset, ldap-shell, ldap-users"
+    echo "   shell, shellroot"
     exit 1;
 fi
 CONTAINER=jelix_saml_php
@@ -30,6 +31,15 @@ case $COMMAND in
        docker exec -it --user userphp $CONTAINER  /bin/bash -l;;
     shellroot)
        docker exec -it $CONTAINER  /bin/sh  -l;;
+    ldap-reset)
+      docker exec -it jelix_saml_ldap /bin/ctl.sh reset
+      ;;
+    ldap-users)
+       docker exec -it jelix_saml_ldap /bin/ctl.sh showusers
+       ;;
+    ldap-shell)
+       docker exec -it jelix_saml_ldap  /bin/bash -l
+     ;;
     *)
         echo "wrong command"
         exit 2

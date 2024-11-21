@@ -1,5 +1,15 @@
-version: '3'
+
 services:
+  openldap:
+    build: ./docker-conf/openldap
+    container_name: jelix_saml_ldap
+    environment:
+      #SLAPD_FORCE_RECONFIGURE: "true"
+      SLAPD_PASSWORD: "passjelix"
+      SLAPD_ORGANISATION: "Jelix"
+      SLAPD_DOMAIN: "tests.jelix"
+    volumes:
+      - "./docker-conf/openldap/ldif:/customldif"
   nginx-proxy:
     image: jwilder/nginx-proxy:alpine
     container_name: "jelix_saml_nginx_proxy"
@@ -30,7 +40,7 @@ services:
     build:
       context: ./docker-conf/phpfpm
       args:
-        PHP_VERSION: ${PHP_VERSION}
+        php_version: "${PHP_VERSION}"
     container_name: "jelix_saml_php"
     environment:
       JELIX_VERSION: ${JELIX_VERSION}

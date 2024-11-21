@@ -30,4 +30,4 @@ if [ "$CMD" == "reset" ]; then
     exit 0
 fi
 
-docker compose -p jelix-saml-tests $CMD "$@"
+docker compose -p jelix-saml-tests --env-file .env $CMD "$@"
