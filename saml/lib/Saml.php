@@ -188,7 +188,7 @@ class Saml
 
                 // Update
                 if (count($groupsToRemove) != 0 || count($groupsToAdd) != 0) {
-                    foreach($groupToRemove as $grpId) {
+                    foreach($groupsToRemove as $grpId) {
                         \jAcl2DbUserGroup::removeUserFromGroup($login, $grpId);
                     }
 
