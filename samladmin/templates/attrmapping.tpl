@@ -29,6 +29,11 @@
         {ctrl_label 'forceSAMLAuthOnPrivatePage'}
 
     </p>
+    <p>
+        {ctrl_label 'redirectionAfterLogin'}<br/>
+        {ctrl_control 'redirectionAfterLogin'}
+    </p>
+
     <div>
         {formsubmit}
         <a href="{jurl 'samladmin~config:index'}">{@jelix~ui.buttons.cancel@}</a>

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author  Laurent Jouanneau
- * @copyright  2021 3Liz
+ * @copyright  2021-2024 3Liz
  * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
  */
 namespace Jelix\Saml;
@@ -46,6 +46,12 @@ class ConfigurationModifier extends Configuration
     {
         $this->forceSAMLAuthOnPrivatePage = !!$allow;
     }
+
+    public function setRedirectionAfterLogin($redir)
+    {
+        $this->redirectionAfterLogin = $redir;
+    }
+
 
     public function setSpEntityId($entityId)
     {
@@ -222,6 +228,9 @@ class ConfigurationModifier extends Configuration
 
         $liveConfig->setValue('forceSAMLAuthOnPrivatePage', $this->forceSAMLAuthOnPrivatePage, 'saml');
         $appConfig->saml['forceSAMLAuthOnPrivatePage'] = $this->forceSAMLAuthOnPrivatePage;
+
+        $liveConfig->setValue('redirectionAfterLogin', $this->redirectionAfterLogin, 'saml');
+        $appConfig->saml['redirectionAfterLogin'] = $this->redirectionAfterLogin;
 
         $liveConfig->save();
 

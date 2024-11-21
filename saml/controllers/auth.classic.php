@@ -30,6 +30,7 @@ class authCtrl extends jController {
     function login() {
         /** @var jResponseRedirectUrl $rep */
         $rep = $this->getResponse('redirectUrl');
+        $configuration = new \Jelix\Saml\Configuration();
 
         $router = jApp::coord();
         if (!$router->originalAction->isEqualTo($router->action) &&
@@ -46,6 +47,7 @@ class authCtrl extends jController {
             // after a login.
             $conf = jApp::coord()->getPlugin('auth')->config;
 
+            $defaultRedirectionAfterLogin = $configuration->getRedirectionAfterLogin();
             $auth_url_return = $this->param('auth_url_return');
             if ($conf['enable_after_login_override']
                 && $auth_url_return != ''
@@ -55,16 +57,19 @@ class authCtrl extends jController {
                 $relayState = $auth_url_return;
 
             }
+            else if ($defaultRedirectionAfterLogin == 'homepage') {
+                $relayState = jServer::getServerURI().jApp::urlBasePath();
+            }
             else if ($conf['after_login'] != '') {
                 $relayState = jUrl::getFull($conf['after_login']);
             } else {
                 // home page
-                $relayState = $this->request->getServerURI() . jApp::urlBasePath();
+                $relayState = jServer::getServerURI() . jApp::urlBasePath();
             }
         }
 
         try {
-            $configuration = new \Jelix\Saml\Configuration();
+
             $saml = new Jelix\Saml\Saml(
                 $configuration,
                 jApp::coord()->getPlugin('auth')->config

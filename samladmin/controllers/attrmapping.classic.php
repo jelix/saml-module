@@ -48,6 +48,24 @@ class attrmappingCtrl extends jController
         }
         $form->addControl($groupCtrl);
         jForms::destroy($userFormSelector);
+
+        $ctrl = $form->getControl('redirectionAfterLogin');
+        if ($ctrl->isActivated()) {
+            $conf = jApp::coord()->getPlugin('auth')->config;
+            if ($conf['after_login'] == 'master_admin~default:index' || $conf['after_login'] == 'adminui~default:index') {
+                $alLabel = jLocale::get('samladmin~admin.attrmapping.form.redirectionAfterLogin.dashboard');
+            }
+            else {
+                $alLabel = jLocale::get('samladmin~admin.attrmapping.form.redirectionAfterLogin.defaultpage', [ jUrl::get($conf['after_login'])]);
+            }
+            $ds = new jFormsStaticDatasource();
+            $ds->data = array(
+                '' => $alLabel,
+                'homepage' => jLocale::get('samladmin~admin.attrmapping.form.redirectionAfterLogin.homepage')
+            );
+            $form->getControl('redirectionAfterLogin')->datasource = $ds;
+        }
+
         return $listOfField;
     }
 
@@ -70,6 +88,25 @@ class attrmappingCtrl extends jController
         $form->setData('automaticAccountCreation', $config->isAutomaticAccountCreation());
         $form->setData('allowSAMLAccountToUseLocalPassword', $config->isAllowingSAMLAccountToUseLocalPassword());
         $form->setData('forceSAMLAuthOnPrivatePage', $config->mustForceSAMLAuthOnPrivatePage());
+
+        $conf = jApp::coord()->getPlugin('auth')->config;
+        if ($conf['after_login'] == '') {
+            $form->setData('redirectionAfterLogin', 'homepage');
+            $form->deactivate('redirectionAfterLogin');
+        }
+        else {
+            $defaultUrl = jUrl::get($conf['after_login']);
+            $bp = jApp::urlBasePath();
+            if ($defaultUrl == $bp || $defaultUrl == $bp.'index.php') {
+                $form->setData('redirectionAfterLogin', 'homepage');
+                $form->deactivate('redirectionAfterLogin');
+            }
+            else {
+                $form->deactivate('redirectionAfterLogin', false);
+                $form->setData('redirectionAfterLogin', $config->getRedirectionAfterLogin());
+            }
+        }
+
         $rep = $this->getResponse('redirect');
         $rep->action = 'samladmin~attrmapping:edit';
         return $rep;
@@ -121,6 +158,10 @@ class attrmappingCtrl extends jController
         $config->setAutomaticAccountCreation($form->getData('automaticAccountCreation'));
         $config->setAllowSAMLAccountToUseLocalPassword($form->getData('allowSAMLAccountToUseLocalPassword'));
         $config->setForceSAMLAuthOnPrivatePage($form->getData('forceSAMLAuthOnPrivatePage'));
+        $ctrl = $form->getControl('redirectionAfterLogin');
+        if ($ctrl->isActivated()) {
+            $config->setRedirectionAfterLogin($form->getData('redirectionAfterLogin'));
+        }
 
         $daoProperties = $config->getAuthorizedDaoPropertiesForMapping();
 

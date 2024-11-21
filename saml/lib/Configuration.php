@@ -1,7 +1,7 @@
 <?php
 /**
  * @author  Laurent Jouanneau
- * @copyright  2019-2023 3Liz
+ * @copyright  2019-2024 3Liz
  * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
  */
 namespace Jelix\Saml;
@@ -57,8 +57,9 @@ class Configuration {
 
     protected $idpCertError = '';
 
-
     protected $idpLabel = '';
+
+    protected $redirectionAfterLogin = '';
 
     /**
      * Configuration constructor.
@@ -89,6 +90,10 @@ class Configuration {
 
         if (isset($iniConfig->saml['forceSAMLAuthOnPrivatePage'])) {
             $this->forceSAMLAuthOnPrivatePage = $iniConfig->saml['forceSAMLAuthOnPrivatePage'];
+        }
+
+        if (isset($iniConfig->saml['redirectionAfterLogin'])) {
+            $this->redirectionAfterLogin = $iniConfig->saml['redirectionAfterLogin'];
         }
 
         $this->fixConfigValues($iniConfig);
@@ -602,6 +607,15 @@ class Configuration {
     function getAuthorizedDaoPropertiesForMapping()
     {
         return $this->daoPropertiesForMapping;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    function getRedirectionAfterLogin()
+    {
+        return $this->redirectionAfterLogin;
     }
 
     protected function fixConfigValues($iniConfig) {

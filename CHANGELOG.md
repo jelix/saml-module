@@ -1,7 +1,7 @@
 Changes
 =======
 
-
+- new configuration parameter to change the default page to redirect to after login
 - Improve html with ids and div to ease CSS styling
 
 Version 2.2.5
