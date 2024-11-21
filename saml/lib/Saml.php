@@ -89,7 +89,6 @@ class Saml
         $auth = new Auth($samlSettings);
         $auth->processResponse();
 
-
         $errors = $auth->getErrors();
         if (!empty($errors)) {
             throw new ProcessException($auth);
@@ -142,22 +141,22 @@ class Saml
                 && isset($attributes[$samlUserGroupsSetting['attribute']])) {
 
                 // Get all groups
+                $allGroups = iterator_to_array(\jAcl2DbUserGroup::getGroupList());
                 $allGroups = array_map(
                     function($g) {
                         return $g->id_aclgrp;
                     },
-                    \jAcl2DbUserGroup::getGroupList()
+                    $allGroups
                 );
+
                 // Get login groups without private or default group to keep them
-                $loginGroups = array_map(
-                    function($g) {
-                        return $g->id_aclgrp;
-                    },
-                    array_filter(\jAcl2DbUserGroup::getGroupList($login), function($g) {
-                        // exclude private group and default group
-                        return $g->grouptype == \jAcl2DbUserGroup::GROUPTYPE_NORMAL;
-                    })
-                );
+                $loginGroups =[];
+                foreach(\jAcl2DbUserGroup::getGroupList($login) as $g) {
+                    if ($g->grouptype == \jAcl2DbUserGroup::GROUPTYPE_PRIVATE) {
+                        continue;
+                    }
+                    $loginGroups[] = $g->id_aclgrp;
+                }
 
                 // Get user groups provided by SAML
                 $userGroups = array_map('trim', explode($samlUserGroupsSetting['separator'], $attributes[$samlUserGroupsSetting['attribute']]));
