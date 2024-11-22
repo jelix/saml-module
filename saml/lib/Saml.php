@@ -195,7 +195,7 @@ class Saml
         // Get login groups without private or default group to keep them
         $currentGroups =[];
         foreach(\jAcl2DbUserGroup::getGroupList($login) as $g) {
-            if ($g->grouptype == \jAcl2DbUserGroup::GROUPTYPE_PRIVATE) {
+            if ($g->grouptype != \jAcl2DbUserGroup::GROUPTYPE_NORMAL) {
                 continue;
             }
             $currentGroups[] = $g->id_aclgrp;
