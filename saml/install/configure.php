@@ -50,24 +50,43 @@ class samlModuleConfigurator extends \Jelix\Installer\Module\Configurator
         if ($helpers->forLocalConfiguration()) {
             $localConfig = $appConfig['local'];
             $mainConfig = $appConfig['main'];
-            if (!$localConfig->isSection('saml:sp')) {
-                // import configuration from mainconfig into localconfig
-                // it can have parameters that are empty by default, and then
-                // values from mainconfig should not be set with empty values into localconfig
-                if ($mainConfig->isSection('saml:sp')) {
-                    $samlIniConfig->setValues($mainConfig->getValues('saml:sp'), 'saml:sp');
-                }
-                if ($mainConfig->isSection('saml:idp')) {
-                    $samlIniConfig->setValues($mainConfig->getValues('saml:idp'), 'saml:idp');
-                }
-                if ($mainConfig->isSection('saml:security')) {
-                    $samlIniConfig->setValues($mainConfig->getValues('saml:security'), 'saml:security');
-                }
-                $localConfig->import($samlIniConfig);
-                $appConfig->save();
+            // import configuration from mainconfig into localconfig
+            // it can have parameters that are empty by default, and then
+            // values from mainconfig should not be set with empty values into localconfig.
+            // We should not overwrite parameters that are already set into both config files.
+            if ($mainConfig->isSection('saml:sp')) {
+                $samlIniConfig->setValues($mainConfig->getValues('saml:sp'), 'saml:sp');
             }
+            if ($localConfig->isSection('saml:sp')) {
+                $samlIniConfig->setValues($localConfig->getValues('saml:sp'), 'saml:sp');
+            }
+
+            if ($mainConfig->isSection('saml:idp')) {
+                $samlIniConfig->setValues($mainConfig->getValues('saml:idp'), 'saml:idp');
+            }
+            if ($localConfig->isSection('saml:idp')) {
+                $samlIniConfig->setValues($localConfig->getValues('saml:idp'), 'saml:idp');
+            }
+            if ($mainConfig->isSection('saml:security')) {
+                $samlIniConfig->setValues($mainConfig->getValues('saml:security'), 'saml:security');
+            }
+            if ($localConfig->isSection('saml:security')) {
+                $samlIniConfig->setValues($localConfig->getValues('saml:security'), 'saml:security');
+            }
+            $localConfig->import($samlIniConfig);
+            $appConfig->save();
         }
-        else if (!$appConfig->isSection('saml:sp')) {
+        else {
+            $mainConfig = $appConfig['main'];
+            if ($mainConfig->isSection('saml:sp')) {
+                $samlIniConfig->setValues($mainConfig->getValues('saml:sp'), 'saml:sp');
+            }
+            if ($mainConfig->isSection('saml:idp')) {
+                $samlIniConfig->setValues($mainConfig->getValues('saml:idp'), 'saml:idp');
+            }
+            if ($mainConfig->isSection('saml:security')) {
+                $samlIniConfig->setValues($mainConfig->getValues('saml:security'), 'saml:security');
+            }
             $appConfig['main']->import($samlIniConfig);
             $appConfig->save();
         }
