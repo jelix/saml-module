@@ -618,22 +618,43 @@ class Configuration {
         return $this->redirectionAfterLogin;
     }
 
-    protected function fixConfigValues($iniConfig) {
-        $boolVal = array('saml_debug', 'compressRequests', 'compressResponses');
+    protected function fixConfigValues($iniConfig)
+    {
+        $boolVal = array(
+            'saml_debug' => false,
+            'compressRequests' => true,
+            'compressResponses' => true
+        );
         $this->fixBool($iniConfig, 'saml:sp', $boolVal);
 
-        $boolVal = array('nameIdEncrypted', 'authnRequestsSigned', 'logoutRequestSigned',
-            'logoutResponseSigned', 'signMetadata', 'wantMessagesSigned',
-            'wantAssertionsEncrypted', 'wantAssertionsSigned', 'wantNameId',
-            'wantNameIdEncrypted', 'requestedAuthnContext', 'wantXMLValidation',
-            'relaxDestinationValidation', 'destinationStrictlyMatches',
-            'rejectUnsolicitedResponsesWithInResponseTo', 'lowercaseUrlencoding'
+        $boolVal = array(
+            'nameIdEncrypted' => false,
+            'authnRequestsSigned' => false,
+            'logoutRequestSigned' => false,
+            'logoutResponseSigned' => false,
+            'signMetadata' => false,
+            'wantMessagesSigned' => false,
+            'wantAssertionsEncrypted' => false,
+            'wantAssertionsSigned' => false,
+            'wantNameId' => true,
+            'wantNameIdEncrypted' => false,
+            'requestedAuthnContext' => false,
+            'wantXMLValidation' => true,
+            'relaxDestinationValidation' => false,
+            'destinationStrictlyMatches' => false,
+            'rejectUnsolicitedResponsesWithInResponseTo' => false,
+            'lowercaseUrlencoding' => false
         );
         $this->fixBool($iniConfig, 'saml:security', $boolVal);
     }
 
-    protected function fixBool($iniConfig, $section, $values) {
-        foreach ($values as $name) {
+    protected function fixBool($iniConfig, $section, $values)
+    {
+        foreach ($values as $name => $defaultValue) {
+            if (!isset ($iniConfig->{$section}[$name])) {
+                $iniConfig->{$section}[$name] = $defaultValue;
+                continue;
+            }
             $val = $iniConfig->{$section}[$name];
             if (is_bool($val)) {
                 continue;
