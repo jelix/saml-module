@@ -168,6 +168,21 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
         return $this->currentPassword;
     }
 
+    /**
+     * Indicate, during a login process, if the user is using SAML or not
+     *
+     * It can be useful for authentication listeners, to process SAML attributes
+     * for example.
+     *
+     * The returned value is irrelevant outside a login process.
+     *
+     * @return bool
+     */
+    public function isSAMLAuthUsedForTheCurrentLoginProcess()
+    {
+        return $this->authWithSamlActivated;
+    }
+
     public function verifyPassword($login, $password)
     {
         $daouser = $this->getDao();
@@ -207,7 +222,6 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
                     $this->createSAMLAccount($user);
                 }
             }
-            $this->authWithSamlActivated = false;
         }
         else {
             // authentication with login/password
