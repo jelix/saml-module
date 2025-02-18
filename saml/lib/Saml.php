@@ -101,6 +101,13 @@ class Saml
 
         $loginAttr = $this->config->getSAMLAttributeForLogin();
         $attributes = $auth->getAttributes();
+
+        if($this->config->mustUseOnlyNameIDAssertionToAuthenticate()){
+            $attributes = array();
+            $loginAttr = $this->config->getNameIdPlaceholder();
+            $attributes[$loginAttr] = array($auth->getNameId());
+        }
+
         if (empty($attributes)) {
             throw new LoginException(
                 \jLocale::get('saml~auth.authentication.error.saml.attributes.missing', array($loginAttr)),

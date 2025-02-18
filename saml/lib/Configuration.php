@@ -40,6 +40,12 @@ class Configuration {
     protected $allowSAMLAccountToUseLocalPassword = true;
 
     /**
+     * @var bool says if the user should be created/authenticated using only the loginAttribute property.
+     *                attributesMapping (Login and E-Mail) will be both overwritten by the loginAttribute value
+     */
+    protected $useOnlyNameIDAssertionToAuthenticate = false;
+
+    /**
      * @var array list of dao properties that can be used for mapping
      */
     protected $daoPropertiesForMapping = array();
@@ -48,6 +54,12 @@ class Configuration {
 
 
     protected $idpLabel = '';
+
+    /**
+     * @var string placeholder used to fill login field and mandatory attributes fields if the 
+     *                  useOnlyNameIDAssertionToAuthenticate property is set to true
+     */
+    protected $nameIdPlaceholder = 'NameID';
 
     /**
      * Configuration constructor.
@@ -74,6 +86,10 @@ class Configuration {
 
         if (isset($iniConfig->saml['allowSAMLAccountToUseLocalPassword'])) {
             $this->allowSAMLAccountToUseLocalPassword = $iniConfig->saml['allowSAMLAccountToUseLocalPassword'];
+        }
+
+        if (isset($iniConfig->saml['useOnlyNameIDAssertionToAuthenticate'])) {
+            $this->useOnlyNameIDAssertionToAuthenticate = $iniConfig->saml['useOnlyNameIDAssertionToAuthenticate'];
         }
 
         $this->fixConfigValues($iniConfig);
@@ -444,6 +460,15 @@ class Configuration {
     }
 
     /**
+     * get the nameIdPlaceholder value
+     * @return string
+     */
+    function getNameIdPlaceholder()
+    {
+        return $this->nameIdPlaceholder;
+    }
+
+    /**
      * indicates if accounts should be created after authentication if they
      * don't exist.
      * @return bool true if yes
@@ -462,6 +487,15 @@ class Configuration {
         return $this->allowSAMLAccountToUseLocalPassword;
     }
 
+    /**
+     * says if the user should be created/authenticated using only the loginAttribute property.
+     * attributesMapping (Login and E-Mail) will be both overwritten by the loginAttribute value
+     * @return bool
+     */
+    function mustUseOnlyNameIDAssertionToAuthenticate()
+    {
+        return $this->useOnlyNameIDAssertionToAuthenticate;
+    }
 
     function getIdpURL()
     {

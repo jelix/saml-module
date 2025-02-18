@@ -24,6 +24,14 @@ class ConfigurationModifier extends Configuration
     }
 
     /**
+     * @param bool $onlyNameID
+     */
+    public function setUseOnlyNameIDAssertionToAuthenticate($onlyNameID)
+    {
+        $this->useOnlyNameIDAssertionToAuthenticate = !!$onlyNameID;
+    }
+
+    /**
      * @param bool $automatic
      */
     public function setAutomaticAccountCreation($automatic)
@@ -198,6 +206,9 @@ class ConfigurationModifier extends Configuration
         $mapping['__login'] = $this->loginAttribute;
         $liveConfig->setValues($mapping, 'saml:attributes-mapping');
         $appConfig->{'saml:attributes-mapping'} = $mapping;
+
+        $liveConfig->setValue('useOnlyNameIDAssertionToAuthenticate', $this->useOnlyNameIDAssertionToAuthenticate, 'saml');
+        $appConfig->saml['useOnlyNameIDAssertionToAuthenticate'] = $this->useOnlyNameIDAssertionToAuthenticate;
 
         $liveConfig->setValue('automaticAccountCreation', $this->automaticAccountCreation, 'saml');
         $appConfig->saml['automaticAccountCreation'] = $this->automaticAccountCreation;
