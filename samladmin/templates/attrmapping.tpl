@@ -9,6 +9,12 @@
         {ctrl_label 'attrsgroup'}
         {ctrl_control 'attrsgroup'}
     </div>
+
+    <p>
+        {ctrl_control 'useOnlyNameIDAssertionToAuthenticate'}
+        {ctrl_label 'useOnlyNameIDAssertionToAuthenticate'}
+    </p>
+
     <p>
         {ctrl_control 'automaticAccountCreation'}
         {ctrl_label 'automaticAccountCreation'}

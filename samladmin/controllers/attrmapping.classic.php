@@ -58,7 +58,10 @@ class attrmappingCtrl extends jController
         $form = jForms::create('attrmapping');
         $this->setupForm($form, $config);
 
+        // nameIdPlaceholder
+        $form->setData('nameIdPlaceholder', $config->getNameIdPlaceholder());
         $form->setData('login', $config->getSAMLAttributeForLogin());
+        $form->setData('useOnlyNameIDAssertionToAuthenticate', $config->mustUseOnlyNameIDAssertionToAuthenticate());
         $form->setData('automaticAccountCreation', $config->isAutomaticAccountCreation());
         $form->setData('allowSAMLAccountToUseLocalPassword', $config->isAllowingSAMLAccountToUseLocalPassword());
         $rep = $this->getResponse('redirect');
@@ -81,7 +84,7 @@ class attrmappingCtrl extends jController
 
         $tpl = new jTpl();
         $tpl->assign('attrform', $form);
-        //$rep->addJSLink(jUrl::get('samladmin~config:asset', array('file'=>'sp.js')));
+        $rep->addJSLink(jUrl::get('samladmin~config:asset', array('file'=>'attr.js')));
         $rep->body->assign('MAIN', $tpl->fetch('attrmapping'));
         $rep->body->assign('selectedMenuItem', 'samlconfig');
         return $rep;
@@ -102,6 +105,17 @@ class attrmappingCtrl extends jController
         $listOfField = $this->setupForm($form, $config);
 
         $form->initFromRequest();
+        $daoProperties = $config->getAuthorizedDaoPropertiesForMapping();
+
+        if($this->request->getParam("useOnlyNameIDAssertionToAuthenticate")){
+            $form->setData('login',$config->getNameIdPlaceholder());
+            foreach ($form->getControls() as $name => $mctrl) {
+                if($mctrl->required && substr($name,0,5) == 'attr_'){
+                    $form->setData($name,$config->getNameIdPlaceholder());
+                }
+            }
+        }
+
         if (!$form->check()) {
             $rep->action = 'samladmin~attrmapping:edit';
             return $rep;
@@ -109,10 +123,9 @@ class attrmappingCtrl extends jController
 
         $config = new \Jelix\Saml\ConfigurationModifier();
         $config->setSAMLAttributeForLogin($form->getData('login'));
+        $config->setUseOnlyNameIDAssertionToAuthenticate($form->getData('useOnlyNameIDAssertionToAuthenticate'));
         $config->setAutomaticAccountCreation($form->getData('automaticAccountCreation'));
         $config->setAllowSAMLAccountToUseLocalPassword($form->getData('allowSAMLAccountToUseLocalPassword'));
-
-        $daoProperties = $config->getAuthorizedDaoPropertiesForMapping();
 
         /** @var jFormsControlGroup $groupCtrl */
         $mapping = array();
