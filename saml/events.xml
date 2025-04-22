@@ -2,5 +2,6 @@
 <events xmlns="http://jelix.org/ns/events/1.0">
     <listener name="saml">
         <event name="JauthLoginFormExtraBefore" />
+        <event name="JauthLoginFormExtraAfter" />
     </listener>
 </events>

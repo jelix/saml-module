@@ -51,6 +51,27 @@ class Configuration {
     protected $forceSAMLAuthOnPrivatePage = false;
 
     /**
+     * @var bool says if other authentification modes should be hidden on the login page
+     *           to force to use SAML authentication. However, a url parameter allows
+     *           to display them weither this flags is true or false.
+     */
+    protected $forceSAMLAuthOnLoginPage = false;
+
+
+    /**
+     * @var bool if $forceSAMLAuthOnLoginPage, indicate to do a redirection (in javascript)
+     *           to SAML authentication when displaying the login page.
+     *           It is recommended to activate it only if the logout action does not redirect
+     *           to the login page. Else UX issues can occur.
+     */
+    protected $forceRedirectToSAMLAuthOnLoginPage = false;
+
+    /**
+     * @var string action to the login form when there is no modules jcommunity or jauth
+     */
+    protected $loginFormAction = '';
+
+    /**
      * @var array list of dao properties that can be used for mapping
      */
     protected $daoPropertiesForMapping = array();
@@ -90,6 +111,18 @@ class Configuration {
 
         if (isset($iniConfig->saml['forceSAMLAuthOnPrivatePage'])) {
             $this->forceSAMLAuthOnPrivatePage = $iniConfig->saml['forceSAMLAuthOnPrivatePage'];
+        }
+
+        if (isset($iniConfig->saml['forceSAMLAuthOnLoginPage'])) {
+            $this->forceSAMLAuthOnLoginPage = $iniConfig->saml['forceSAMLAuthOnLoginPage'];
+        }
+
+        if (isset($iniConfig->saml['forceRedirectToSAMLAuthOnLoginPage'])) {
+            $this->forceRedirectToSAMLAuthOnLoginPage = $iniConfig->saml['forceRedirectToSAMLAuthOnLoginPage'];
+        }
+
+        if (isset($iniConfig->saml['loginFormAction'])) {
+            $this->loginFormAction = $iniConfig->saml['loginFormAction'];
         }
 
         if (isset($iniConfig->saml['redirectionAfterLogin'])) {
@@ -519,6 +552,34 @@ class Configuration {
     {
         return $this->forceSAMLAuthOnPrivatePage;
     }
+
+    /**
+     * Says if the login page should hide other authentication mode than SAML
+     *
+     * @return bool
+     */
+    function mustForceSAMLAuthOnLoginPage()
+    {
+        return $this->forceSAMLAuthOnLoginPage;
+    }
+
+    function mustRedirectToSAMLAuthOnLoginPage()
+    {
+        return $this->forceRedirectToSAMLAuthOnLoginPage;
+    }
+
+
+    function getLoginAction()
+    {
+        if (\jApp::isModuleEnabled('jcommunity')) {
+            return 'jcommunity~login:index';
+        }
+        else if (\jApp::isModuleEnabled('jauth')) {
+            return 'jauth~login:form';
+        }
+        return $this->loginFormAction;
+    }
+
 
     function getIdpURL()
     {

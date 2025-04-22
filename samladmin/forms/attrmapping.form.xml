@@ -37,6 +37,10 @@
         <label locale="samladmin~admin.attrmapping.form.forceSAMLAuthOnPrivatePage.label"/>
     </checkbox>
 
+    <checkbox ref="forceSAMLAuthOnLoginPage">
+        <label locale="samladmin~admin.attrmapping.form.forceSAMLAuthOnLoginPage.label"/>
+    </checkbox>
+
     <radiobuttons ref="redirectionAfterLogin">
         <label locale="samladmin~admin.attrmapping.form.redirectionAfterLogin.label"/>
     </radiobuttons>

@@ -1,6 +1,15 @@
 Changes
 =======
 
+Next
+----
+
+- New configuration parameter, to show only the SAML button on the login page.
+  The login/password form is not shown except if there is a specific url parameter.
+  A redirection can be done via a configuration parameter, set by hand, if
+  this is not UX issue for the application.
+
+
 Version 2.3.0
 -------------
 

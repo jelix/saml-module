@@ -66,6 +66,15 @@ class attrmappingCtrl extends jController
             $form->getControl('redirectionAfterLogin')->datasource = $ds;
         }
 
+        if ($config->mustRedirectToSAMLAuthOnLoginPage()) {
+            $ctrl = $form->getControl('forceSAMLAuthOnLoginPage');
+            $ctrl->label = jLocale::get('samladmin~admin.attrmapping.form.forceSAMLAuthOnLoginPage.redirectlabel');
+        }
+        else {
+            $ctrl = $form->getControl('forceSAMLAuthOnLoginPage');
+            $ctrl->label = 'fuck';
+        }
+
         return $listOfField;
     }
 
@@ -88,6 +97,7 @@ class attrmappingCtrl extends jController
         $form->setData('automaticAccountCreation', $config->isAutomaticAccountCreation());
         $form->setData('allowSAMLAccountToUseLocalPassword', $config->isAllowingSAMLAccountToUseLocalPassword());
         $form->setData('forceSAMLAuthOnPrivatePage', $config->mustForceSAMLAuthOnPrivatePage());
+        $form->setData('forceSAMLAuthOnLoginPage', $config->mustForceSAMLAuthOnLoginPage());
 
         $conf = jApp::coord()->getPlugin('auth')->config;
         if ($conf['after_login'] == '') {
@@ -127,6 +137,18 @@ class attrmappingCtrl extends jController
 
         $tpl = new jTpl();
         $tpl->assign('attrform', $form);
+
+        $loginAction = $config->getLoginAction();
+        if ($loginAction) {
+            $url = jUrl::getFull($loginAction, ['loginform'=>1]);
+        }
+        else {
+            $url = '';
+        }
+
+        $tpl->assign('loginFormUrl', $url);
+        $tpl->assign('redirectToSAML', $config->mustRedirectToSAMLAuthOnLoginPage());
+
         //$rep->addJSLink(jUrl::get('samladmin~config:asset', array('file'=>'sp.js')));
         $rep->body->assign('MAIN', $tpl->fetch('attrmapping'));
         $rep->body->assign('selectedMenuItem', 'samlconfig');
@@ -158,6 +180,8 @@ class attrmappingCtrl extends jController
         $config->setAutomaticAccountCreation($form->getData('automaticAccountCreation'));
         $config->setAllowSAMLAccountToUseLocalPassword($form->getData('allowSAMLAccountToUseLocalPassword'));
         $config->setForceSAMLAuthOnPrivatePage($form->getData('forceSAMLAuthOnPrivatePage'));
+        $config->setForceSAMLAuthOnLoginPage($form->getData('forceSAMLAuthOnLoginPage'));
+
         $ctrl = $form->getControl('redirectionAfterLogin');
         if ($ctrl->isActivated()) {
             $config->setRedirectionAfterLogin($form->getData('redirectionAfterLogin'));

@@ -27,7 +27,15 @@
     <p>
         {ctrl_control 'forceSAMLAuthOnPrivatePage'}
         {ctrl_label 'forceSAMLAuthOnPrivatePage'}
-
+        <br/> {@samladmin~admin.attrmapping.form.forceSAML.warning@}
+    </p>
+    <p>
+        {ctrl_control 'forceSAMLAuthOnLoginPage'}
+        {ctrl_label 'forceSAMLAuthOnLoginPage'}
+        {if $loginFormUrl}<br/>
+        {@samladmin~admin.attrmapping.form.forceSAMLAuthOnLoginPage.help@} <a href="{$loginFormUrl}">{$loginFormUrl}</a>.
+        {/if}
+        <br />{@samladmin~admin.attrmapping.form.forceSAML.warning@}
     </p>
     <p>
         {ctrl_label 'redirectionAfterLogin'}<br/>

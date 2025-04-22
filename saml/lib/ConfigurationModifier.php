@@ -32,7 +32,7 @@ class ConfigurationModifier extends Configuration
     }
 
     /**
-     * @param bool $automatic
+     * @param bool $allow
      */
     public function setAllowSAMLAccountToUseLocalPassword($allow)
     {
@@ -40,11 +40,19 @@ class ConfigurationModifier extends Configuration
     }
 
     /**
-     * @param bool $automatic
+     * @param bool $allow
      */
     public function setForceSAMLAuthOnPrivatePage($allow)
     {
         $this->forceSAMLAuthOnPrivatePage = !!$allow;
+    }
+
+    /**
+     * @param bool $allow
+     */
+    public function setForceSAMLAuthOnLoginPage($allow)
+    {
+        $this->forceSAMLAuthOnLoginPage = !!$allow;
     }
 
     public function setRedirectionAfterLogin($redir)
@@ -228,6 +236,9 @@ class ConfigurationModifier extends Configuration
 
         $liveConfig->setValue('forceSAMLAuthOnPrivatePage', $this->forceSAMLAuthOnPrivatePage, 'saml');
         $appConfig->saml['forceSAMLAuthOnPrivatePage'] = $this->forceSAMLAuthOnPrivatePage;
+
+        $liveConfig->setValue('forceSAMLAuthOnLoginPage', $this->forceSAMLAuthOnLoginPage, 'saml');
+        $appConfig->saml['forceSAMLAuthOnLoginPage'] = $this->forceSAMLAuthOnLoginPage;
 
         $liveConfig->setValue('redirectionAfterLogin', $this->redirectionAfterLogin, 'saml');
         $appConfig->saml['redirectionAfterLogin'] = $this->redirectionAfterLogin;

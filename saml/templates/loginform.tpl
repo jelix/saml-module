@@ -5,4 +5,16 @@
         <button id="saml-connection-button">{$button_label|eschtml}</button>
     </div>
 </form>
+
+{if $showOnlySaml}
+    {if $redirectToSaml}
+    <script type="text/javascript">{literal}
+        window.addEventListener('load', function(){
+            document.getElementById('saml-connection-button').click();
+        })
+        {/literal}</script>
+    {/if}
+<div style="display:none">
+{else}
 <p id="saml-login-text">{@saml~auth.authentication.or.label@}</p>
+{/if}
