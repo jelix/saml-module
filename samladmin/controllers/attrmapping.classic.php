@@ -70,10 +70,6 @@ class attrmappingCtrl extends jController
             $ctrl = $form->getControl('forceSAMLAuthOnLoginPage');
             $ctrl->label = jLocale::get('samladmin~admin.attrmapping.form.forceSAMLAuthOnLoginPage.redirectlabel');
         }
-        else {
-            $ctrl = $form->getControl('forceSAMLAuthOnLoginPage');
-            $ctrl->label = 'fuck';
-        }
 
         return $listOfField;
     }
