@@ -35,3 +35,27 @@ h2 span.saml-step {
     font-family: monospace;
     width:40em;
 }
+
+#jforms_samladmin_attrmapping .control-group,
+#jforms_samladmin_spconfig .control-group,
+#jforms_samladmin_idpconfig .control-group,
+#metadata-loader .control-group
+
+{
+    margin-bottom: 20px;
+}
+
+#jforms_samladmin_attrmapping .help-block {
+    margin-left:2em;
+}
+
+
+.form-horizontal .controls:first-child {
+    margin-left: 0;
+}
+
+#jforms_samladmin_spconfig_certKeyLength_label {
+    float: none;
+    width: auto;
+    display: inline-block;
+}

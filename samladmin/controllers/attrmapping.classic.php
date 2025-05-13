@@ -148,6 +148,7 @@ class attrmappingCtrl extends jController
         //$rep->addJSLink(jUrl::get('samladmin~config:asset', array('file'=>'sp.js')));
         $rep->body->assign('MAIN', $tpl->fetch('attrmapping'));
         $rep->body->assign('selectedMenuItem', 'samlconfig');
+        $rep->addCSSLink(jUrl::get('samladmin~config:asset', array('file'=>'admin.css')));
         return $rep;
     }
 

@@ -4,78 +4,62 @@
 
 {form $spform, 'samladmin~spconfig:save'}
 <fieldset>
-    <table class="jforms-table">
-        {formcontrols array('entityId')}
-            <tr>
-                <th>{ctrl_label}</th><td>{ctrl_control}</td>
-            </tr>
-        {/formcontrols}
-    </table>
+    <div class="control-group">
+        {ctrl_label 'entityId'}
+        <div class="controls">
+            {ctrl_control 'entityId'}
+        </div>
+    </div>
 </fieldset>
-<fieldset>
-    <legend>{@samladmin~admin.spconfig.form.organization@}</legend>
+    <div class="control-group">
+        {ctrl_label 'organization'}
+        <div class="controls">
+            {ctrl_control 'organization'}
+        </div>
+    </div>
 
-    <table class="jforms-table">
-    {formcontrols array('organizationName', 'organizationDisplayName', 'organizationUrl')}
-        <tr>
-            <th>{ctrl_label}</th><td>{ctrl_control}</td>
-        </tr>
-    {/formcontrols}
-    </table>
-
-</fieldset>
-
-<fieldset>
-    <legend>{@samladmin~admin.spconfig.form.contacts@}</legend>
-
-    <table class="jforms-table">
-        {formcontrols array('supportContactPersonName',
-        'supportContactPersonEmail',
-        'technicalContactPersonName',
-        'technicalContactPersonEmail',
-        )}
-            <tr>
-                <th>{ctrl_label}</th><td>{ctrl_control}</td>
-            </tr>
-        {/formcontrols}
-    </table>
-
-
-</fieldset>
+    <div class="control-group">
+        {ctrl_label 'contacts'}
+        <div class="controls">
+            {ctrl_control 'contacts'}
+        </div>
+    </div>
 
 <fieldset>
     <legend>{@samladmin~admin.spconfig.form.certificate@}</legend>
     <p>{@samladmin~admin.spconfig.form.certificate.help@}</p>
 
 
-    <p>
+    <div class="control-group">
         {ctrl_label 'tlsPrivateKey'}
-        <br/>
+        <div class="controls">
         {ctrl_control 'tlsPrivateKey'}
         <br />
-        {ctrl_label 'certKeyLength'} {ctrl_control 'certKeyLength'}
+
         <button type="button" id="tlsPrivateKeyButton"
                 data-url="{jurl 'samladmin~spconfig:generateKey'}"
         >{@samladmin~admin.spconfig.form.cert.keyGenerate.label@}</button>
-    </p>
+            {ctrl_label 'certKeyLength'} {ctrl_control 'certKeyLength'}
+        </div>
+    </div>
 
-    <p>
+    <div class="control-group">
         {ctrl_label 'tlsCertificate'}
-        <br/>
+        <div class="controls">
         {ctrl_control 'tlsCertificate'}
         <br />
         <button type="button" id="tlsCertificateButton"
         >{@samladmin~admin.spconfig.form.cert.generate.label@}</button>
+        </div>
 
-
-    </p>
+    </div>
 
 
 </fieldset>
 
-<div>
+<div class="control-group">
 {formsubmit}
-<a href="{jurl 'samladmin~config:index'}">{@jelix~ui.buttons.cancel@}</a>
+<a href="{jurl 'samladmin~config:index'}" class="btn">{@jelix~ui.buttons.cancel@}</a>
 </div>
 {/form}
 

@@ -6,36 +6,43 @@
 		<help locale="samladmin~admin.spconfig.form.entityId.help" />
 	</input>
 
-	<input ref="organizationName" type="string">
-		<label locale="samladmin~admin.spconfig.form.organization.name.label"/>
-		<help locale="samladmin~admin.spconfig.form.organization.name.help"/>
-	</input>
+    <group ref="organization">
+        <label locale="samladmin~admin.spconfig.form.organization"/>
+        <input ref="organizationName" type="string">
+            <label locale="samladmin~admin.spconfig.form.organization.name.label"/>
+            <help locale="samladmin~admin.spconfig.form.organization.name.help"/>
+        </input>
 
-	<input ref="organizationDisplayName" type="string" >
-		<label locale="samladmin~admin.spconfig.form.organization.displayName.label"/>
-		<help locale="samladmin~admin.spconfig.form.organization.displayName.help"/>
-	</input>
+        <input ref="organizationDisplayName" type="string" >
+            <label locale="samladmin~admin.spconfig.form.organization.displayName.label"/>
+            <help locale="samladmin~admin.spconfig.form.organization.displayName.help"/>
+        </input>
 
-	<input ref="organizationUrl" type="string">
-		<label locale="samladmin~admin.spconfig.form.organization.url.label"/>
-		<help locale="samladmin~admin.spconfig.form.organization.url.help"/>
-	</input>
+        <input ref="organizationUrl" type="string">
+            <label locale="samladmin~admin.spconfig.form.organization.url.label"/>
+            <help locale="samladmin~admin.spconfig.form.organization.url.help"/>
+        </input>
+    </group>
 
-	<input ref="supportContactPersonName" type="string">
-		<label locale="samladmin~admin.spconfig.form.supportContactPerson.name.label"/>
-	</input>
+    <group ref="contacts">
+        <label locale="samladmin~admin.spconfig.form.contacts"/>
+        <input ref="supportContactPersonName" type="string">
+            <label locale="samladmin~admin.spconfig.form.supportContactPerson.name.label"/>
+        </input>
 
-	<input ref="supportContactPersonEmail" type="email">
-		<label locale="samladmin~admin.spconfig.form.supportContactPerson.email.label"/>
-	</input>
+        <input ref="supportContactPersonEmail" type="email">
+            <label locale="samladmin~admin.spconfig.form.supportContactPerson.email.label"/>
+        </input>
 
-	<input ref="technicalContactPersonName" type="string" >
-		<label locale="samladmin~admin.spconfig.form.technicalContactPerson.name.label"/>
-	</input>
+        <input ref="technicalContactPersonName" type="string" >
+            <label locale="samladmin~admin.spconfig.form.technicalContactPerson.name.label"/>
+        </input>
 
-	<input ref="technicalContactPersonEmail" type="email">
-		<label locale="samladmin~admin.spconfig.form.technicalContactPerson.email.label"/>
-	</input>
+        <input ref="technicalContactPersonEmail" type="email">
+            <label locale="samladmin~admin.spconfig.form.technicalContactPerson.email.label"/>
+        </input>
+    </group>
+
 
 	<textarea ref="tlsPrivateKey" required="true">
 		<label locale="samladmin~admin.spconfig.form.tlsPrivateKey.label"/>

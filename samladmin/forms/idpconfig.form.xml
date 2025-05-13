@@ -6,25 +6,28 @@
         <help locale="samladmin~admin.idpconfig.form.servicename.help" />
     </input>
 
-    <input ref="entityId" type="url" required="true">
-        <label locale="samladmin~admin.idpconfig.form.entityId.label"/>
-        <help locale="samladmin~admin.idpconfig.form.entityId.help" />
-    </input>
+    <group ref="endpoints">
+        <label locale="samladmin~admin.idpconfig.form.endpoints.label"/>
+        <input ref="entityId" type="url" required="true">
+            <label locale="samladmin~admin.idpconfig.form.entityId.label"/>
+            <help locale="samladmin~admin.idpconfig.form.entityId.help" />
+        </input>
 
-    <input ref="singleSignOnServiceUrl" type="url" required="true" >
-        <label locale="samladmin~admin.idpconfig.form.singleSignOnServiceUrl.label"/>
-        <help locale="samladmin~admin.idpconfig.form.singleSignOnServiceUrl.help" />
-    </input>
+        <input ref="singleSignOnServiceUrl" type="url" required="true" >
+            <label locale="samladmin~admin.idpconfig.form.singleSignOnServiceUrl.label"/>
+            <help locale="samladmin~admin.idpconfig.form.singleSignOnServiceUrl.help" />
+        </input>
 
-    <input ref="singleLogoutServiceUrl" type="url" required="true" >
-        <label locale="samladmin~admin.idpconfig.form.singleLogoutServiceUrl.label"/>
-        <help locale="samladmin~admin.idpconfig.form.singleLogoutServiceUrl.help" />
-    </input>
+        <input ref="singleLogoutServiceUrl" type="url" required="true" >
+            <label locale="samladmin~admin.idpconfig.form.singleLogoutServiceUrl.label"/>
+            <help locale="samladmin~admin.idpconfig.form.singleLogoutServiceUrl.help" />
+        </input>
 
-    <input ref="singleLogoutServiceResponseUrl" type="url" required="true" >
-        <label locale="samladmin~admin.idpconfig.form.singleLogoutServiceResponseUrl.label"/>
-        <help locale="samladmin~admin.idpconfig.form.singleLogoutServiceResponseUrl.help" />
-    </input>
+        <input ref="singleLogoutServiceResponseUrl" type="url" required="true" >
+            <label locale="samladmin~admin.idpconfig.form.singleLogoutServiceResponseUrl.label"/>
+            <help locale="samladmin~admin.idpconfig.form.singleLogoutServiceResponseUrl.help" />
+        </input>
+    </group>
 
     <textarea ref="signingCertificate" required="true">
         <label locale="samladmin~admin.idpconfig.form.signing.certificate.label"/>
