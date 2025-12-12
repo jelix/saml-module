@@ -39,8 +39,6 @@ class samlModuleConfigurator extends \Jelix\Installer\Module\Configurator
 
     function configure(\Jelix\Installer\Module\API\ConfigurationHelpers $helpers)
     {
-        $this->configHelpers = $helpers;
-
         $appConfig = $helpers->getConfigIni();
         $appConfig->setValue('auth.class', 'samlCoordPlugin', 'coordplugins');
         $appConfig->setValue('driver', 'saml', 'coordplugin_auth');

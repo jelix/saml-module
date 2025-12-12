@@ -12,11 +12,11 @@ fi
 # Create a .env file so that we may use subsequent docker-compose
 # commands directly
 cat > .env << End-of-env
-JELIX_VERSION=${JELIX_VERSION:-1.8.11}
+JELIX_VERSION=${JELIX_VERSION:-1.8.21}
 JELIX_STABILITY=${JELIX_STABILITY:-nightly}
 FPM_USER_ID=${FPM_USER_ID:-$(id -u)}
 FPM_GROUP_ID=${FPM_GROUP_ID:-$(id -g)}
-PHP_VERSION=${PHP_VERSION:-7.4}
+PHP_VERSION=${PHP_VERSION:-8.2}
 End-of-env
 
 if [ "$CMD" == "reset" ]; then
