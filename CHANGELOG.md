@@ -4,6 +4,10 @@ Changes
 Next
 ----
 
+Version 2.4.1
+-------------
+
+- Update php-saml to 4.3.1, to fix a security issue into xmlseclibs: [CVE-2025-66475](https://github.com/advisories/GHSA-c4cc-x928-vjw9)
 
 Version 2.4.0
 -------------
@@ -20,7 +24,7 @@ Version 2.3.0
 - Support of an SAML attribute containing groups to assign the user to jAcl2 groups automatically
 - new configuration parameter to change the default page to redirect to after login
 - Improve html with ids and div to ease CSS styling
-- Fix configuration : fix some PHP notices when some configuration parameters were missing
+- Fix configuration: fix some PHP notices when some configuration parameters were missing
 
 Version 2.2.5
 -------------
