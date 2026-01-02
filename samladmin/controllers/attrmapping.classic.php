@@ -85,7 +85,6 @@ class attrmappingCtrl extends jController
         if (isset($userGroupsSetting['enabled']) && $userGroupsSetting['enabled']) {
             $form->setData('groupsfromsaml', $userGroupsSetting['enabled']);
             $form->setData('groupsfromsamlattr', $userGroupsSetting['attribute'] ?? '');
-            $form->setData('groupsfromsamlsep', $userGroupsSetting['separator'] ?? '');
             $form->setData('groupsfromsamlprefix', $userGroupsSetting['prefix'] ?? '');
         }
 
@@ -206,7 +205,6 @@ class attrmappingCtrl extends jController
         $userGroupsSetting['prefix'] = '';
         if ($userGroupsSetting['enabled']) {
             $userGroupsSetting['attribute'] = $form->getData('groupsfromsamlattr');
-            $userGroupsSetting['separator'] = $form->getData('groupsfromsamlsep');
             $userGroupsSetting['prefix'] = $form->getData('groupsfromsamlprefix');
         }
         $config->setUserGroupsSetting($userGroupsSetting);
