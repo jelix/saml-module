@@ -205,6 +205,9 @@ class Configuration {
             if (!isset($userGroupsConfig['enabled'])) {
                 $userGroupsConfig['enabled'] = False;
             }
+            if (!isset($userGroupsConfig['drop_prefix'])) {
+                $userGroupsConfig['drop_prefix'] = False;
+            }
         }
         $this->userGroupsSetting = $userGroupsConfig;
 

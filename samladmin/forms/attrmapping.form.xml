@@ -23,6 +23,10 @@
             <label locale="samladmin~admin.attrmapping.form.groupsfromsamlprefix.label"/>
             <help locale="samladmin~admin.attrmapping.form.groupsfromsamlprefix.help"/>
         </input>
+        <checkbox ref="groupsfromsamldropprefix">
+            <label locale="samladmin~admin.attrmapping.form.groupsfromsamldropprefix.label"/>
+            <help locale="samladmin~admin.attrmapping.form.groupsfromsamldropprefix.help"/>
+        </checkbox>
     </group>
 
     <checkbox ref="automaticAccountCreation">
