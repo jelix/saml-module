@@ -201,7 +201,7 @@ class Saml
             $currentGroups[] = $g->id_aclgrp;
         }
 
-        // Update user groups if prefix is defined
+        // Keep only new groups having a prefix, if a prefix is defined
         if (isset($samlUserGroupsSetting['prefix']) && $samlUserGroupsSetting['prefix'] != '') {
             $prefix = $samlUserGroupsSetting['prefix'];
             $newGroups = array_filter(

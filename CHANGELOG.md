@@ -4,6 +4,12 @@ Changes
 Next
 ----
 
+Version 2.5.0
+-------------
+
+- new configuration parameter, indicating to remove the groups prefix from groups given by SAML.
+- remove the configuration parameter "groups separator". It is useless, as groups are always given as a list. 
+
 Version 2.4.1
 -------------
 
