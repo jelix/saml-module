@@ -87,6 +87,7 @@ class attrmappingCtrl extends jController
             $form->setData('groupsfromsamlattr', $userGroupsSetting['attribute'] ?? '');
             $form->setData('groupsfromsamlsep', $userGroupsSetting['separator'] ?? '');
             $form->setData('groupsfromsamlprefix', $userGroupsSetting['prefix'] ?? '');
+            $form->setData('groupsfromsamldropprefix', $userGroupsSetting['drop_prefix']);
         }
 
         $form->setData('login', $config->getSAMLAttributeForLogin());
@@ -204,10 +205,12 @@ class attrmappingCtrl extends jController
         $userGroupsSetting['attribute'] = '';
         $userGroupsSetting['separator'] = '';
         $userGroupsSetting['prefix'] = '';
+        $userGroupsSetting['drop_prefix'] = false;
         if ($userGroupsSetting['enabled']) {
             $userGroupsSetting['attribute'] = $form->getData('groupsfromsamlattr');
             $userGroupsSetting['separator'] = $form->getData('groupsfromsamlsep');
             $userGroupsSetting['prefix'] = $form->getData('groupsfromsamlprefix');
+            $userGroupsSetting['drop_prefix'] = $form->getData('groupsfromsamldropprefix');
         }
         $config->setUserGroupsSetting($userGroupsSetting);
 

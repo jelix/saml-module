@@ -210,6 +210,14 @@ class Saml
                     return strpos($g, $prefix) === 0;
                 }
             );
+            if (isset($samlUserGroupsSetting['drop_prefix']) && $samlUserGroupsSetting['drop_prefix']) {
+                $newGroups = array_map(
+                    function($g) use ($prefix) {
+                        return substr($g, strlen($prefix));
+                    },
+                    $newGroups
+                );
+            }
         }
 
         // Filter user groups against all groups
