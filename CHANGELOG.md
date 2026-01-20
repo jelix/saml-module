@@ -23,6 +23,10 @@ Version 2.4.0
   A redirection can be done via a configuration parameter, set by hand, if
   this is not UX issue for the application.
 
+Version 2.3.1
+-------------
+
+- Update php-saml to 4.3.1, to fix a security issue into xmlseclibs: [CVE-2025-66475](https://github.com/advisories/GHSA-c4cc-x928-vjw9)
 
 Version 2.3.0
 -------------
