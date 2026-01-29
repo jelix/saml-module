@@ -4,10 +4,13 @@ Changes
 Next
 ----
 
+
+Version 2.6.0
+-------------
+
 - Fix: accounts are not duplicated anymore when, at each authentication process, the IDP provides same login
   but with a different character case. A configuration parameter `caseSensitiveLogins=on` allow to keep
   the old behavior if necessary.
-
 
 Version 2.5.0
 -------------
