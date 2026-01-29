@@ -20,6 +20,8 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
 
     protected $loginsCache = array();
 
+    protected $caseSensitiveLogins = false;
+
     function __construct($params) {
         if (property_exists(jApp::config(), 'saml') && is_array(jApp::config()->saml)) {
             $params = array_merge($params, jApp::config()->saml);
@@ -34,6 +36,10 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
 
         if (isset($this->_params['automaticAccountCreation'])) {
             $this->automaticAccountCreation = $this->_params['automaticAccountCreation'];
+        }
+
+        if (isset($this->_params['caseSensitiveLogins'])) {
+            $this->caseSensitiveLogins = $this->_params['caseSensitiveLogins'];
         }
     }
 
@@ -80,7 +86,7 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
             return false;
         }
 
-        if (function_exists('mb_strtolower')) {
+        if ($this->caseSensitiveLogins && function_exists('mb_strtolower')) {
             $loginLegacy = mb_strtolower($login);
             if ($loginLegacy != $login) {
                 // compatibility with an old version of the module, when
@@ -124,6 +130,23 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
         if (isset($this->loginsCache[$login])) {
             return $this->loginsCache[$login];
         }
+        $dao = $this->getDao();
+
+        if ($this->caseSensitiveLogins) {
+            $user = $dao->getByLogin($login);
+            if (!$user && function_exists('mb_strtolower')) {
+                // compatibility with an old version of the module, when
+                // logins were stored only in lowercase
+                $loginLegacy = mb_strtolower($login);
+                if ($loginLegacy != $login) {
+                    $user = $dao->getByLogin($loginLegacy);
+                }
+            }
+            if ($user) {
+                $this->loginsCache[$login] = $user;
+            }
+            return $user;
+        }
 
         if (function_exists('mb_strtolower')) {
             $llogin = mb_strtolower($login);
@@ -133,7 +156,7 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
         }
         $conditions = new jDaoConditions();
         $conditions->addCondition('login', '=', $llogin, 'lower(%s)');
-        $rs = $this->getDao()->findBy($conditions);
+        $rs = $dao->findBy($conditions);
 
         // IDP may return a login that have a different character case than the login of a previous
         // authentication, so previous versions of the module may create several accounts with the
