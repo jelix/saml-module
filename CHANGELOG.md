@@ -4,6 +4,10 @@ Changes
 Next
 ----
 
+- Fix: accounts are not duplicated anymore when, at each authentication process, the IDP provides same login
+  but with a different character case.
+
+
 Version 2.5.0
 -------------
 
