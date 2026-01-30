@@ -5,16 +5,15 @@
 
 <div id="page">
     <div id="user">
-    {ifuserconnected}
-        You are authenticated. <a href="{jurl 'jauth~login:out'}">logout</a>
+    {ifuserauthenticated}
+        You are authenticated. <a href="{$urlsignout}">logout</a>
     {else}
         You are not authenticated.
-        <a href="{jurl 'jauth~login:form'}">login</a>
-        <a href="{jurl 'jauth~login:form', array('auth_url_return'=>$profile_url)}">login and redirection to profile</a>
-
-    {/ifuserconnected}
+        <a href="{$urlsignin}">login</a>
+        <!--<a href="{*jurl 'jauth~login:form', array('auth_url_return'=>$profile_url)*}">login and redirection to profile</a>-->
+    {/ifuserauthenticated}
         <a href="{jurl 'app~default:index'}">home</a>
-        <a href="{jurl 'master_admin~default:index'}">admin</a>
+        <a href="{jurl 'adminui~default:index'}">admin</a>
         <a href="{jurl 'saml~endpoint:metadata'}">saml metadata</a>
     </div>
 {$MAIN}

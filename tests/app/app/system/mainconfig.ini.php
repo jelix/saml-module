@@ -22,17 +22,21 @@ domainName=
 [modules]
 jelix.enabled=on
 jelix.installparam[wwwfiles]=vhost
+
 jacl2db.enabled=on
 jacl2db.installparam[defaultgroups]=on
 jacl2db.installparam[defaultuser]=on
-jauth.enabled=on
-jauthdb.enabled=on
-jauthdb.installparam[defaultuser]=on
-app.enabled=on
-jacl2db_admin.enabled=on
-jauthdb_admin.enabled=on
-master_admin.enabled=on
+
 jacl2.enabled=on
+
+app.enabled=on
+
+adminui.enabled=on
+adminui.installparam[wwwfiles]=vhost
+
+authcore.enabled=on
+authloginpass.enabled=on
+account.enabled=on
 
 saml.path="/opt/saml/"
 saml.installparam[useradmin]=dwho
@@ -49,14 +53,14 @@ defaultJformsBuilder=html
 
 [responses]
 html=myHtmlResponse
-htmlauth=myHtmlResponse
 
 [error_handling]
-;errorMessage="A technical error has occured (code: %code%). Sorry for this inconvenience."
+messageLogFormat="%date%\t%ip%\t[%code%]\t%msg%\n\tat: %file%\t%line%\n\turl: %url%\n\t%http_method%: %params%\n\treferer: %referer%\n%trace%\n\n"
+errorMessage="Une erreur technique est survenue. Désolé pour ce désagrément."
 
-;[compilation]
-;checkCacheFiletime  = on
-;force  = off
+[compilation]
+checkCacheFiletime  = on
+force  = off
 
 [urlengine]
 
@@ -85,10 +89,8 @@ multiview=off
 ; : basePath="/aaa/" )
 basePath=
 
-
-
-
 notFoundAct="jelix~error:notfound"
+
 [jResponseHtml]
 ; list of active plugins for jResponseHtml
 ; remove the debugbar plugin on production server, and in this case don't forget
@@ -127,39 +129,17 @@ webmasterName=
 
 ; How to send mail : "mail" (mail()), "sendmail" (call sendmail), "smtp" (send directly to a smtp)
 ;                   or "file" (store the mail into a file, in filesDir directory)
-mailerType=mail
-; Sets the hostname to use in Message-Id and Received headers
-; and as default HELO string. If empty, the value returned
-; by SERVER_NAME is used or 'localhost.localdomain'.
-hostname=
-sendmailPath="/usr/sbin/sendmail"
+mailerType=file
 
 ; if mailer = file, fill the following parameters
 ; this should be the directory in the var/ directory, where to store mail as files
 filesDir="mails/"
 
-; if mailer = smtp , fill the following parameters
-
-; SMTP hosts.  All hosts must be separated by a semicolon : "smtp1.example.com:25;smtp2.example.com"
-smtpHost=localhost
-; default SMTP server port
-smtpPort=25
-; secured connection or not. possible values: "", "ssl", "tls"
-smtpSecure=
-; SMTP HELO of the message (Default is hostname)
-smtpHelo=
-; SMTP authentication
-smtpAuth=off
-smtpUsername=
-smtpPassword=
-; SMTP server timeout in seconds
-smtpTimeout=10
-
-
-
 [acl2]
-; example of driver: "db"
-driver=
+driver=db
+hiddenRights=
+hideRights=off
+authAdapterClass="\Jelix\Authentication\Core\Acl2Adapter"
 
 [sessions]
 ; If several applications are installed in the same documentRoot but with
@@ -366,10 +346,143 @@ lowercaseUrlencoding=off
 driver=saml
 
 [webassets_common]
-master_admin.css[]="$jelix/design/master_admin.css"
 jacl2_admin.require = jquery_ui
 jacl2_admin.css[]="$jelix/design/jacl2.css"
 jacl2_admin.js[]="$jelix/js/jacl2db_admin.js"
 
 jauthdb_admin.require = jquery_ui
 jauthdb_admin.js[]="$jelix/js/authdb_admin.js"
+
+adminlte-bootstrap.require=jquery,jquery_ui
+adminlte-bootstrap.js[]=adminlte-assets/plugins/bootstrap/js/bootstrap.bundle.min.js
+
+adminlte-fontawesome.css[]=adminlte-assets/plugins/fontawesome-free/css/all.min.css
+
+adminlte.require=jquery,adminlte-bootstrap,adminlte-fontawesome
+adminlte.css[]=adminlte-assets/dist/css/adminlte.min.css
+adminlte.css[]=adminlte-assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css
+adminlte.css[]=adminui-assets/SourceSansPro/SourceSansPro.css
+adminlte.css[]=adminui-assets/adminui.css
+adminlte.js[]=adminlte-assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js
+adminlte.js[]=adminlte-assets/plugins/jquery-mousewheel/jquery.mousewheel.js
+adminlte.js[]=adminlte-assets/plugins/fastclick/fastclick.js
+adminlte.js[]=adminlte-assets/dist/js/adminlte.min.js
+adminlte.js[]=adminui-assets/adminui.js
+
+
+[adminui]
+appVersion=0.0.1
+htmlLogo="Jelix<b>Auth</b>"
+htmlLogoMini="J<b>Auth</b>"
+htmlCopyright="<strong>Copyright &copy; 2019-2024 Laurent Jouanneau</strong>."
+dashboardTemplate=
+
+appTitle=Auth test app
+bodyCSSClass="hold-transition "
+bareBodyCSSClass="hold-transition login-page"
+adminlteAssetsUrl="adminlte-assets/"
+
+; hide the dashboard item into the sidebar
+disableDashboardMenuItem=off
+
+; show the button into the header, to activate the full screen mode
+fullScreenModeEnabled=off
+
+; activate the dark mode
+darkmode=off
+
+; the header/navbar is fixed
+header.fixed=off
+
+; the header/navbar has a border
+header.border=on
+
+; Text of the header/navbar is small
+header.smalltext=off
+
+; Color of the header/navbar. see https://adminlte.io/docs/3.2/layout.html
+header.color=cyan
+
+; the text of the navbar is dark
+header.darktext=on
+
+; the text of the logo is small
+header.brand.smalltext = off
+
+; the sidebar is collapsed by default
+sidebar.collapsed=off
+
+; the sidebar is fixed
+sidebar.fixed=off
+
+; when collapsed, the sidebar is still visible in a mini format
+sidebar.mini=on
+
+; the sidebar has a flat style
+sidebar.nav.flat.style=off
+
+; the sidebar items are compact
+sidebar.nav.compact=off
+
+; child items into the sidebar, are indented
+sidebar.nav.child.indent=off
+
+;
+sidebar.nav.child.collapsed=
+
+; the text of the sidebar is small
+sidebar.nav.smalltext = off
+
+; the background of the sidebar is dark
+sidebar.dark=on
+
+; the selected item of the sidebar has the "primary" color. see https://adminlte.io/docs/3.2/layout.html
+sidebar.current-item.color=cyan
+
+; the footer is fixed
+footer.fixed=off
+
+; text of the footer is small
+footer.smalltext = off
+
+; the general text is small
+body.smalltext = off
+
+
+
+[authentication]
+idp[]=loginpass
+sessionHandler=php
+
+signInAlreadyAuthAction="adminui~default:index"
+
+[sessionauth]
+authRequired=off
+missingAuthAction="authcore~sign:in"
+missingAuthAjaxAction=""
+
+[loginpass_idp]
+backends[]=daotablesqlite
+backends[]=inifile
+after_login="adminui~default:index"
+loginResponse=htmllogin
+
+[loginpass:common]
+passwordHashAlgo=1
+passwordHashOptions=
+deprecatedPasswordCryptFunction=
+deprecatedPasswordSalt=
+
+;ini file provider
+[loginpass:inifile]
+backendType=inifile
+inifile="var:db/users.ini.php"
+backendLabel="Native users"
+
+[loginpass:daotablesqlite]
+backendType=dbdao
+profile=app
+
+[accounts]
+autoCreateAccountOnLogin=on
+

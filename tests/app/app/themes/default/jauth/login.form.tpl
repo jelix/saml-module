@@ -1,3 +1,6 @@
+
+deprecated
+
 <div id="auth_login_zone">
 {if $failed}
 <p>{@jauth~auth.failedToLogin@}</p>

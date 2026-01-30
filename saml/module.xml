@@ -10,10 +10,7 @@
     </info>
     <dependencies>
         <jelix minversion="1.6.37" maxversion="1.8.*"/>
-        <choice>
-            <module name="jauthdb"/>
-            <module name="jcommunity"/>
-        </choice>
+        <module name="authcore"/>
         <module name="jacl2db" />
     </dependencies>
     <autoload>

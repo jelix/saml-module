@@ -27,5 +27,11 @@ class myHtmlResponse extends jResponseHtml {
 
         $this->body->assignIfNone('MAIN','<p>no content</p>');
         $this->body->assign('profile_url', jUrl::get('app~pages:profile'));
+        if (jAuthentication::isCurrentUserAuthenticated()) {
+            $this->body->assign('urlsignout', jAuthentication::getSignoutPageUrl());
+        }
+        else {
+            $this->body->assign('urlsignin', jAuthentication::getSigninPageUrl());
+        }
     }
 }
