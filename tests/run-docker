@@ -25,6 +25,7 @@ if [ "$CMD" == "reset" ]; then
     rm -f app/var/config/localconfig.ini.php app/var/config/profiles.ini.php
     rm -f app/var/config/installer.ini.php app/var/config/liveconfig.ini.php
     rm -f app/composer.lock app/var/db/jelix.sqlite
+    rm -f app/composer.lock app/var/db/users.ini.php
     rm -rf app/temp/www
     rm -rf jelix app/vendor
     exit 0

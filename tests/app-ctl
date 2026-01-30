@@ -17,6 +17,10 @@ case $COMMAND in
         docker exec -t -i $CONTAINER appctl.sh clean_tmp;;
     reset)
         docker exec -t -i $CONTAINER appctl.sh reset;;
+    reset-setup)
+        docker exec -t -i $CONTAINER appctl.sh reset
+        docker exec -t -i $CONTAINER appctl.sh init-data
+        ;;
     install)
         docker exec -t -i $CONTAINER appctl.sh install;;
     rights)

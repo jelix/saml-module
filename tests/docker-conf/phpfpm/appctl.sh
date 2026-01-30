@@ -28,7 +28,7 @@ function cleanTmp() {
 }
 
 
-function resetApp() {
+function cleanApp() {
     if [ -f $APPDIR/var/config/CLOSED ]; then
         rm -f $APPDIR/var/config/CLOSED
     fi
@@ -37,11 +37,6 @@ function resetApp() {
         mkdir $APPDIR/var/log
         chown $APP_USER:$APP_GROUP $APPDIR/var/log
     fi
-
-    cp $APPDIR/var/config/localconfig.ini.php.dist $APPDIR/var/config/localconfig.ini.php
-    cp $APPDIR/var/config/profiles.ini.php.dist $APPDIR/var/config/profiles.ini.php
-
-    chown -R $APP_USER:$APP_GROUP $APPDIR/var/config/profiles.ini.php $APPDIR/var/config/localconfig.ini.php
 
     if [ -f $APPDIR/var/config/installer.ini.php ]; then
         rm -f $APPDIR/var/config/installer.ini.php
@@ -52,6 +47,18 @@ function resetApp() {
     if [ -f $APPDIR/var/config/localurls.xml ]; then
         rm -f $APPDIR/var/config/localurls.xml
     fi
+
+    if [ -f $APPDIR/var/config/localconfig.ini.php ]; then
+        rm -f $APPDIR/var/config/localconfig.ini.php
+    fi
+
+    if [ -f $APPDIR/var/config/profiles.ini.php ]; then
+        rm -f $APPDIR/var/config/profiles.ini.php
+    fi
+    if [ -f $APPDIR/var/db/users.ini.php ]; then
+        rm -f $APPDIR/var/db/users.ini.php
+    fi
+
     rm -rf $APPDIR/var/log/*
     rm -rf $APPDIR/var/db/*
     rm -rf $APPDIR/var/mails/*
@@ -62,8 +69,26 @@ function resetApp() {
     touch $APPDIR/var/uploads/.dummy && chown $APP_USER:$APP_GROUP $APPDIR/var/uploads/.dummy
 
     cleanTmp
-    setRights
-    launchInstaller
+
+}
+
+
+function resetApp() {
+  cleanApp
+
+  if [ -f $APPDIR/var/config/profiles.ini.php.dist ]; then
+      cp $APPDIR/var/config/profiles.ini.php.dist $APPDIR/var/config/profiles.ini.php
+  fi
+  if [ -f $APPDIR/var/config/localconfig.ini.php.dist ]; then
+      cp $APPDIR/var/config/localconfig.ini.php.dist $APPDIR/var/config/localconfig.ini.php
+  fi
+  if [ -f $APPDIR/var/users.ini.php.dist ]; then
+      cp $APPDIR/var/users.ini.php.dist $APPDIR/var/db/users.ini.php
+  fi
+
+  chown -R $APP_USER:$APP_GROUP $APPDIR/var/config/profiles.ini.php $APPDIR/var/config/localconfig.ini.php  $APPDIR/var/db/users.ini.php
+  setRights
+
 }
 
 
@@ -117,7 +142,10 @@ function launch() {
     if [ -f $APPDIR/var/config/localconfig.ini.php ]; then
         cp $APPDIR/var/config/localconfig.ini.php.dist $APPDIR/var/config/localconfig.ini.php
     fi
-    chown -R $APP_USER:$APP_GROUP $APPDIR/var/config/profiles.ini.php $APPDIR/var/config/localconfig.ini.php
+    if [ ! -f $APPDIR/var/db/users.ini.php -a -f $APPDIR/var/users.ini.php.dist ]; then
+        cp $APPDIR/var/users.ini.php.dist $APPDIR/var/db/users.ini.php
+    fi
+    chown -R $APP_USER:$APP_GROUP $APPDIR/var/config/profiles.ini.php $APPDIR/var/config/localconfig.ini.php  $APPDIR/var/db/users.ini.php
 
     if [ ! -d $APPDIR/vendor ]; then
       composerInstall
@@ -151,19 +179,38 @@ function launch() {
         chmod 644 $APPDIR/var/config/saml/certs/sp.key $APPDIR/var/config/saml/certs/sp.crt
     fi
 
+    launchInstaller
     setRights
     cleanTmp
+}
+
+
+function initData()
+{
+  php $APPDIR/console.php account:create admin admin-test@jelix.org Bob SuperAdmin
+  php $APPDIR/console.php account:login:create admin --backend=inifile --set-pass=admin
+  php $APPDIR/console.php account:create john john@jelix.org John Doe
+  php $APPDIR/console.php account:idp:set john loginpass john
+  php $APPDIR/console.php account:create dwho dwho@jelix.org Doctor Who
+  php $APPDIR/console.php account:idp:set dwho loginpass dwho
 }
 
 case $COMMAND in
     clean_tmp)
         cleanTmp;;
+    clean)
+        cleanApp;;
     reset)
-        resetApp;;
+        cleanApp
+        launchInstaller
+        ;;
     launch)
         launch;;
     install)
         launchInstaller;;
+    init-data)
+        initData
+        ;;
     rights)
         setRights;;
     composer_install)

@@ -1,0 +1,9 @@
+;<?php die(''); ?>
+;for security reasons, don't remove or modify the first line
+
+
+[login:admin]
+password="$2y$10$NXbq2iUL0f6nUQVy4foj/Oi575Ub9B7dypDJZFTnCNPfxbLL5Nk1u"
+email="admin-test@jelix.org"
+name="Bob SuperAdmin"
+status=1
