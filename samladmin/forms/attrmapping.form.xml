@@ -41,10 +41,6 @@
         <label locale="samladmin~admin.attrmapping.form.forceSAMLAuthOnLoginPage.label"/>
     </checkbox>
 
-    <radiobuttons ref="redirectionAfterLogin">
-        <label locale="samladmin~admin.attrmapping.form.redirectionAfterLogin.label"/>
-    </radiobuttons>
-
     <submit ref="_submit">
         <label locale="jelix~ui.buttons.save"/>
     </submit>

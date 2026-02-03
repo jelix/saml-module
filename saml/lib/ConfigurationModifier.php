@@ -55,12 +55,6 @@ class ConfigurationModifier extends Configuration
         $this->forceSAMLAuthOnLoginPage = !!$allow;
     }
 
-    public function setRedirectionAfterLogin($redir)
-    {
-        $this->redirectionAfterLogin = $redir;
-    }
-
-
     public function setSpEntityId($entityId)
     {
         $this->settings['sp']['entityId'] = $entityId;
@@ -251,9 +245,6 @@ class ConfigurationModifier extends Configuration
 
         $liveConfig->setValue('forceSAMLAuthOnLoginPage', $this->forceSAMLAuthOnLoginPage, 'saml');
         $appConfig->saml['forceSAMLAuthOnLoginPage'] = $this->forceSAMLAuthOnLoginPage;
-
-        $liveConfig->setValue('redirectionAfterLogin', $this->redirectionAfterLogin, 'saml');
-        $appConfig->saml['redirectionAfterLogin'] = $this->redirectionAfterLogin;
 
         $secProperties = [
             'authnRequestsSigned', 'logoutRequestSigned', 'logoutResponseSigned',
