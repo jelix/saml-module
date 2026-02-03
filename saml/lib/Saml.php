@@ -1,7 +1,7 @@
 <?php
 /**
  * @author  Laurent Jouanneau
- * @copyright  2019-2021 3Liz
+ * @copyright  2019-2026 3Liz
  * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
  */
 namespace Jelix\Saml;
@@ -27,19 +27,11 @@ class Saml
     protected $config;
 
     /**
-     * Configuration of the authentication saml plugin for the jelix coordinator
-     * @var array
-     */
-    protected $authConfig;
-
-    /**
      * @param Configuration  $configuration
-     * @param array $authConf Configuration of the authentication saml plugin for the jelix coordinator
      */
-    function __construct(Configuration $configuration, $authConf)
+    function __construct(Configuration $configuration)
     {
         $this->config = $configuration;
-        $this->authConfig = $authConf;
     }
 
     protected function initCacheProfile()
@@ -67,6 +59,13 @@ class Saml
         }
     }
 
+    /**
+     * Start SAML Login process
+     *
+     * @param string $returnUrl the url where to redirect after SAML authentication
+     * @return string|null the url to redirect to for authentication
+     * @throws Error
+     */
     function startLoginProcess($returnUrl)
     {
         $auth = new Auth($this->config->getSettingsArray());
@@ -121,6 +120,7 @@ class Saml
 
         // indicate the attributes to the driver
         /** @var \samlAuthDriver $samlDriver */
+
         $samlDriver = \jAuth::getDriver();
         $samlDriver->setAttributesMapping($attributes, $this->config->getAttributesMapping());
         $password = $samlDriver->activateAuthWithSaml();
@@ -159,14 +159,10 @@ class Saml
             || $relayState == ''
             || $relayState == \jUrl::getFull('saml~endpoint:acs')
         ) {
-
-            if ($this->authConfig['after_login'] != '') {
-                // page indicated into the after_login option
-                $relayState = \jUrl::getFull($this->authConfig['after_login']);
-            } else {
-                // home page
-                $relayState = $request->getServerURI() . \jApp::urlBasePath();
-            }
+            // FIXME JelixAuthentication should provides a method to retrieve the
+            // url of the default page after a login
+            // home page
+            $relayState = $request->getServerURI() . \jApp::urlBasePath();
         }
         return $relayState;
     }
@@ -289,14 +285,14 @@ class Saml
 
         \jAuth::logout();
 
+        // FIXME JelixAuthentication should provides a method to get the default page
+        // after a logout
+        // home page
+        $relayState = $defaultRelayState;
+
         if (!$hasSAMLSession) {
             // to avoid error "unknown session" on the IdP side
-            if ($this->authConfig['after_logout']) {
-                $url = \jUrl::getFull($this->authConfig['after_logout']);
-            } else {
-                $url = $defaultRelayState;
-            }
-            return $url;
+            return $relayState;
         }
 
         unset($_SESSION['samlUserdata']);
@@ -306,18 +302,10 @@ class Saml
         unset($_SESSION['samlNameIdNameQualifier']);
         unset($_SESSION['samlNameIdSPNameQualifier']);
 
-        if ($this->authConfig['after_logout']) {
-            // page indicated into the after_login option
-            $relayState = \jUrl::getFull($this->authConfig['after_logout']);
-        } else {
-            // home page
-            $relayState = $defaultRelayState;
-        }
         $url = $auth->logout($relayState, array(), $nameId,
                              $sessionIndex, true, $nameIdFormat,
                              $nameIdNameQualifier, $nameIdSPNameQualifier);
         return $url;
-
     }
 
 
@@ -369,12 +357,6 @@ class Saml
                 unset($_SESSION['samlNameIdFormat']);
                 unset($_SESSION['samlNameIdNameQualifier']);
                 unset($_SESSION['samlNameIdSPNameQualifier']);
-
-                if (!isset($this->authConfig['session_destroy'])
-                    || $this->authConfig['session_destroy'] == ''
-                ) {
-                    session_destroy();
-                }
                 session_commit();
             }
 
@@ -394,13 +376,8 @@ class Saml
         if ($relayState) {
             return $relayState;
         }
-        else {
-            if ($this->authConfig['after_logout'] != '') {
-                // page indicated into the after_logout option
-                $url = \jUrl::getFull($this->authConfig['after_logout']);
-                return $url;
-            }
-        }
-        return '';
+        // FIXME JelixAuthentication should provides a method to get the default page
+        // after a logout
+        return $request->getServerURI() . \jApp::urlBasePath();
     }
 }

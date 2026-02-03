@@ -1,7 +1,7 @@
 <?php
 /**
  * @author  Laurent Jouanneau
- * @copyright  2019-2021 3Liz
+ * @copyright  2019-2026 3Liz
  * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
  */
 
@@ -52,10 +52,7 @@ class endpointCtrl extends jController {
     function acs() {
         $configuration = new \Jelix\Saml\Configuration();
 
-        $saml = new Jelix\Saml\Saml(
-            $configuration,
-            jApp::coord()->getPlugin('auth')->config
-        );
+        $saml = new Jelix\Saml\Saml($configuration);
 
         try {
             $relayState = $saml->processLoginResponse($this->request);
@@ -92,10 +89,7 @@ class endpointCtrl extends jController {
     function sls() {
         $configuration = new \Jelix\Saml\Configuration();
 
-        $saml = new Jelix\Saml\Saml(
-            $configuration,
-            jApp::coord()->getPlugin('auth')->config
-        );
+        $saml = new Jelix\Saml\Saml($configuration);
 
         try {
             $relayState = $saml->processLogout($this->request);

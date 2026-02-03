@@ -1,7 +1,7 @@
 <?php
 /**
  * @author  Laurent Jouanneau
- * @copyright  2019 3Liz
+ * @copyright  2019-2026 3Liz
  * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
  */
 
@@ -53,10 +53,7 @@ class authCtrl extends jController {
 
         try {
 
-            $saml = new Jelix\Saml\Saml(
-                $configuration,
-                jApp::coord()->getPlugin('auth')->config
-            );
+            $saml = new Jelix\Saml\Saml($configuration);
 
             $rep->url = $saml->startLoginProcess($relayState);
 
@@ -93,10 +90,7 @@ class authCtrl extends jController {
         $rep = $this->getResponse('redirectUrl');
 
         $configuration = new \Jelix\Saml\Configuration();
-        $saml = new Jelix\Saml\Saml(
-            $configuration,
-            jApp::coord()->getPlugin('auth')->config
-        );
+        $saml = new Jelix\Saml\Saml($configuration);
         $defaultRelayState = jUrl::getFull('saml~endpoint:logoutdone');
         $rep->url = $saml->startLogoutProcess($defaultRelayState);
 
