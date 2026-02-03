@@ -59,10 +59,8 @@ class authCtrl extends jController {
         }
 
         try {
-            $saml = new Jelix\Saml\Saml(
-                $configuration,
-                jApp::coord()->getPlugin('auth')->config
-            );
+
+            $saml = new Saml($configuration);
 
             $rep->url = $saml->startLoginProcess($relayState);
         }
@@ -108,10 +106,7 @@ class authCtrl extends jController {
 
         try {
             $configuration = new \Jelix\Saml\Configuration();
-            $saml = new Jelix\Saml\Saml(
-                $configuration,
-                jApp::coord()->getPlugin('auth')->config
-            );
+            $saml = new Saml($configuration);
             $defaultRelayState = jUrl::getFull('saml~endpoint:logoutdone');
             $rep->url = $saml->startLogoutProcess($defaultRelayState);
         }

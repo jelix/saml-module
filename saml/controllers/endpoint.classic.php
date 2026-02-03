@@ -69,10 +69,7 @@ class endpointCtrl extends jController {
         try {
             $configuration = new \Jelix\Saml\Configuration();
 
-            $saml = new Jelix\Saml\Saml(
-                $configuration,
-                jApp::coord()->getPlugin('auth')->config
-            );
+            $saml = new Saml($configuration);
         }
         catch (\Exception $e)
         {
@@ -126,10 +123,7 @@ class endpointCtrl extends jController {
         try {
             $configuration = new \Jelix\Saml\Configuration();
 
-            $saml = new Jelix\Saml\Saml(
-                $configuration,
-                jApp::coord()->getPlugin('auth')->config
-            );
+            $saml = new Saml($configuration);
         }
         catch (\Exception $e)
         {
