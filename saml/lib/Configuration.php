@@ -80,7 +80,6 @@ class Configuration {
 
     protected $idpLabel = '';
 
-    protected $redirectionAfterLogin = '';
 
     /**
      * Configuration constructor.
@@ -123,10 +122,6 @@ class Configuration {
 
         if (isset($iniConfig->saml['loginFormAction'])) {
             $this->loginFormAction = $iniConfig->saml['loginFormAction'];
-        }
-
-        if (isset($iniConfig->saml['redirectionAfterLogin'])) {
-            $this->redirectionAfterLogin = $iniConfig->saml['redirectionAfterLogin'];
         }
 
         $this->fixConfigValues($iniConfig);
@@ -671,15 +666,6 @@ class Configuration {
     function getAuthorizedDaoPropertiesForMapping()
     {
         return $this->daoPropertiesForMapping;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    function getRedirectionAfterLogin()
-    {
-        return $this->redirectionAfterLogin;
     }
 
     protected function fixConfigValues($iniConfig)

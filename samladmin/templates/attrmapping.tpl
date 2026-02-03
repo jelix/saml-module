@@ -41,12 +41,6 @@
         {@samladmin~admin.attrmapping.form.forceSAML.warning@}
         </div>
     </div>
-    <div class="control-group">
-        {ctrl_label 'redirectionAfterLogin'}
-        <div class="controls">
-            {ctrl_control 'redirectionAfterLogin'}
-        </div>
-    </div>
 
     <div class="control-group">
         {formsubmit}

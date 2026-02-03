@@ -24,7 +24,7 @@ class authCtrl extends jController {
      * redirected to the method acs() of the endpoint controller, with the auth
      * details.
      *
-     * @return jResponseRedirectUrl
+     * @return jResponseRedirectUrl|jResponseHtml
      * @throws \OneLogin\Saml2\Error
      */
     function login() {
@@ -45,27 +45,10 @@ class authCtrl extends jController {
             // or the internal redirection is made during a non GET request.
             // we will then redirect the user to the default page to display
             // after a login.
-            $conf = jApp::coord()->getPlugin('auth')->config;
+            // FIXME JelixAuthentication should provides a method to retrieve the
+            // url of the default page, url that it should be
+            $relayState = jServer::getServerURI().jApp::urlBasePath();
 
-            $defaultRedirectionAfterLogin = $configuration->getRedirectionAfterLogin();
-            $auth_url_return = $this->param('auth_url_return');
-            if ($conf['enable_after_login_override']
-                && $auth_url_return != ''
-                && method_exists('jAuth','checkReturnUrl')
-                && jAuth::checkReturnUrl($auth_url_return)
-            ) {
-                $relayState = $auth_url_return;
-
-            }
-            else if ($defaultRedirectionAfterLogin == 'homepage') {
-                $relayState = jServer::getServerURI().jApp::urlBasePath();
-            }
-            else if ($conf['after_login'] != '') {
-                $relayState = jUrl::getFull($conf['after_login']);
-            } else {
-                // home page
-                $relayState = jServer::getServerURI() . jApp::urlBasePath();
-            }
         }
 
         try {
