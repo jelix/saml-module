@@ -1,9 +1,14 @@
 <?php
-
+/**
+ * @author      Laurent Jouanneau
+ * @contributor
+ * @copyright   2022-2026 3liz
+ * @licence     GNU Lesser General Public Licence see LICENCE file or http://www.gnu.org/licenses/lgpl.html
+ */
 require_once(__DIR__.'/SamlInstallerTrait.php');
 
 /**
- * Configurator for Jelix 1.7+
+ * Configurator
  */
 class samlModuleConfigurator extends \Jelix\Installer\Module\Configurator
 {
@@ -12,8 +17,6 @@ class samlModuleConfigurator extends \Jelix\Installer\Module\Configurator
     public function getDefaultParameters()
     {
         return array(
-            'useradmin' => '',
-            'emailadmin' => '',
             // name of the entrypoint on which the saml authentication will
             // be routed
             'authep' => ''
@@ -40,8 +43,6 @@ class samlModuleConfigurator extends \Jelix\Installer\Module\Configurator
     function configure(\Jelix\Installer\Module\API\ConfigurationHelpers $helpers)
     {
         $appConfig = $helpers->getConfigIni();
-        $appConfig->setValue('auth.class', 'samlCoordPlugin', 'coordplugins');
-        $appConfig->setValue('driver', 'saml', 'coordplugin_auth');
 
         // import default SAML configuration into localconfig or mainconfig
         $samlIniConfig = new \Jelix\IniFile\IniModifier(__DIR__.'/config.ini');
@@ -72,39 +73,6 @@ class samlModuleConfigurator extends \Jelix\Installer\Module\Configurator
             }
             $appConfig['main']->import($samlIniConfig);
             $appConfig->save();
-        }
-
-        // setup configuration for the saml driver into jauth
-        $foundAuthConfig = false;
-        foreach ($helpers->getEntryPointsByType() as $ep) {
-            $pluginInfo = $ep->getCoordPluginConfig('auth');
-            if (!$pluginInfo) {
-                continue;
-            }
-            list($authIni, $section) = $pluginInfo;
-            if ($section ==0) {
-                // this is an auth.coord.ini.php
-                if (!$authIni->isSection('saml')) {
-                    $authIni->setValue('dao', "jauthdb~jelixuser", 'saml');
-                    $authIni->setValue('profile', "", 'saml');
-                    $authIni->setValue('form', "jauthdb_admin~jelixuser", 'saml');
-                    $authIni->setValue('uploadsDirectory', '', 'saml');
-                    $authIni->setValue('compatiblewithdb', true, 'saml');
-                    $authIni->setValue('automaticAccountCreation', true, 'saml');
-                    $authIni->setValue('driver', 'saml');
-                    $authIni->save();
-                }
-                $foundAuthConfig = true;
-            }
-        }
-
-        // there is no configuration yet, let's create one for us
-        if (!$foundAuthConfig) {
-            $authConfigFilePath = $helpers->configFilePath('saml/saml.coord.ini.php');
-            if (!file_exists($authConfigFilePath)) {
-                $helpers->copyFile('saml.coord.ini.php', $authConfigFilePath);
-            }
-            $appConfig->setValue('auth', 'saml/saml.coord.ini.php', 'coordplugins');
         }
 
         if (!$appConfig->getValue('htmlauth', 'responses')) {
