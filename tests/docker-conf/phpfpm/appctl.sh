@@ -151,28 +151,6 @@ function launch() {
       composerInstall
     fi
 
-    if [[ $JELIX_VERSION == 1.6* ]]; then
-        if [ "$JELIX_STABILITY" == "release" ]; then
-            jelix_archive=https://download.jelix.org/jelix/releases/1.6.x/${JELIX_VERSION}/jelix-${JELIX_VERSION}-dev.tar.gz
-        else
-            jelix_archive=https://download.jelix.org/jelix/nightly/1.6.x/jelix-${JELIX_VERSION}-dev.tar.gz
-        fi
-        echo $jelix_archive
-        jelix_directory=jelix-${JELIX_VERSION}-dev
-
-
-        if [ ! -d /opt/tests/jelix ]; then
-            wget -O /opt/tests/jelix.tar.gz $jelix_archive
-            (
-              cd /opt/tests/
-              tar xzf jelix.tar.gz
-              chown -R $APP_USER:$APP_GROUP $jelix_directory
-              mv $jelix_directory jelix
-              rm jelix.tar.gz
-            )
-        fi
-    fi
-
     if [ ! -f $APPDIR/var/config/saml/certs/sp.crt ]; then
         openssl req -x509 -newkey rsa:4096 -keyout $APPDIR/var/config/saml/certs/sp.key -out $APPDIR/var/config/saml/certs/sp.crt -days 3650 -nodes -subj "/C=FR/ST=France/L=Paris/O=jelix/OU=tests/CN=samltest.jelix.org"
         chown 1000:1000 $APPDIR/var/config/saml/certs/sp.key $APPDIR/var/config/saml/certs/sp.crt

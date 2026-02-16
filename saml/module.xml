@@ -9,7 +9,7 @@
         <creator name="Laurent Jouanneau" email="laurent@jelix.org"/>
     </info>
     <dependencies>
-        <jelix minversion="1.6.37" maxversion="1.8.*"/>
+        <jelix minversion="1.8.0" maxversion="1.9.*"/>
         <module name="authcore"/>
         <module name="jacl2db" />
     </dependencies>
