@@ -341,10 +341,6 @@ digestAlgorithm="http://www.w3.org/2001/04/xmlenc#sha256"
 ; uppercase. Turn it True for ADFS compatibility on signature verification
 lowercaseUrlencoding=off
 
-
-[coordplugin_auth]
-driver=saml
-
 [webassets_common]
 jacl2_admin.require = jquery_ui
 jacl2_admin.css[]="$jelix/design/jacl2.css"
@@ -451,6 +447,7 @@ body.smalltext = off
 
 
 [authentication]
+idp[]=samlauth
 idp[]=loginpass
 sessionHandler=php
 
