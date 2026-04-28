@@ -1,2 +1,3 @@
 jelix/
 .env
+.phpunit.result.cache

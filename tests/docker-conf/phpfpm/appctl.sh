@@ -1,9 +1,11 @@
 #!/bin/bash
 APPDIR="/opt/tests/app"
+UNITTESTS_DIR="/opt/tests/unittests"
 APP_USER=userphp
 APP_GROUP=groupphp
 
 COMMAND="$1"
+shift
 
 if [ "$COMMAND" == "" ]; then
     echo "Error: command is missing"
@@ -170,9 +172,12 @@ case $COMMAND in
         composerInstall;;
     composer_update)
         composerUpdate;;
+    unit-tests)
+        UTCMD="cd $UNITTESTS_DIR/ && $APPDIR/vendor/bin/phpunit  $@"
+        su $APP_USER -c "$UTCMD"
+        ;;
     *)
         echo "wrong command"
         exit 2
         ;;
 esac
-

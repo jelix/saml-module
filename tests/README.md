@@ -44,3 +44,9 @@ Other users :
 
 To reset all data and docker containers, run `./run-docker reset`
 
+Unit-tests
+----------
+
+Unit-tests are available in the `tests/unit` directory. PHPUnit is used to run them.
+
+To launch them, run `./app-ctl unit-tests`. You can add PHPUnit parameters or options after the command.
