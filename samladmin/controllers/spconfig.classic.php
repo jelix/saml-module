@@ -3,7 +3,7 @@
  * SAML administration.
  *
  * @author    Laurent Jouanneau
- * @copyright 2021 3liz
+ * @copyright 2021-2026 3liz
  *
  * @licence     GNU Lesser General Public Licence see LICENCE file or http://www.gnu.org/licenses/lgpl.html
  */
@@ -50,6 +50,16 @@ class spconfigCtrl extends jController
         if ($spCertificate) {
 
             $subject = new X509;
+            try {
+                $certDetails = $subject->loadX509($spCertificate);
+                if (!$certDetails) {
+                    return $certForm;
+                }
+            }
+            catch (\Exception $e) {
+                return $certForm;
+            }
+
             $subject->loadX509($spCertificate);
 
             $fields = array(
@@ -240,7 +250,15 @@ class spconfigCtrl extends jController
     {
         $subject = new X509;
 
-        $certDetails = $subject->loadX509($certContent);
+      try {
+            $certDetails = $subject->loadX509($certContent);
+            if (!$certDetails) {
+                return false;
+            }
+        }
+        catch (\Exception $e) {
+            return false;
+        }
 
         $result = array();
 
@@ -274,7 +292,12 @@ class spconfigCtrl extends jController
             $rep->setHttpStatus(400, 'Bad request');
         }
         else {
-            $rep->data = $this->getCertDetails($certContent);
+            $details = $this->getCertDetails($certContent);
+            if (!$details) {
+                $details = array('error'=>'bad certificate');
+                $rep->setHttpStatus(400, 'Bad request');
+            }
+            $rep->data = $details;
         }
 
         return $rep;
