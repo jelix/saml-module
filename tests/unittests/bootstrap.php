@@ -6,3 +6,5 @@ if (file_exists(jApp::tempPath())) {
 } else {
     jFile::createDir(jApp::tempPath(), intval("775",8));
 }
+jApp::loadConfig('admin/config.ini.php');
+jApp::setCoord(new jCoordinator());

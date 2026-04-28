@@ -1,7 +1,7 @@
 <?php
 /**
  * @author  Laurent Jouanneau
- * @copyright  2019-2024 3Liz
+ * @copyright  2019-2026 3Liz
  * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
  */
 namespace Jelix\Saml;
@@ -10,6 +10,7 @@ use OneLogin\Saml2\Settings;
 use OneLogin\Saml2\Constants;
 
 use jLocale;
+use phpseclib3\File\X509;
 
 
 class Configuration {
@@ -81,6 +82,13 @@ class Configuration {
     protected $idpLabel = '';
 
     protected $redirectionAfterLogin = '';
+
+    const CERT_VALID = 0;
+    const CERT_NOT_YET_VALID = 1;
+    const CERT_EXPIRED = 2;
+    const CERT_ALMOST_EXPIRED = 3;
+    const CERT_BAD_FORMAT = 4;
+    const CERT_UNKNOWN = 5;
 
     /**
      * Configuration constructor.
@@ -446,6 +454,60 @@ class Configuration {
         if ($this->settings['idp']['singleLogoutService']['binding'] == '') {
             throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.bad.parameter', array('singleLogoutServiceBinding')), 11);
         }
+    }
+
+    /**
+     * Says if the certificate is valid
+     *
+     * @param string $certificate the content of the certificate (PEM format)
+     * @return array the result of the check. First item is one of the CERT_* constants. Second item is additional information
+     * @throws \Exception
+     */
+    public function checkCertificate($certificate)
+    {
+        if ($certificate == '') {
+            return [ self::CERT_UNKNOWN, ''];
+        }
+
+        $subject = new X509;
+
+        try {
+            $certDetails = $subject->loadX509($certificate);
+            if (!$certDetails) {
+                return [self::CERT_BAD_FORMAT, ''];
+            }
+        }
+        catch (\Exception $e) {
+            return [self::CERT_BAD_FORMAT, ''];
+        }
+
+        $currentTimeZone = new \DateTimeZone(\jApp::config()->timeZone);
+        $now = new \DateTimeImmutable('now', $currentTimeZone);
+
+        $notBefore = $certDetails['tbsCertificate']['validity']['notBefore'];
+        $notBefore = isset($notBefore['generalTime']) ? $notBefore['generalTime'] : $notBefore['utcTime'];
+        $notBefore = new \DateTime($notBefore, new \DateTimeZone('UTC'));
+        $notBefore->setTimezone($currentTimeZone);
+
+        $notAfter = $certDetails['tbsCertificate']['validity']['notAfter'];
+        $notAfter = isset($notAfter['generalTime']) ? $notAfter['generalTime'] : $notAfter['utcTime'];
+        $notAfter = new \DateTime($notAfter, new \DateTimeZone('UTC'));
+        $notAfter->setTimezone($currentTimeZone);
+
+        if ($now < $notBefore) {
+            return [ self::CERT_NOT_YET_VALID, $notBefore->format('Y-m-d H:i')];
+        }
+
+        if ($now > $notAfter) {
+            return [ self::CERT_EXPIRED, $notAfter->format('Y-m-d H:i') ];
+        }
+        $diff = $now->diff($notAfter);
+        $days = (int)$diff->format('%r%a');
+        if ($days < 30) {
+            return [ self::CERT_ALMOST_EXPIRED, $days ];
+        }
+
+        return [ self::CERT_VALID, $notAfter->format('Y-m-d H:i') ];
     }
 
     /**
