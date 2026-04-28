@@ -188,6 +188,7 @@ class spconfigCtrl extends jController
 
         $subject = new X509;
 
+        $result = array();
         $dn = array();
         $fields = array(
             'certCountryName' => 'C',
@@ -202,6 +203,7 @@ class spconfigCtrl extends jController
             if ($certValue) {
                 $dn[] = $code.'='.$certValue;
             }
+            $result[$code] = $certValue;
         }
 
         $subject->setDN(implode(', ', $dn));
@@ -209,6 +211,7 @@ class spconfigCtrl extends jController
         $domain = $this->param('certCommonName');
         str_replace(array('http://', 'https://'), '', $domain);
         $subject->setDomain($domain);
+        $result['CN'] = $domain;
 
         $issuer = new X509;
         $issuer->setPrivateKey($privKey);
@@ -216,16 +219,64 @@ class spconfigCtrl extends jController
 
         $x509 = new X509;
 
-        $dateStart = new DateTime();
+        $timezone = new DateTimeZone(\jApp::config()->timeZone);
+        $dateStart = new DateTime('now', $timezone);
         $x509->setStartDate($dateStart);
-        $dateEnd = new DateTime();
+        $result['notBefore'] = $dateStart->format('Y-m-d H:i:s');
+        $dateEnd = new DateTime('now', $timezone);
         $dateEnd->add(new DateInterval("P".$this->param('certDaysValidity')."D"));
         $x509->setEndDate($dateEnd);
+        $result['notAfter'] = $dateEnd->format('Y-m-d H:i:s');
+        $result['valid'] = true;
 
-        $result = $x509->sign($issuer, $subject);
+        $signedCert = $x509->sign($issuer, $subject);
 
-        $rep->data= array('certificate'=> $x509->saveX509($result));
+        $result['certificate'] = $x509->saveX509($signedCert);
+        $rep->data = $result;
         return $rep;
     }
 
+    protected function getCertDetails($certContent)
+    {
+        $subject = new X509;
+
+        $certDetails = $subject->loadX509($certContent);
+
+        $result = array();
+
+        foreach(['C', 'ST', 'L', 'O', 'OU', 'CN'] as $field) {
+            $val = $subject->getSubjectDNProp($field);
+            $result[$field] = (is_array($val) ? $val[0] : $val);
+        }
+
+        $result['valid'] = $subject->validateDate();
+
+        $notBefore = $certDetails['tbsCertificate']['validity']['notBefore'];
+        $notBefore = isset($notBefore['generalTime']) ? $notBefore['generalTime'] : $notBefore['utcTime'];
+        $notBefore = new \DateTime($notBefore, new \DateTimeZone('UTC'));
+        $notBefore->setTimezone(new \DateTimeZone(\jApp::config()->timeZone));
+        $result['notBefore'] = $notBefore->format('Y-m-d H:i');
+
+        $notAfter = $certDetails['tbsCertificate']['validity']['notAfter'];
+        $notAfter = isset($notAfter['generalTime']) ? $notAfter['generalTime'] : $notAfter['utcTime'];
+        $notAfter = new \DateTime($notAfter, new \DateTimeZone('UTC'));
+        $notAfter->setTimezone(new \DateTimeZone(\jApp::config()->timeZone));
+        $result['notAfter'] = $notAfter->format('Y-m-d H:i');
+        return $result;
+    }
+
+    function certDetails()
+    {
+        $rep = $this->getResponse('json');
+        $certContent = $this->param('cert');
+        if ($certContent == '') {
+            $rep->data = array('error'=>'certificate is missing');
+            $rep->setHttpStatus(400, 'Bad request');
+        }
+        else {
+            $rep->data = $this->getCertDetails($certContent);
+        }
+
+        return $rep;
+    }
 }

@@ -59,3 +59,29 @@ h2 span.saml-step {
     width: auto;
     display: inline-block;
 }
+
+.samladmin-cert-block {
+    display:flex;
+    flex-direction: row;
+}
+
+.cert-details {
+    margin: 0.5em 1em;
+    font-size: 0.8em;
+}
+.cert-details th {
+    text-align: right;
+}
+
+.cert-details-invalid {
+    color:red;
+}
+
+@media (max-width:800px) {
+    .samladmin-cert-block {
+        flex-direction: column;
+    }
+    .cert-details {
+        margin: 0 1em 0.5em 1em;
+    }
+}

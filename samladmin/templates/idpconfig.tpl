@@ -29,7 +29,7 @@
 
 
 
-<div id="idpform">
+<div id="idpform" data-details-url="{jurl 'samladmin~spconfig:certDetails'}">
 {form $idpform, 'samladmin~idpconfig:save'}
 
     <div class="control-group">
@@ -48,16 +48,92 @@
 
     <fieldset>
         <legend>{@samladmin~admin.idpconfig.form.certificates.label@}</legend>
-        <div class="control-group">
-            {ctrl_label 'signingCertificate'}
-            <div class="controls">
-                {ctrl_control 'signingCertificate'}
+        <div class="samladmin-cert-block">
+            <div class="control-group">
+                {ctrl_label 'signingCertificate'}
+                <div class="controls">
+                    {ctrl_control 'signingCertificate'}
+                </div>
+            </div>
+            <div id="signing-cert-details" class="cert-details">
+                <table>
+                    <tr>
+                        <th>{@samladmin~admin.spconfig.form.cert.countryName.label@} :</th>
+                        <td><span class="cert-details-countryName"></span></td>
+                    </tr>
+                    <tr>
+                        <th>{@samladmin~admin.spconfig.form.cert.stateOrProvinceName.label@} :</th>
+                        <td><span class="cert-details-stateOrProvinceName"></span></td>
+                    </tr>
+                    <tr>
+                        <th>{@samladmin~admin.spconfig.form.cert.localityName.label@} :</th>
+                        <td><span class="cert-details-localityName"></span></td>
+                    </tr>
+                    <tr>
+                        <th>{@samladmin~admin.spconfig.form.cert.organizationName.label@} :</th>
+                        <td><span class="cert-details-organizationName"></span></td>
+                    </tr>
+                    <tr>
+                        <th>{@samladmin~admin.spconfig.form.cert.organizationalUnitName.label@} :</th>
+                        <td><span class="cert-details-organizationalUnitName"></span></td>
+                    </tr>
+                    <tr>
+                        <th>{@samladmin~admin.spconfig.form.cert.commonName.label@} :</th>
+                        <td><span class="cert-details-commonName"></span></td>
+                    </tr>
+                    <tr>
+                        <th>{@samladmin~admin.spconfig.form.cert.validFrom.label@} :</th>
+                        <td><span class="cert-details-validFrom"></span></td>
+                    </tr>
+                    <tr>
+                        <th>{@samladmin~admin.spconfig.form.cert.validTo.label@} :</th>
+                        <td><span class="cert-details-validTo"></span></td>
+                    </tr>
+                </table>
             </div>
         </div>
-        <div class="control-group">
-            {ctrl_label 'encryptionCertificate'}
-            <div class="controls">
-                {ctrl_control 'encryptionCertificate'}
+        <div class="samladmin-cert-block">
+            <div class="control-group">
+                {ctrl_label 'encryptionCertificate'}
+                <div class="controls">
+                    {ctrl_control 'encryptionCertificate'}
+                </div>
+            </div>
+            <div id="encrypt-cert-details" class="cert-details" data-url="{jurl 'samladmin~spconfig:certDetails'}">
+                <table>
+                    <tr>
+                        <th>{@samladmin~admin.spconfig.form.cert.countryName.label@} :</th>
+                        <td><span class="cert-details-countryName"></span></td>
+                    </tr>
+                    <tr>
+                        <th>{@samladmin~admin.spconfig.form.cert.stateOrProvinceName.label@} :</th>
+                        <td><span class="cert-details-stateOrProvinceName"></span></td>
+                    </tr>
+                    <tr>
+                        <th>{@samladmin~admin.spconfig.form.cert.localityName.label@} :</th>
+                        <td><span class="cert-details-localityName"></span></td>
+                    </tr>
+                    <tr>
+                        <th>{@samladmin~admin.spconfig.form.cert.organizationName.label@} :</th>
+                        <td><span class="cert-details-organizationName"></span></td>
+                    </tr>
+                    <tr>
+                        <th>{@samladmin~admin.spconfig.form.cert.organizationalUnitName.label@} :</th>
+                        <td><span class="cert-details-organizationalUnitName"></span></td>
+                    </tr>
+                    <tr>
+                        <th>{@samladmin~admin.spconfig.form.cert.commonName.label@} :</th>
+                        <td><span class="cert-details-commonName"></span></td>
+                    </tr>
+                    <tr>
+                        <th>{@samladmin~admin.spconfig.form.cert.validFrom.label@} :</th>
+                        <td><span class="cert-details-validFrom"></span></td>
+                    </tr>
+                    <tr>
+                        <th>{@samladmin~admin.spconfig.form.cert.validTo.label@} :</th>
+                        <td><span class="cert-details-validTo"></span></td>
+                    </tr>
+                </table>
             </div>
         </div>
 

@@ -28,8 +28,8 @@ window.addEventListener('load', function () {
 
     let dialog = divDialog.dialog({
         autoOpen: false,
-        height: 400,
-        width: 350,
+        height: 450,
+        width: 500,
         modal: true,
         buttons: [
             {
@@ -81,13 +81,54 @@ window.addEventListener('load', function () {
                 success: function(data) {
                     let form = jFormsJQ.getForm('jforms_samladmin_spconfig').element;
                     form.tlsCertificate.value = data.certificate;
+                    showCertDetails(data);
                     dialogGenerate.dialog( "close" );
                 },
                 url: certform.getAttribute('action')
             })
-
-
         }
+    }
+
+    function loadCertDetails()
+    {
+        let form = jFormsJQ.getForm('jforms_samladmin_spconfig').element;
+        let certContent = form.tlsCertificate.value;
+        if (certContent == '') {
+            $('#cert-details').hide();
+            return;
+        }
+        $.ajax({
+            method: 'post',
+            data: { cert: certContent },
+            error: function(xhr, status, error) {
+                console.log('Request error '+status+' '+error);
+            },
+            success: function(data) {
+                showCertDetails(data);
+            },
+            url: $('#cert-details').attr('data-url')
+        })
+    }
+
+    function showCertDetails(data)
+    {
+        $('#cert-details-countryName').text(data.C);
+        $('#cert-details-stateOrProvinceName').text(data.ST);
+        $('#cert-details-localityName').text(data.L);
+        $('#cert-details-organizationName').text(data.O);
+        $('#cert-details-organizationalUnitName').text(data.OU);
+        $('#cert-details-commonName').text(data.CN);
+        $('#cert-details-validFrom').text(data.notBefore);
+        $('#cert-details-validTo').text(data.notAfter);
+        if (data.valid) {
+            $('#cert-details-validFrom').removeClass('cert-details-invalid');
+            $('#cert-details-validTo').removeClass('cert-details-invalid');
+        }
+        else {
+            $('#cert-details-validFrom').addClass('cert-details-invalid');
+            $('#cert-details-validTo').addClass('cert-details-invalid');
+        }
+        $('#cert-details').show();
     }
 
     dialog.find( "form" ).on( "submit", function( event ) {
@@ -113,5 +154,9 @@ window.addEventListener('load', function () {
             certform.elements['certCommonName'].value = domain;
         }
         dialog.dialog( "open" );
+    });
+
+    jFormsJQ.onFormReady('jforms_samladmin_spconfig', function(/* jFormsJQForm */ form){
+        loadCertDetails();
     });
 });
