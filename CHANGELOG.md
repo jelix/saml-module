@@ -5,6 +5,9 @@ Next
 ----
 
 
+- SAML properties configuration: fill the regeneration certificate form with existing certificate details
+
+
 Version 2.6.0
 -------------
 

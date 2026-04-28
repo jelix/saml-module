@@ -44,6 +44,31 @@ class spconfigCtrl extends jController
         return $rep;
     }
 
+    protected function prepareCertForm($spCertificate)
+    {
+        $certForm = jForms::create('cert');
+        if ($spCertificate) {
+
+            $subject = new X509;
+            $subject->loadX509($spCertificate);
+
+            $fields = array(
+                'C' => 'certCountryName',
+                'ST' => 'certStateOrProvinceName',
+                'L' => 'certLocalityName',
+                'O' => 'certOrganizationName',
+                'OU' => 'certOrganizationalUnitName',
+                'CN' => 'certCommonName'
+            );
+
+            foreach($fields as $code => $field) {
+                $val = $subject->getSubjectDNProp($code);
+                $certForm->setData($field, (is_array($val) ? $val[0] : $val));
+            }
+        }
+
+        return $certForm;
+    }
 
     public function edit()
     {
@@ -55,7 +80,7 @@ class spconfigCtrl extends jController
             return $rep;
         }
 
-        $certForm = jForms::create('cert');
+        $certForm = $this->prepareCertForm($form->getData('tlsCertificate'));
 
         $tpl = new jTpl();
         $tpl->assign('spform', $form);
