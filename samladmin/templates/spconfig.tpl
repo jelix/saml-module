@@ -91,6 +91,7 @@
     </div>
 
 </fieldset>
+<p>{@samladmin~admin.spconfig.form.change.warning@}</p>
 
 <div class="control-group">
 {formsubmit}

@@ -3,10 +3,12 @@
  * SAML administration.
  *
  * @author    Laurent Jouanneau
- * @copyright 2021 3liz
+ * @copyright 2021-2026 3liz
  *
  * @licence     GNU Lesser General Public Licence see LICENCE file or http://www.gnu.org/licenses/lgpl.html
  */
+use Jelix\Saml\Configuration;
+
 class configCtrl extends jController
 {
     // Configure access via jacl2 rights management
@@ -16,7 +18,7 @@ class configCtrl extends jController
 
 
     /**
-     * Display a summary of the information taken from the ~ configuration file.
+     * Display a summary of the information taken from the configuration file.
      */
     public function index()
     {
@@ -24,7 +26,7 @@ class configCtrl extends jController
 
         $tpl = new jTpl();
 
-        $config = new \Jelix\Saml\Configuration(false);
+        $config = new Configuration(false);
 
         try {
             $config->checkSpConfig();
@@ -32,6 +34,14 @@ class configCtrl extends jController
         }
         catch(\Exception $e) {
             $tpl->assign('sp_config_ok', false);
+        }
+
+        $spCertValidity = $config->checkCertificate($config->getSpCertificate());
+        if ($spCertValidity[0] == Configuration::CERT_VALID) {
+            $tpl->assign('sp_cert_error', '');
+        }
+        else {
+            $tpl->assign('sp_cert_error', $config->getHumanMessageForValidity($spCertValidity, Configuration::CERT_TYPE_SP));
         }
 
         try {
@@ -42,12 +52,28 @@ class configCtrl extends jController
             $tpl->assign('idp_config_ok', false);
         }
 
+        $idpSigningCertValidity = $config->checkCertificate($config->getIdpSigningCertificate());
+        if ($idpSigningCertValidity[0] == Configuration::CERT_VALID) {
+            $tpl->assign('idp_signing_cert_error', '');
+        }
+        else {
+            $tpl->assign('idp_signing_cert_error', $config->getHumanMessageForValidity($idpSigningCertValidity, Configuration::CERT_TYPE_IDP_SIGNING));
+        }
+
         try {
             $config->checkAttrConfig();
             $tpl->assign('attr_config_ok', true);
         }
         catch(\Exception $e) {
             $tpl->assign('attr_config_ok', false);
+        }
+
+        $idpEncryptionCertValidity = $config->checkCertificate($config->getIdpEncryptionCertificate());
+        if ($idpEncryptionCertValidity[0] == Configuration::CERT_VALID) {
+            $tpl->assign('idp_encryption_cert_error', '');
+        }
+        else {
+            $tpl->assign('idp_encryption_cert_error', $config->getHumanMessageForValidity($idpEncryptionCertValidity, Configuration::CERT_TYPE_IDP_ENCRYPTION));
         }
 
         $tpl->assign('sp_metadata_url', jUrl::getFull('saml~endpoint:metadata'));

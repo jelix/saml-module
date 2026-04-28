@@ -323,7 +323,7 @@ class Configuration {
 
         $this->idpLabel  = $idpConfig['label'];
         $certsSigning = array();
-        if ($idpConfig['certs_signing_files'] == '') {
+        if ($idpConfig['certs_signing_files'] == '' && $idpConfig['certs_encryption_files'] == '') {
             $idpX509certFile = $this->configPath('saml/certs/idp.crt');
 
             if (file_exists($idpX509certFile)) {
@@ -336,20 +336,27 @@ class Configuration {
         }
         else {
             $idpX509cert = '';
-            $list = preg_split('/ *, */', $idpConfig['certs_signing_files']);
 
-            foreach ($list as $file) {
-                if ($file == '') {
-                    continue;
+            $certsSigning = array();
+            if ($idpConfig['certs_signing_files'] != '') {
+                $list = preg_split('/ *, */', $idpConfig['certs_signing_files']);
+
+                foreach ($list as $file) {
+                    if ($file == '') {
+                        continue;
+                    }
+                    $path = $this->configPath('saml/certs/' . $file);
+                    if (file_exists($path)) {
+                        $certsSigning[] = file_get_contents($path);
+                    } else {
+                        $certsSigning = array();
+                        $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.idp.sign.cert.missing');
+                        break;
+                    }
                 }
-                $path = $this->configPath('saml/certs/' . $file);
-                if (file_exists($path)) {
-                    $certsSigning[] = file_get_contents($path);
-                } else {
-                    $certsSigning = array();
-                    $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.idp.sign.cert.missing');
-                    break;
-                }
+            }
+            else {
+                $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.idp.sign.cert.missing');
             }
 
             $certsEncryption = array();
@@ -369,6 +376,9 @@ class Configuration {
                         break;
                     }
                 }
+            }
+            else {
+                $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.idp.encrypt.cert.missing');
             }
         }
 
@@ -398,7 +408,7 @@ class Configuration {
             'x509cert' => $idpX509cert,
         );
 
-        if (count($certsSigning)) {
+        if (count($certsSigning) || count($certsEncryption)) {
             $identityProvider['x509certMulti'] =  array(
                 'signing' => $certsSigning,
                 'encryption' => $certsEncryption
