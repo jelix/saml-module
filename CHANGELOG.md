@@ -6,7 +6,7 @@ Next
 
 
 - SAML properties configuration: fill the regeneration certificate form with existing certificate details
-
+- SAML properties configuration: the regeneration cert form allows selecting years of validity instead of days
 
 Version 2.6.0
 -------------

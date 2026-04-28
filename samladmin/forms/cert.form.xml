@@ -3,6 +3,7 @@
 
 	<input ref="certCountryName" type="string" required="true">
 		<label locale="samladmin~admin.spconfig.form.cert.countryName.label"/>
+		<help locale="samladmin~admin.spconfig.form.cert.countryName.help"/>
 	</input>
 
 	<input ref="certStateOrProvinceName" type="string" required="true">
@@ -11,10 +12,12 @@
 
 	<input ref="certLocalityName" type="string">
 		<label locale="samladmin~admin.spconfig.form.cert.localityName.label"/>
+		<help locale="samladmin~admin.spconfig.form.cert.localityName.help"/>
 	</input>
 
 	<input ref="certOrganizationName" type="string" required="true">
 		<label locale="samladmin~admin.spconfig.form.cert.organizationName.label"/>
+		<help locale="samladmin~admin.spconfig.form.cert.organizationName.help"/>
 	</input>
 
 	<input ref="certOrganizationalUnitName" type="string">
@@ -23,10 +26,16 @@
 
 	<input ref="certCommonName" type="string" required="true">
 		<label locale="samladmin~admin.spconfig.form.cert.commonName.label"/>
+		<help locale="samladmin~admin.spconfig.form.cert.commonName.help"/>
 	</input>
 
-	<input ref="certDaysValidity" type="integer" required="true" defaultvalue="365">
-		<label locale="samladmin~admin.spconfig.form.cert.daysValidity.label"/>
-	</input>
+	<menulist ref="certDaysValidity"  required="true">
+		<label locale="samladmin~admin.spconfig.form.cert.yearsValidity.label"/>
+        <item value="365">1</item>
+        <item value="730">2</item>
+        <item value="1095">3</item>
+        <item value="1460">4</item>
+        <item value="1825">5</item>
+	</menulist>
 
 </form>
