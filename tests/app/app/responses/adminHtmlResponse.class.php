@@ -12,9 +12,13 @@ require_once (JELIX_LIB_CORE_PATH.'response/jResponseHtml.class.php');
 
 class adminHtmlResponse extends jResponseHtml {
 
+    public $IECompatibilityMode = 'IE=edge';
+    public $metaViewport = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no';
+
     public $bodyTpl = 'master_admin~main';
 
-    function __construct() {
+    function __construct()
+    {
         parent::__construct();
 
         // Include your common CSS and JS files here

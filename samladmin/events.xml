@@ -4,5 +4,6 @@
         <event name="masteradminGetMenuContent" />
         <event name="jauthdbAdminEditCreate" />
         <event name="jauthdbAdminGetViewInfo" />
+        <event name="masterAdminGetDashboardWidget" />
     </listener>
 </events>

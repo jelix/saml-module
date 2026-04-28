@@ -347,7 +347,7 @@ class Configuration {
                     $certsSigning[] = file_get_contents($path);
                 } else {
                     $certsSigning = array();
-                    $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.missing.idp.key');
+                    $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.idp.sign.cert.missing');
                     break;
                 }
             }
@@ -365,7 +365,7 @@ class Configuration {
                     }
                     else {
                         $certsEncryption = array();
-                        $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.missing.idp.cert');
+                        $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.idp.encrypt.cert.missing');
                         break;
                     }
                 }
@@ -430,11 +430,11 @@ class Configuration {
         }
 
         if ($this->settings['sp']['x509cert'] == '') {
-            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.sp.cert'),2);
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.sp.cert.missing'),2);
         }
 
         if ($this->settings['sp']['privateKey'] == '') {
-            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.missing.sp.key'), 2);
+            throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.sp.key.missing'), 2);
         }
     }
 
@@ -509,6 +509,50 @@ class Configuration {
 
         return [ self::CERT_VALID, $notAfter->format('Y-m-d H:i') ];
     }
+
+    const CERT_TYPE_IDP_SIGNING = 1;
+    const CERT_TYPE_IDP_ENCRYPTION = 2;
+    const CERT_TYPE_SP = 3;
+
+    /**
+     * @param array $validity the value returned by checkCertificate
+     * @return string
+     * @throws \jExceptionSelector
+     */
+    function getHumanMessageForValidity($validity, $certType)
+    {
+        if ($certType == self::CERT_TYPE_IDP_SIGNING) {
+            $msgSel = 'idp.sign';
+        }
+        else if ($certType == self::CERT_TYPE_IDP_ENCRYPTION) {
+            $msgSel = 'idp.encrypt';
+        }
+        else {
+            $msgSel = 'sp';
+        }
+
+        switch ($validity[0]) {
+            case self::CERT_UNKNOWN:
+                $message = jLocale::get('saml~auth.authentication.error.saml.'.$msgSel.'.cert.missing');
+                break;
+            case self::CERT_BAD_FORMAT:
+                $message = jLocale::get('saml~auth.authentication.error.saml.'.$msgSel.'.cert.invalid');
+                break;
+            case self::CERT_NOT_YET_VALID:
+                $message = jLocale::get('saml~auth.authentication.error.saml.'.$msgSel.'.cert.not.yet.valid', array($validity[1]));
+                break;
+            case self::CERT_EXPIRED:
+                $message = jLocale::get('saml~auth.authentication.error.saml.'.$msgSel.'.cert.expired', array($validity[1]));
+                break;
+            case self::CERT_ALMOST_EXPIRED:
+                $message = jLocale::get('saml~auth.authentication.error.saml.'.$msgSel.'.cert.almost.expired', array($validity[1]));
+                break;
+            default:
+                $message = '';
+        }
+        return $message;
+    }
+
 
     /**
      * All SAML settings as a Settings object.
@@ -658,7 +702,7 @@ class Configuration {
 
     function getIdpLabel()
     {
-        return $this->idpLabel;
+        return $this->idpLabel ?: 'SAML';
     }
 
     function getIdpEntityId()
