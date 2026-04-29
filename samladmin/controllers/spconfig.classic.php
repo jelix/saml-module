@@ -150,13 +150,32 @@ class spconfigCtrl extends jController
             $form->getData('technicalContactPersonEmail')
         );
 
+        $certificate = $form->getData('tlsCertificate');
+        $certificateOk = false;
+        $subject = new X509;
+        try {
+            $certDetails = $subject->loadX509($certificate);
+            if (!$certDetails) {
+                $form->setErrorOn('tlsCertificate', jLocale::get('saml~auth.authentication.error.saml.sp.cert.invalid'));
+                $ok = false;
+            }
+            else if ($subject->validateDate()) {
+                $certificateOk = true;
+            }
+        }
+        catch (\Exception $e) {
+            $form->setErrorOn('tlsCertificate', jLocale::get('saml~auth.authentication.error.saml.sp.cert.invalid'));
+            $ok = false;
+        }
+
         if (!$ok) {
             $rep->action = 'samladmin~spconfig:edit';
             return $rep;
         }
 
         $config->setPrivateKey($form->getData('tlsPrivateKey'));
-        $config->setCertificate($form->getData('tlsCertificate'));
+        $config->setCertificate($certificate);
+        $config->setSPSecurity($certificateOk);
 
         $config->save();
         jForms::destroy('spconfig');
@@ -250,7 +269,7 @@ class spconfigCtrl extends jController
     {
         $subject = new X509;
 
-      try {
+        try {
             $certDetails = $subject->loadX509($certContent);
             if (!$certDetails) {
                 return false;

@@ -150,6 +150,27 @@ class ConfigurationModifier extends Configuration
         $this->userGroupsSetting = $setting;
     }
 
+    public function setSPSecurity($enabled = false)
+    {
+        $this->settings['security']['authnRequestsSigned'] = $enabled;
+        $this->settings['security']['logoutRequestSigned'] = $enabled;
+        $this->settings['security']['logoutResponseSigned'] = $enabled;
+        //$this->settings['security']['signMetadata'] = $enabled;
+        //$this->settings['security']['wantAssertionsEncrypted'] = $enabled;
+        //$this->settings['security']['wantNameIdEncrypted'] = $enabled;
+    }
+
+    public function setIdpSigningSecurity($enabled = false)
+    {
+        $this->settings['security']['wantMessagesSigned'] = $enabled;
+        $this->settings['security']['wantAssertionsSigned'] = $enabled;
+    }
+
+    public function setIdpEncryptSecurity($enabled = false)
+    {
+        //$this->settings['security']['nameIdEncrypted'] = $enabled;
+    }
+
     public function save()
     {
         $appConfig = \jApp::config();
@@ -243,9 +264,19 @@ class ConfigurationModifier extends Configuration
         $liveConfig->setValue('redirectionAfterLogin', $this->redirectionAfterLogin, 'saml');
         $appConfig->saml['redirectionAfterLogin'] = $this->redirectionAfterLogin;
 
+        $secProperties = [
+            'authnRequestsSigned', 'logoutRequestSigned', 'logoutResponseSigned',
+            'signMetadata', 'wantAssertionsEncrypted', 'wantNameIdEncrypted',
+            'wantMessagesSigned', 'nameIdEncrypted', 'wantAssertionsSigned'
+        ];
+        foreach ($secProperties as $prop) {
+            $liveConfig->setValue($prop, $this->settings['security'][$prop], 'saml:security');
+            $appConfig->{'saml:security'}[$prop] = $this->settings['security'][$prop];
+        }
+
         $liveConfig->save();
 
-        // touch the file into the futur, so there is a chance that the cache file is older than liveconfig,
+        // touch the file into the future, so there is a chance that the cache file is older than liveconfig,
         // and so it is refreshed.
         touch($this->configPath('liveconfig.ini.php'), time()+2);
         clearstatcache();

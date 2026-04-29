@@ -1,15 +1,16 @@
 <?php
-
-use OneLogin\Saml2\Constants;
-
 /**
  * SAML administration.
  *
  * @author    Laurent Jouanneau
- * @copyright 2021 3liz
+ * @copyright 2021-2026 3liz
  *
  * @licence     GNU Lesser General Public Licence see LICENCE file or http://www.gnu.org/licenses/lgpl.html
  */
+
+use OneLogin\Saml2\Constants;
+use phpseclib3\File\X509;
+
 class idpconfigCtrl extends jController
 {
     // Configure access via jacl2 rights management
@@ -75,11 +76,57 @@ class idpconfigCtrl extends jController
             return $rep;
         }
 
+        $ok = true;
+
+        $idpSigningCert = $form->getData('signingCertificate');
+        $idpSigningCertOk = false;
+        $subject = new X509;
+        try {
+            $certDetails = $subject->loadX509($idpSigningCert);
+            if (!$certDetails) {
+                $form->setErrorOn('signingCertificate', jLocale::get('saml~auth.authentication.error.saml.idp.sign.cert.invalid'));
+                $ok = false;
+            }
+            else if ($subject->validateDate()) {
+                $idpSigningCertOk = true;
+            }
+        }
+        catch (\Exception $e) {
+            $form->setErrorOn('signingCertificate', jLocale::get('saml~auth.authentication.error.saml.idp.sign.cert.invalid'));
+            $ok = false;
+        }
+
+        $idpEncryptCert = $form->getData('encryptionCertificate');
+        $idpEncryptCertOk = false;
+        $subject = new X509;
+        try {
+            $certDetails = $subject->loadX509($idpEncryptCert);
+            if (!$certDetails) {
+                $form->setErrorOn('encryptionCertificate', jLocale::get('saml~auth.authentication.error.saml.idp.encrypt.cert.invalid'));
+                $ok = false;
+            }
+            else if ($subject->validateDate()) {
+                $idpEncryptCertOk = true;
+            }
+        }
+        catch (\Exception $e) {
+            $form->setErrorOn('encryptionCertificate', jLocale::get('saml~auth.authentication.error.saml.idp.encrypt.cert.invalid'));
+            $ok = false;
+        }
+
+        if (!$ok) {
+            $rep->action = 'samladmin~idpconfig:edit';
+            return $rep;
+        }
+
         $config = new \Jelix\Saml\ConfigurationModifier();
         $config->setIdpLabel($form->getData('serviceLabel'));
         $config->setIdpEntityId($form->getData('entityId'));
+
         $config->setIdpSigningCertificate($form->getData('signingCertificate'));
+        $config->setIdpSigningSecurity($idpSigningCertOk);
         $config->setIdpEncryptionCertificate($form->getData('encryptionCertificate'));
+        $config->setIdpEncryptSecurity($idpEncryptCertOk);
 
         $config->setIdpUrls(
             $form->getData('singleSignOnServiceUrl'),
