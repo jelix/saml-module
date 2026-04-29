@@ -4,10 +4,15 @@ Changes
 Next
 ----
 
+Version 2.7.0
+-------------
 
+- When Certificates are added or changed, security settings for signature are
+  enabled automatically, unless certificates are not valid.
 - SAML properties configuration: fill the regeneration certificate form with existing certificate details
 - SAML properties configuration: the regeneration cert form allows selecting years of validity instead of days
 - SAML admin: show certificat details in forms allowing to set certificates.
+- Show messages on the SAML admin page and on the dashboard when some certificates are not valid (expired or missing for example).
 
 Version 2.6.0
 -------------
