@@ -116,7 +116,7 @@ function launch() {
     if [ ! -f $APPDIR/var/config/profiles.ini.php ]; then
         cp $APPDIR/var/config/profiles.ini.php.dist $APPDIR/var/config/profiles.ini.php
     fi
-    if [ -f $APPDIR/var/config/localconfig.ini.php ]; then
+    if [ ! -f $APPDIR/var/config/localconfig.ini.php ]; then
         cp $APPDIR/var/config/localconfig.ini.php.dist $APPDIR/var/config/localconfig.ini.php
     fi
     chown -R $APP_USER:$APP_GROUP $APPDIR/var/config/profiles.ini.php $APPDIR/var/config/localconfig.ini.php
