@@ -5,9 +5,8 @@
  * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
  */
 
-use OneLogin\Saml2\Auth;
+use Jelix\Saml\Saml;
 use OneLogin\Saml2\Error;
-use OneLogin\Saml2\Metadata;
 
 /**
  * Controller called by the Identity Provider
@@ -66,18 +65,26 @@ class endpointCtrl extends jController {
      * Called when the user has been authenticated at the identity provider
      */
     function acs() {
-        $configuration = new \Jelix\Saml\Configuration();
 
-        $saml = new Jelix\Saml\Saml(
-            $configuration,
-            jApp::coord()->getPlugin('auth')->config
-        );
+        try {
+            $configuration = new \Jelix\Saml\Configuration();
+
+            $saml = new Jelix\Saml\Saml(
+                $configuration,
+                jApp::coord()->getPlugin('auth')->config
+            );
+        }
+        catch (\Exception $e)
+        {
+            \jLog::logEx($e, 'error');
+            Saml::logError($e->getMessage(), 'ACS config');
+        }
 
         try {
             $relayState = $saml->processLoginResponse($this->request);
         }
         catch(\Jelix\Saml\ProcessException $e) {
-            jLog::log($e->getMessage(),'error');
+            Saml::logError($e->getMessage(), 'ACS');
             return $this->acsError(implode(', ', $e->getSamlErrors()));
         }
         catch(\Jelix\Saml\LoginException $e) {
@@ -85,6 +92,15 @@ class endpointCtrl extends jController {
                 return $this->acsError();
             }
             return $this->acsError($e->getMessage());
+        }
+        catch(Error $e) {
+            Saml::logError($e->getMessage(), 'ACS');
+            return $this->acsError('Technical error');
+        }
+        catch(Exception $e) {
+            \jLog::logEx($e, 'error');
+            Saml::logError($e->getMessage(), 'ACS');
+            return $this->acsError('Technical error');
         }
 
         /** @var jResponseRedirectUrl $rep */
@@ -105,23 +121,37 @@ class endpointCtrl extends jController {
      *
      * @throws Error
      */
-    function sls() {
-        $configuration = new \Jelix\Saml\Configuration();
+    function sls()
+    {
+        try {
+            $configuration = new \Jelix\Saml\Configuration();
 
-        $saml = new Jelix\Saml\Saml(
-            $configuration,
-            jApp::coord()->getPlugin('auth')->config
-        );
+            $saml = new Jelix\Saml\Saml(
+                $configuration,
+                jApp::coord()->getPlugin('auth')->config
+            );
+        }
+        catch (\Exception $e)
+        {
+            \jLog::logEx($e, 'error');
+            Saml::logError($e->getMessage(), 'ACS config');
+        }
 
         try {
             $relayState = $saml->processLogout($this->request);
         }
         catch(\Jelix\Saml\ProcessException $e) {
-            jLog::log($e->getMessage(),'error');
+            Saml::logError($e->getMessage(), 'SLS');
             return $this->logoutresult(implode(', ', $e->getSamlErrors()));
         }
+        catch(Error $e) {
+            Saml::logError($e->getMessage(), 'SLS');
+            return $this->logoutresult('Technical error');
+        }
         catch(\Exception $e) {
-            return $this->logoutresult($e->getMessage());
+            \jLog::logEx($e, 'error');
+            Saml::logError($e->getMessage(), 'SLS');
+            return $this->logoutresult('Technical error');
         }
 
         if ($relayState) {
@@ -134,7 +164,8 @@ class endpointCtrl extends jController {
         return $this->logoutresult();
     }
 
-    protected function acsError($error = '') {
+    protected function acsError($error = '')
+    {
         /** @var jResponseHtml $rep */
         $rep = $this->getResponse('htmlauth');
         if ($rep->bodyTpl == '') {
@@ -181,4 +212,3 @@ class endpointCtrl extends jController {
     }
 
 }
-

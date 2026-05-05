@@ -1,10 +1,11 @@
 <?php
 /**
  * @author  Laurent Jouanneau
- * @copyright  2019 3Liz
+ * @copyright  2019-2026 3Liz
  * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
  */
 
+use Jelix\Saml\Saml;
 use OneLogin\Saml2\Auth;
 
 /**
@@ -24,13 +25,19 @@ class authCtrl extends jController {
      * redirected to the method acs() of the endpoint controller, with the auth
      * details.
      *
-     * @return jResponseRedirectUrl
+     * @return jResponseRedirectUrl|jResponseHtml
      * @throws \OneLogin\Saml2\Error
      */
     function login() {
         /** @var jResponseRedirectUrl $rep */
         $rep = $this->getResponse('redirectUrl');
-        $configuration = new \Jelix\Saml\Configuration();
+
+        try {
+            $configuration = new \Jelix\Saml\Configuration();
+        }
+        catch(\Exception $e) {
+            return $this->showErrorPage($e, 'login');
+        }
 
         $router = jApp::coord();
         if (!$router->originalAction->isEqualTo($router->action) &&
@@ -69,30 +76,37 @@ class authCtrl extends jController {
         }
 
         try {
-
             $saml = new Jelix\Saml\Saml(
                 $configuration,
                 jApp::coord()->getPlugin('auth')->config
             );
 
             $rep->url = $saml->startLoginProcess($relayState);
-
         }
         catch(\Exception $e) {
-            /** @var jResponseHtml $rep */
-            jLog::log($e->getMessage(), 'error');
-            $rep = $this->getResponse('htmlauth');
-            if ($rep->bodyTpl == '') {
-                $rep->bodyTpl = 'saml~main_error';
-            }
-            $rep->title = jLocale::get('saml~auth.authentication.error.title');
-            $tpl = new jTpl();
-            $rep->body->assign('MAIN', $tpl->fetch('configerror'));
-            return $rep;
-
+            return $this->showErrorPage($e, 'login');
         }
         $rep->addHttpHeader('Pragma', 'no-cache');
         $rep->addHttpHeader('Cache-Control', 'no-cache, must-revalidate');
+        return $rep;
+    }
+
+    /**
+     * @return jResponse|jResponseHtml|jResponseJson|jResponseRedirect
+     * @throws jExceptionSelector
+     */
+    protected function showErrorPage($exception, $context)
+    {
+        jLog::logEx($exception, 'error');
+        Saml::logError($exception->getMessage(), $context);
+        /** @var jResponseHtml $rep */
+        $rep = $this->getResponse('htmlauth');
+        if ($rep->bodyTpl == '') {
+            $rep->bodyTpl = 'saml~main_error';
+        }
+        $rep->title = jLocale::get('saml~auth.authentication.error.title');
+        $tpl = new jTpl();
+        $rep->body->assign('MAIN', $tpl->fetch('configerror'));
         return $rep;
     }
 
@@ -102,20 +116,25 @@ class authCtrl extends jController {
      * When the user visits this URL, the browser will be redirected to the SLO
      * IdP with an SLO request.
      *
-     * @return jResponseRedirectUrl
+     * @return jResponseRedirectUrl|jResponseHtml
      * @throws \OneLogin\Saml2\Error
      */
     function logout() {
         /** @var jResponseRedirectUrl $rep */
         $rep = $this->getResponse('redirectUrl');
 
-        $configuration = new \Jelix\Saml\Configuration();
-        $saml = new Jelix\Saml\Saml(
-            $configuration,
-            jApp::coord()->getPlugin('auth')->config
-        );
-        $defaultRelayState = jUrl::getFull('saml~endpoint:logoutdone');
-        $rep->url = $saml->startLogoutProcess($defaultRelayState);
+        try {
+            $configuration = new \Jelix\Saml\Configuration();
+            $saml = new Jelix\Saml\Saml(
+                $configuration,
+                jApp::coord()->getPlugin('auth')->config
+            );
+            $defaultRelayState = jUrl::getFull('saml~endpoint:logoutdone');
+            $rep->url = $saml->startLogoutProcess($defaultRelayState);
+        }
+        catch(\Exception $e) {
+            return $this->showErrorPage($e, 'logout');
+        }
 
         $rep->addHttpHeader('Pragma', 'no-cache');
         $rep->addHttpHeader('Cache-Control', 'no-cache, must-revalidate');
@@ -155,4 +174,3 @@ class authCtrl extends jController {
         return $rep;
     }
 }
-

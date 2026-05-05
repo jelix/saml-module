@@ -403,4 +403,25 @@ class Saml
         }
         return '';
     }
+
+    static function logError($error, $context= '')
+    {
+        $file = \jApp::logPath().'/saml.log';
+        $date = date('Y-m-d H:i:s');
+        $msg = $date.';'.$context.';'.$error."\n";
+        file_put_contents($file, $msg, FILE_APPEND);
+    }
+
+    static function getErrorsLog()
+    {
+        $file = \jApp::logPath().'/saml.log';
+        $errors = file_get_contents($file);
+        return $errors;
+    }
+
+    static function cleanErrorsLog()
+    {
+        $file = \jApp::logPath().'/saml.log';
+        file_put_contents($file, '');
+    }
 }
