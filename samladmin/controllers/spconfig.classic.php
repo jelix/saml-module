@@ -274,9 +274,11 @@ class spconfigCtrl extends jController
 
         $timezone = new DateTimeZone(\jApp::config()->timeZone);
         $dateStart = new DateTime('now', $timezone);
+        //$dateStart->sub(new DateInterval("P50D"));
         $x509->setStartDate($dateStart);
         $result['notBefore'] = $dateStart->format('Y-m-d H:i:s');
         $dateEnd = new DateTime('now', $timezone);
+        //$dateEnd->sub(new DateInterval("P30D"));
         $dateEnd->add(new DateInterval("P".$this->param('certDaysValidity')."D"));
         $x509->setEndDate($dateEnd);
         $result['notAfter'] = $dateEnd->format('Y-m-d H:i:s');

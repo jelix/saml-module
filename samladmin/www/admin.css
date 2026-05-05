@@ -65,7 +65,7 @@ h2 span.saml-step {
     flex-direction: row;
 }
 
-.cert-details {
+.cert-details, .cert-details-error {
     margin: 0.5em 1em;
     font-size: 0.8em;
 }
@@ -73,7 +73,7 @@ h2 span.saml-step {
     text-align: right;
 }
 
-.cert-details-invalid {
+.cert-details-invalid, .cert-details-error {
     color:red;
 }
 
@@ -81,7 +81,7 @@ h2 span.saml-step {
     .samladmin-cert-block {
         flex-direction: column;
     }
-    .cert-details {
+    .cert-details, .cert-details-error {
         margin: 0 1em 0.5em 1em;
     }
 }

@@ -95,6 +95,7 @@ window.addEventListener('load', function () {
         let certContent = form.tlsCertificate.value;
         if (certContent == '') {
             $('#cert-details').hide();
+            $('#cert-details-error').hide();
             return;
         }
         $.ajax({
@@ -102,6 +103,11 @@ window.addEventListener('load', function () {
             data: { cert: certContent },
             error: function(xhr, status, error) {
                 console.log('Request error '+status+' '+error);
+                $('#cert-details-error').show();
+                $('#cert-details').hide();
+                let tlsCertElem = jFormsJQ.getForm('jforms_samladmin_spconfig').element.elements['tlsCertificate'];
+                tlsCertElem.classList.add('jforms-error');
+                tlsCertElem.labels[0].classList.add('jforms-error');
             },
             success: function(data) {
                 showCertDetails(data);
@@ -112,6 +118,8 @@ window.addEventListener('load', function () {
 
     function showCertDetails(data)
     {
+        let tlsCertElem = jFormsJQ.getForm('jforms_samladmin_spconfig').element.elements['tlsCertificate'];
+        $('#cert-details-error').hide();
         $('#cert-details-countryName').text(data.C);
         $('#cert-details-stateOrProvinceName').text(data.ST);
         $('#cert-details-localityName').text(data.L);
@@ -123,10 +131,14 @@ window.addEventListener('load', function () {
         if (data.valid) {
             $('#cert-details-validFrom').removeClass('cert-details-invalid');
             $('#cert-details-validTo').removeClass('cert-details-invalid');
+            tlsCertElem.classList.remove('jforms-error');
+            tlsCertElem.labels[0].classList.remove('jforms-error');
         }
         else {
             $('#cert-details-validFrom').addClass('cert-details-invalid');
             $('#cert-details-validTo').addClass('cert-details-invalid');
+            tlsCertElem.classList.add('jforms-error');
+            tlsCertElem.labels[0].classList.add('jforms-error');
         }
         $('#cert-details').show();
     }
@@ -158,5 +170,10 @@ window.addEventListener('load', function () {
 
     jFormsJQ.onFormReady('jforms_samladmin_spconfig', function(/* jFormsJQForm */ form){
         loadCertDetails();
+        let certField = form.element.elements['tlsCertificate'];
+
+        certField.addEventListener('change', function() {
+            loadCertDetails();
+        })
     });
 });

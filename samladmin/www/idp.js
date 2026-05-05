@@ -70,8 +70,9 @@ window.addEventListener('load', function () {
     });
 
 
-    function showCertDetails(divid, data)
+    function showCertDetails(divid, certField, data)
     {
+        let tlsCertElem = jFormsJQ.getForm('jforms_samladmin_idpconfig').element.elements[certField];
         $('#'+divid+' .cert-details-countryName').text(data.C);
         $('#'+divid+' .cert-details-stateOrProvinceName').text(data.ST);
         $('#'+divid+' .cert-details-localityName').text(data.L);
@@ -84,21 +85,28 @@ window.addEventListener('load', function () {
         if (data.valid) {
             $('#'+divid+' .cert-details-validFrom').removeClass('cert-details-invalid');
             $('#'+divid+' .cert-details-validTo').removeClass('cert-details-invalid');
+            tlsCertElem.classList.remove('jforms-error');
+            tlsCertElem.labels[0].classList.remove('jforms-error');
         }
         else {
             $('#'+divid+' .cert-details-validFrom').addClass('cert-details-invalid');
             $('#'+divid+' .cert-details-validTo').addClass('cert-details-invalid');
+            tlsCertElem.classList.add('jforms-error');
+            tlsCertElem.labels[0].classList.add('jforms-error');
         }
-
+        $('#'+divid+'-error').hide();
         $('#'+divid).show();
     }
 
     function loadCertDetails(divid, certField)
     {
-        let form = jFormsJQ.getForm('jforms_samladmin_idpconfig').element;
-        let certContent = form[certField].value;
+        let tlsCertElem = jFormsJQ.getForm('jforms_samladmin_idpconfig').element.elements[certField];
+        let certContent = tlsCertElem.value;
         if (certContent == '') {
             $('#'+divid).hide();
+            $('#'+divid+'-error').hide();
+            tlsCertElem.classList.remove('jforms-error');
+            tlsCertElem.labels[0].classList.remove('jforms-error');
             return;
         }
         $.ajax({
@@ -106,9 +114,13 @@ window.addEventListener('load', function () {
             data: { cert: certContent },
             error: function(xhr, status, error) {
                 console.log('Request error '+status+' '+error);
+                $('#'+divid+'-error').show();
+                $('#'+divid).hide();
+                tlsCertElem.classList.add('jforms-error');
+                tlsCertElem.labels[0].classList.add('jforms-error');
             },
             success: function(data) {
-                showCertDetails(divid, data);
+                showCertDetails(divid, certField, data);
             },
             url: $('#idpform').attr('data-details-url')
         })
@@ -117,6 +129,16 @@ window.addEventListener('load', function () {
     jFormsJQ.onFormReady('jforms_samladmin_idpconfig', function(/* jFormsJQForm */ form){
         loadCertDetails('signing-cert-details', 'signingCertificate');
         loadCertDetails('encrypt-cert-details', 'encryptionCertificate');
+
+        let signCertField = form.element.elements['signingCertificate'];
+        signCertField.addEventListener('change', function() {
+            loadCertDetails('signing-cert-details', 'signingCertificate');
+        })
+
+        let cryptCertField = form.element.elements['encryptionCertificate'];
+        cryptCertField.addEventListener('change', function() {
+            loadCertDetails('encrypt-cert-details', 'encryptionCertificate');
+        })
     });
 
 });

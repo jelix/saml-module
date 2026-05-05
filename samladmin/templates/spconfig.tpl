@@ -88,6 +88,9 @@
                 </tr>
             </table>
         </div>
+        <div id="cert-details-error" class="cert-details-error">
+            <p>{@samladmin~admin.spconfig.form.cert.error@}</p>
+        </div>
     </div>
 
     <p>{@samladmin~admin.spconfig.form.security.introduction@}</p>

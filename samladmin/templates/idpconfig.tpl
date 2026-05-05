@@ -91,6 +91,9 @@
                     </tr>
                 </table>
             </div>
+            <div id="signing-cert-details-error" class="cert-details-error">
+                <p>{@samladmin~admin.spconfig.form.cert.error@}</p>
+            </div>
         </div>
         <div class="samladmin-cert-block">
             <div class="control-group">
@@ -134,6 +137,9 @@
                         <td><span class="cert-details-validTo"></span></td>
                     </tr>
                 </table>
+            </div>
+            <div id="encrypt-cert-details-error" class="cert-details-error">
+                <p>{@samladmin~admin.spconfig.form.cert.error@}</p>
             </div>
         </div>
 
