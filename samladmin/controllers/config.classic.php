@@ -77,6 +77,7 @@ class configCtrl extends jController
         }
 
         $tpl->assign('sp_metadata_url', jUrl::getFull('saml~endpoint:metadata'));
+        $tpl->assign('sp_metadata_url_dnl', jUrl::getFull('saml~endpoint:metadata' , ['download'=>1]));
         $tpl->assign('sp_acs_url', jUrl::getFull('saml~endpoint:acs'));
         $tpl->assign('sp_sls_url', jUrl::getFull('saml~endpoint:sls'));
 

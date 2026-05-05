@@ -1,7 +1,7 @@
 <?php
 /**
  * @author  Laurent Jouanneau
- * @copyright  2019-2021 3Liz
+ * @copyright  2019-2026 3Liz
  * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
  */
 
@@ -19,7 +19,24 @@ class endpointCtrl extends jController {
     );
 
     function metadata() {
-        $xml = $this->getResponse('xml');
+
+
+        if ($this->param('download')) {
+            /**
+             * @var jResponseBinary $xml
+             */
+            $xml = $this->getResponse('binary');
+            $xml->doDownload = true;
+            $xml->outputFileName = 'saml-metadata.xml';
+        }
+        else {
+            /**
+             * @var jResponseXml $xml
+             */
+            $xml = $this->getResponse('xml');
+            $xml->sendXMLHeader = false;
+            $xml->checkValidity = false;
+        }
 
         try {
             $configuration = new \Jelix\Saml\Configuration(false);
@@ -39,8 +56,7 @@ class endpointCtrl extends jController {
             return $response;
         }
 
-        $xml->sendXMLHeader = false;
-        $xml->checkValidity = false;
+
         return $xml;
     }
 

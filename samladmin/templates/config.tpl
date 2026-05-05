@@ -18,7 +18,7 @@
 <p>{@samladmin~admin.step.idpserver.description@}</p>
     <p>{@samladmin~admin.step.idpserver.metadata.desc@}</p>
 
-<p><a href="{$sp_metadata_url}">{$sp_metadata_url}</a></p>
+<p><a href="{$sp_metadata_url}">{$sp_metadata_url}</a> {if $sp_config_ok}(<a href="{$sp_metadata_url_dnl}">{@samladmin~admin.step.idpserver.metadata.download@}</a>){/if}</p>
 {if ! $sp_config_ok}
     <p class="saml-error">{@samladmin~admin.sp.metadata.url.not.available@}</p>
 {/if}
