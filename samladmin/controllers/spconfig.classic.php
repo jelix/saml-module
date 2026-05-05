@@ -37,8 +37,29 @@ class spconfigCtrl extends jController
         $form->setData('supportContactPersonName', $supportContact['givenName']);
         $form->setData('supportContactPersonEmail', $supportContact['emailAddress']);
 
-        $form->setData('tlsPrivateKey', $config->getSpPrivateKey());
-        $form->setData('tlsCertificate', $config->getSpCertificate());
+        $spPrivateKey = $config->getSpPrivateKey();
+        $spCertificate = $config->getSpCertificate();
+        $form->setData('tlsPrivateKey', $spPrivateKey);
+        $form->setData('tlsCertificate', $spCertificate);
+
+        if ($spCertificate == '' && $spPrivateKey == '') {
+            // if no certificate, we will enable all security parameters by default
+            // for the new certificate
+            $form->setData('signMetadata', true);
+            $form->setData('wantMessagesSigned', true);
+            $form->setData('wantAssertionsSigned', true);
+            $form->setData('wantAssertionsEncrypted', true);
+            $form->setData('wantNameIdEncrypted', true);
+        }
+        else {
+            $security = $config->getSecuritySettings();
+            $form->setData('signMetadata', $security['signMetadata']);
+            $form->setData('wantMessagesSigned', $security['wantMessagesSigned']);
+            $form->setData('wantAssertionsSigned', $security['wantAssertionsSigned']);
+            $form->setData('wantAssertionsEncrypted', $security['wantAssertionsEncrypted']);
+            $form->setData('wantNameIdEncrypted', $security['wantNameIdEncrypted']);
+        }
+
         $rep = $this->getResponse('redirect');
         $rep->action = 'samladmin~spconfig:edit';
         return $rep;
@@ -151,16 +172,12 @@ class spconfigCtrl extends jController
         );
 
         $certificate = $form->getData('tlsCertificate');
-        $certificateOk = false;
         $subject = new X509;
         try {
             $certDetails = $subject->loadX509($certificate);
-            if (!$certDetails) {
+            if (!$certDetails || !$subject->validateDate()) {
                 $form->setErrorOn('tlsCertificate', jLocale::get('saml~auth.authentication.error.saml.sp.cert.invalid'));
                 $ok = false;
-            }
-            else if ($subject->validateDate()) {
-                $certificateOk = true;
             }
         }
         catch (\Exception $e) {
@@ -175,7 +192,14 @@ class spconfigCtrl extends jController
 
         $config->setPrivateKey($form->getData('tlsPrivateKey'));
         $config->setCertificate($certificate);
-        $config->setSPSecurity($certificateOk);
+        $config->setSPSecurity(true);
+
+        $config->setSecurityProp('signMetadata', !!$form->getData('signMetadata'));
+        $config->setSecurityProp('wantMessagesSigned', !!$form->getData('wantMessagesSigned'));
+        $config->setSecurityProp('wantAssertionsSigned', !!$form->getData('wantAssertionsSigned'));
+        $config->setSecurityProp('wantAssertionsEncrypted', !!$form->getData('wantAssertionsEncrypted'));
+        $config->setSecurityProp('wantNameIdEncrypted', !!$form->getData('wantNameIdEncrypted'));
+        $config->setSecurityProp('nameIdEncrypted', !!$form->getData('wantNameIdEncrypted'));
 
         $config->save();
         jForms::destroy('spconfig');

@@ -644,6 +644,14 @@ class Configuration {
     }
 
     /**
+     * To get security settings
+     * @return array
+     */
+    function getSecuritySettings() {
+        return $this->settings['security'];
+    }
+
+    /**
      * indicates if accounts should be created after authentication if they
      * don't exist.
      * @return bool true if yes

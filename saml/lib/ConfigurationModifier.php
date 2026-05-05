@@ -155,20 +155,11 @@ class ConfigurationModifier extends Configuration
         $this->settings['security']['authnRequestsSigned'] = $enabled;
         $this->settings['security']['logoutRequestSigned'] = $enabled;
         $this->settings['security']['logoutResponseSigned'] = $enabled;
-        //$this->settings['security']['signMetadata'] = $enabled;
-        //$this->settings['security']['wantAssertionsEncrypted'] = $enabled;
-        //$this->settings['security']['wantNameIdEncrypted'] = $enabled;
     }
 
-    public function setIdpSigningSecurity($enabled = false)
+    public function setSecurityProp($prop, $enabled)
     {
-        $this->settings['security']['wantMessagesSigned'] = $enabled;
-        $this->settings['security']['wantAssertionsSigned'] = $enabled;
-    }
-
-    public function setIdpEncryptSecurity($enabled = false)
-    {
-        //$this->settings['security']['nameIdEncrypted'] = $enabled;
+        $this->settings['security'][$prop] = (bool)$enabled;
     }
 
     public function save()

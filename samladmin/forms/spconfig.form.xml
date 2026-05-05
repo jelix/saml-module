@@ -59,6 +59,26 @@
 		<item value="4096">4096 bits</item>
 	</menulist>
 
+    <checkbox ref="signMetadata">
+        <label locale="samladmin~admin.spconfig.form.signMetadata.label"/>
+    </checkbox>
+
+    <checkbox ref="wantMessagesSigned">
+        <label locale="samladmin~admin.spconfig.form.wantMessagesSigned.label"/>
+    </checkbox>
+
+    <checkbox ref="wantAssertionsSigned">
+        <label locale="samladmin~admin.spconfig.form.wantAssertionsSigned.label"/>
+    </checkbox>
+
+    <checkbox ref="wantAssertionsEncrypted">
+        <label locale="samladmin~admin.spconfig.form.wantAssertionsEncrypted.label"/>
+    </checkbox>
+
+    <checkbox ref="wantNameIdEncrypted">
+        <label locale="samladmin~admin.spconfig.form.wantNameIdEncrypted.label"/>
+    </checkbox>
+
 	<submit ref="_submit">
 		<label locale="jelix~ui.buttons.save"/>
 	</submit>

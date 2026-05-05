@@ -4,6 +4,10 @@ Changes
 Next
 ----
 
+- enhancement: security settings are now editable from the SAML admin page, allowing to match  exact requirements from the SAML server.
+
+
+
 Version 2.7.0
 -------------
 

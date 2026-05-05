@@ -90,6 +90,23 @@
         </div>
     </div>
 
+    <p>{@samladmin~admin.spconfig.form.security.introduction@}</p>
+    <div class="control-group">
+        {ctrl_control 'signMetadata'} {ctrl_label 'signMetadata'}
+    </div>
+    <div class="control-group">
+        {ctrl_control 'wantMessagesSigned'} {ctrl_label 'wantMessagesSigned'}
+    </div>
+    <div class="control-group">
+        {ctrl_control 'wantAssertionsSigned'} {ctrl_label 'wantAssertionsSigned'}
+    </div>
+    <div class="control-group">
+        {ctrl_control 'wantAssertionsEncrypted'} {ctrl_label 'wantAssertionsEncrypted'}
+    </div>
+    <div class="control-group">
+        {ctrl_control 'wantNameIdEncrypted'} {ctrl_label 'wantNameIdEncrypted'}
+    </div>
+
 </fieldset>
 <p>{@samladmin~admin.spconfig.form.change.warning@}</p>
 
