@@ -93,17 +93,22 @@ class idpconfigCtrl extends jController
         }
 
         $idpEncryptCert = $form->getData('encryptionCertificate');
-        $subject = new X509;
-        try {
-            $certDetails = $subject->loadX509($idpEncryptCert);
-            if (!$certDetails || !$subject->validateDate()) {
+        if ($idpEncryptCert == '') {
+            $idpEncryptCert = $idpSigningCert;
+        }
+        else {
+            $subject = new X509;
+            try {
+                $certDetails = $subject->loadX509($idpEncryptCert);
+                if (!$certDetails || !$subject->validateDate()) {
+                    $form->setErrorOn('encryptionCertificate', jLocale::get('saml~auth.authentication.error.saml.idp.encrypt.cert.invalid'));
+                    $ok = false;
+                }
+            }
+            catch (\Exception $e) {
                 $form->setErrorOn('encryptionCertificate', jLocale::get('saml~auth.authentication.error.saml.idp.encrypt.cert.invalid'));
                 $ok = false;
             }
-        }
-        catch (\Exception $e) {
-            $form->setErrorOn('encryptionCertificate', jLocale::get('saml~auth.authentication.error.saml.idp.encrypt.cert.invalid'));
-            $ok = false;
         }
 
         if (!$ok) {
@@ -115,8 +120,8 @@ class idpconfigCtrl extends jController
         $config->setIdpLabel($form->getData('serviceLabel'));
         $config->setIdpEntityId($form->getData('entityId'));
 
-        $config->setIdpSigningCertificate($form->getData('signingCertificate'));
-        $config->setIdpEncryptionCertificate($form->getData('encryptionCertificate'));
+        $config->setIdpSigningCertificate($idpSigningCert);
+        $config->setIdpEncryptionCertificate($idpEncryptCert);
 
         $config->setIdpUrls(
             $form->getData('singleSignOnServiceUrl'),

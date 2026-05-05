@@ -5,6 +5,7 @@ Next
 ----
 
 - enhancement: security settings are now editable from the SAML admin page, allowing to match  exact requirements from the SAML server.
+- fix: there was an error when submitting the idp config form, whereas the idp encryption certificate was not given
 
 
 
