@@ -4,6 +4,7 @@ Changes
 Next
 ----
 
+- Fix php error in `Configuration::readIdPConfig()`
 
 Version 2.8.0
 -------------

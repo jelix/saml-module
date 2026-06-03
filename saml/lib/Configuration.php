@@ -323,6 +323,7 @@ class Configuration {
 
         $this->idpLabel  = $idpConfig['label'];
         $certsSigning = array();
+        $certsEncryption = array();
         if ($idpConfig['certs_signing_files'] == '' && $idpConfig['certs_encryption_files'] == '') {
             $idpX509certFile = $this->configPath('saml/certs/idp.crt');
 
@@ -336,8 +337,6 @@ class Configuration {
         }
         else {
             $idpX509cert = '';
-
-            $certsSigning = array();
             if ($idpConfig['certs_signing_files'] != '') {
                 $list = preg_split('/ *, */', $idpConfig['certs_signing_files']);
 
@@ -359,7 +358,6 @@ class Configuration {
                 $this->idpCertError = jLocale::get('saml~auth.authentication.error.saml.idp.sign.cert.missing');
             }
 
-            $certsEncryption = array();
             if ($idpConfig['certs_encryption_files'] != '') {
                 $list = preg_split('/ *, */', $idpConfig['certs_encryption_files']);
                 foreach( $list as $file) {
