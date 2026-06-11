@@ -1,14 +1,14 @@
 <?php
 /**
-* @author     Laurent Jouanneau
-* @copyright  2019-2026 3liz
-* @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
-*/
+ * @author     Laurent Jouanneau
+ * @copyright  2019-2026 3liz
+ * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
+ */
 
 
 /**
-* authentification driver for authentification with a SAML server
-*/
+ * authentification driver for authentification with a SAML server
+ */
 class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
 
     protected $automaticAccountCreation = false;
@@ -22,14 +22,15 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
 
     protected $caseSensitiveLogins = false;
 
-    function __construct($params) {
+    protected $dbProfile = '';
+
+    function __construct($params)
+    {
         if (property_exists(jApp::config(), 'saml') && is_array(jApp::config()->saml)) {
             $params = array_merge($params, jApp::config()->saml);
         }
         parent::__construct($params);
-        if (!isset($this->_params['profile'])) {
-            $this->_params['profile'] = '';
-        }
+        $this->dbProfile = $params['dbProfile'] ?: '';
         if (!isset($this->_params['dao'])) {
             throw new Exception("Dao selector is missing into the saml configuration");
         }
@@ -43,9 +44,22 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
         }
     }
 
-    public function getDao()
+    /**
+     * Return the dao used to stored User account data
+     * @return jDaoFactoryBase
+     */
+    public function getAccountDao()
     {
-        return jDao::get($this->_params['dao'], $this->_params['profile']);
+        return jDao::get($this->_params['dao'], $this->dbProfile);
+    }
+
+    /**
+     * Return the dao used to store specific SAML data of the user
+     * @return jDaoFactoryBase
+     */
+    protected function getSamlAccountDao()
+    {
+        return jDao::get('saml~saml_account', $this->dbProfile);
     }
 
     /**
@@ -54,7 +68,7 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
      */
     public function saveNewUser($user)
     {
-        $this->getDao()->insert($user);
+        $this->getAccountDao()->insert($user);
 
         if ($this->authWithSamlActivated) {
             $this->createSAMLAccount($user);
@@ -68,18 +82,19 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
      */
     protected function createSAMLAccount($user)
     {
-        $samlAccount = jDao::createRecord('saml~saml_account');
+        $samlAccount = jDao::createRecord('saml~saml_account', $this->dbProfile);
         $samlAccount->login = $user->login;
         $samlAccount->firstUsed = date('Y-m-d H:i:s');
         $samlAccount->lastUsed = date('Y-m-d H:i:s');
         $samlAccount->usageCount = 1;
         $samlAccount->samlData = json_encode($this->samlAttributesValues);
-        jDao::get('saml~saml_account')->insert($samlAccount);
+        $this->getSamlAccountDao()->insert($samlAccount);
     }
 
     public function removeUser($login)
     {
-        $dao = $this->getDao();
+        $dao = $this->getAccountDao();
+        $daoSaml = $this->getSamlAccountDao();
         // retrieve the real login, in the case where the given login does not match character case
         $user = $this->getUser($login);
         if (!$user) {
@@ -91,12 +106,12 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
             if ($loginLegacy != $login) {
                 // compatibility with an old version of the module, when
                 // logins were stored only in lowercase
-                jDao::get('saml~saml_account')->delete($loginLegacy);
+                $daoSaml->delete($loginLegacy);
                 $dao->deleteByLogin($loginLegacy);
             }
         }
 
-        jDao::get('saml~saml_account')->delete($user->login);
+        $daoSaml->delete($user->login);
         $dao->deleteByLogin($user->login);
         unset($this->loginsCache[$login]);
         return true;
@@ -115,7 +130,7 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
             throw new jException('saml~auth.error.user.login.unset');
         }
 
-        $this->getDao()->update($user);
+        $this->getAccountDao()->update($user);
         return true;
     }
 
@@ -130,7 +145,7 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
         if (isset($this->loginsCache[$login])) {
             return $this->loginsCache[$login];
         }
-        $dao = $this->getDao();
+        $dao = $this->getAccountDao();
 
         if ($this->caseSensitiveLogins) {
             $user = $dao->getByLogin($login);
@@ -181,7 +196,7 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
 
     public function createUserObject($login, $password)
     {
-        $user = jDao::createRecord($this->_params['dao'], $this->_params['profile']);
+        $user = jDao::createRecord($this->_params['dao'], $this->dbProfile);
         $user->login = $login;
         $user->password = $this->cryptPassword($password);
         return $user;
@@ -189,7 +204,7 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
 
     public function getUserList($pattern)
     {
-        $dao = $this->getDao();
+        $dao = $this->getAccountDao();
         if ($pattern == '%' || $pattern == '') {
             return $dao->findAll();
         } else {
@@ -226,7 +241,7 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
     {
         $user = $this->getUser($login);
         if ($user) {
-            return $this->getDao()->updatePassword($user->login, $this->cryptPassword($newpassword));
+            return $this->getAccountDao()->updatePassword($user->login, $this->cryptPassword($newpassword));
         }
         return false;
     }
@@ -261,7 +276,7 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
 
     public function verifyPassword($login, $password)
     {
-        $daouser = $this->getDao();
+        $daouser = $this->getAccountDao();
         $user = $this->getUser($login);
 
         if ($this->authWithSamlActivated) {
@@ -287,12 +302,13 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
             }
             else {
                 // update saml account data
-                $samlAccount = jDao::get('saml~saml_account')->get($user->login);
+                $daoSaml = $this->getSamlAccountDao();
+                $samlAccount = $daoSaml->get($user->login);
                 if ($samlAccount) {
                     $samlAccount->lastUsed = date('Y-m-d H:i:s');
                     $samlAccount->usageCount++;
                     $samlAccount->samlData = json_encode($this->samlAttributesValues);
-                    jDao::get('saml~saml_account')->update($samlAccount);
+                    $daoSaml->update($samlAccount);
                 }
                 else {
                     $this->createSAMLAccount($user);
@@ -331,7 +347,7 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
         }
 
         // if the user has no SAML account, it can log with its local password
-        $samlAccount = jDao::get('saml~saml_account')->get($login);
+        $samlAccount = $this->getSamlAccountDao()->get($login);
         if (!$samlAccount) {
             return true;
         }
@@ -354,7 +370,7 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
         if (!$user) {
             return $perms;
         }
-        $samlAccount = jDao::get('saml~saml_account')->get($user->login);
+        $samlAccount = $this->getSamlAccountDao()->get($user->login);
         if ($samlAccount) {
             $perms |= self::AUTH_SAML_ALLOWED;
         }
