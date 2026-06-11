@@ -4,6 +4,10 @@ Changes
 Next
 ----
 
+Version 2.8.1
+-------------
+
+- Fix php error in `Configuration::readIdPConfig()`
 
 Version 2.8.0
 -------------
@@ -13,7 +17,6 @@ Version 2.8.0
 - enhancement: improve UX on SP/IDP configuration page when certificates are not valid;
 - enhancement: log SAML errors into a specific log file (saml.log)
 - fix: there was an error when submitting the idp config form, whereas the idp encryption certificate was not given
-
 
 Version 2.7.0
 -------------
