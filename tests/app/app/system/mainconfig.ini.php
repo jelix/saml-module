@@ -43,6 +43,7 @@ samladmin.path="/opt/samladmin/"
 
 [coordplugins]
 ;name = file_ini_name or 1
+autolocale=1
 
 [tplplugins]
 defaultJformsBuilder=html
@@ -50,6 +51,18 @@ defaultJformsBuilder=html
 [responses]
 html=myHtmlResponse
 htmlauth=myHtmlResponse
+
+
+[coordplugin_autolocale]
+; activate the detection from a parameter given in the url
+enableUrlDetection=on
+
+; indicate the parameter name indicating the language/locale to use
+urlParamNameLanguage=lang
+
+
+; if no url parameter found, indicate to use one of the prefered language given by the browser
+useDefaultLanguageBrowser=on
 
 [error_handling]
 ;errorMessage="A technical error has occured (code: %code%). Sorry for this inconvenience."
