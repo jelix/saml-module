@@ -78,13 +78,15 @@ class endpointCtrl extends jController {
         }
 
         try {
-            $relayState = $saml->processLoginResponse($this->request);
+            $authUser = $saml->processLoginResponse($this->request);
         }
         catch(\Jelix\Saml\ProcessException $e) {
             Saml::logError($e->getMessage(), 'ACS');
+            jAuthentication::authenticationFail();
             return $this->acsError(implode(', ', $e->getSamlErrors()));
         }
         catch(\Jelix\Saml\LoginException $e) {
+            jAuthentication::authenticationFail();
             if ($e->getCode() == $saml::ACS_ERR_NOT_AUTHENTICATED) {
                 return $this->acsError();
             }
@@ -100,10 +102,29 @@ class endpointCtrl extends jController {
             return $this->acsError('Technical error');
         }
 
-        /** @var jResponseRedirectUrl $rep */
-        $rep = $this->getResponse('redirectUrl');
-        $rep->url = $relayState;
-        return $rep;
+        $samlSession = $authUser->getAttribute('samlSession');
+        $urlBack = $samlSession['relayState'];
+        $params = array(
+            'login' => $authUser->getLogin(),
+            'failed' => 1,
+            //'urlback' => $urlBack
+        );
+        $failUrl = jUrl::get('authcore~sign:in', $params);
+
+        /** @var samlauthIdentityProvider $idp  */
+        $idp = jAuthentication::manager()->getIdpById('samlauth');
+        $workflow = jAuthentication::startAuthenticationWorkflow($authUser, $idp);
+        $workflow->setFinalUrl($urlBack);
+        $workflow->setFailUrl($failUrl);
+        $nextUrl = $workflow->getNextAuthenticationUrl();
+        if (!$workflow->isSuccess()) {
+            $_SESSION['LOGINPASS_ERROR'] = $workflow->getErrorMessage();
+        }
+        else {
+            unset($_SESSION['LOGINPASS_ERROR']);
+        }
+
+        return $this->redirectToUrl($nextUrl);
     }
 
     /**
@@ -133,6 +154,7 @@ class endpointCtrl extends jController {
 
         try {
             $relayState = $saml->processLogout($this->request);
+            jAuthentication::session()->unsetSessionUser();
         }
         catch(\Jelix\Saml\ProcessException $e) {
             Saml::logError($e->getMessage(), 'SLS');
@@ -149,10 +171,7 @@ class endpointCtrl extends jController {
         }
 
         if ($relayState) {
-            /** @var jResponseRedirectUrl $rep */
-            $rep = $this->getResponse('redirectUrl');
-            $rep->url = $relayState;
-            return $rep;
+            return $this->redirectToUrl($relayState);
         }
 
         return $this->logoutresult();

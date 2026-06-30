@@ -8,6 +8,7 @@ namespace Jelix\Saml;
 
 
 
+use Jelix\Authentication\Core\AuthSession\AuthUser;
 use OneLogin\Saml2\Auth;
 use OneLogin\Saml2\Error;
 use OneLogin\Saml2\LogoutRequest;
@@ -76,7 +77,7 @@ class Saml
     /**
      * @param  \jClassicRequest|\jRequest  $request
      *
-     * @return string url to redirect to.
+     * @return AuthUser
      * @throws Error
      * @throws \OneLogin\Saml2\ValidationError
      * @throws LoginException
@@ -98,61 +99,25 @@ class Saml
         }
 
         $loginAttr = $this->config->getSAMLAttributeForLogin();
-        $attributes = $auth->getAttributes();
-        if (empty($attributes)) {
+        $samlAttributes = $auth->getAttributes();
+        if (empty($samlAttributes)) {
             throw new LoginException(
                 \jLocale::get('saml~auth.authentication.error.saml.attributes.missing', array($loginAttr)),
                 self::ACS_ERR_ATTR_MISSING
             );
         }
 
-        if (!isset($attributes[$loginAttr])) {
+        if (!isset($samlAttributes[$loginAttr])) {
             throw new LoginException(
                 \jLocale::get('saml~auth.authentication.error.saml.attribute.missing', array($loginAttr)),
                 self::ACS_ERR_ATTR_MISSING
             );
         }
 
-        $login = $attributes[$loginAttr];
+        $login = $samlAttributes[$loginAttr];
         if (is_array($login)) {
             $login = $login[0];
         }
-
-        // indicate the attributes to the driver
-        /** @var \samlAuthDriver $samlDriver */
-
-        $samlDriver = \jAuth::getDriver();
-        $samlDriver->setAttributesMapping($attributes, $this->config->getAttributesMapping());
-        $password = $samlDriver->activateAuthWithSaml();
-
-        // now we can login. A user will be probably created, with the saml attributes
-        // given to the driver
-        if (!\jAuth::login($login, $password)) {
-            throw new LoginException(
-                \jLocale::get('saml~auth.authentication.error.not.authorized'),
-                self::ACS_ERR_NOT_AUTHORIZED
-            );
-        }
-
-        if ($this->config->isUserGroupsSettingEnabled()) {
-            $samlUserGroupsSetting = $this->config->getUserGroupsSetting();
-            if (isset($samlUserGroupsSetting['attribute']) && $samlUserGroupsSetting['attribute'] != ''
-                && isset($attributes[$samlUserGroupsSetting['attribute']])) {
-                $this->synchronizeAclGroups($login, $attributes[$samlUserGroupsSetting['attribute']], $samlUserGroupsSetting);
-            }
-        }
-
-        $_SESSION['samlUserdata'] = $auth->getAttributes();
-        $_SESSION['IdPSessionIndex'] = $auth->getSessionIndex();
-        $_SESSION['samlNameId'] = $auth->getNameId();
-        $_SESSION['samlNameIdFormat'] = $auth->getNameIdFormat();
-        $_SESSION['samlNameIdNameQualifier'] = $auth->getNameIdNameQualifier();
-        $_SESSION['samlNameIdSPNameQualifier'] = $auth->getNameIdSPNameQualifier();
-
-        // we should store the correspondance between SAML session and PHP Session
-        // for logout by the IdP
-        $this->initCacheProfile();
-        \jCache::set('saml/session/'.$auth->getSessionIndex(), session_id(), null, 'saml');
 
         $relayState = $request->getParam('RelayState');
         if (!$request->isPostMethod()
@@ -164,7 +129,62 @@ class Saml
             // home page
             $relayState = $request->getServerURI() . \jApp::urlBasePath();
         }
-        return $relayState;
+
+        $userAttributes = array(
+            AuthUser::ATTR_LOGIN => $login,
+            'samlSession' => array(
+                'samlUserdata' => $samlAttributes,
+                'accountAttributes' => $this->readAttributesMapping($samlAttributes),
+                'IdPSessionIndex' => $auth->getSessionIndex(),
+                'samlNameId' => $auth->getNameId(),
+                'samlNameIdFormat' => $auth->getNameIdFormat(),
+                'samlNameIdNameQualifier' => $auth->getNameIdNameQualifier(),
+                'samlNameIdSPNameQualifier' => $auth->getNameIdSPNameQualifier(),
+                'relayState' => $relayState
+            )
+
+        );
+
+        $user = new AuthUser($login, $userAttributes);
+        return $user;
+    }
+
+    protected function readAttributesMapping($samlAttributes)
+    {
+        $accountAttributes = array();
+        $mappingAttributes = $this->config->getAttributesMapping();
+        foreach($mappingAttributes as $property => $attribute) {
+            if (!isset($samlAttributes[$attribute]) || !$samlAttributes[$attribute]) {
+                continue;
+            }
+            $val = $samlAttributes[$attribute];
+            if (is_array($val)) {
+                $val = $val[0];
+            }
+            $accountAttributes[$property] = $val;
+        }
+        return $accountAttributes;
+    }
+
+    public function finishLoginProcess(AuthUser $user)
+    {
+
+        $login = $user->getLogin();
+
+        if ($this->config->isUserGroupsSettingEnabled()) {
+            $samlUserGroupsSetting = $this->config->getUserGroupsSetting();
+            if (isset($samlUserGroupsSetting['attribute']) && $samlUserGroupsSetting['attribute'] != ''
+                && isset($samlAttributes[$samlUserGroupsSetting['attribute']])) {
+                $this->synchronizeAclGroups($login, $samlAttributes[$samlUserGroupsSetting['attribute']], $samlUserGroupsSetting);
+            }
+        }
+
+        $samlSession = $user->getAttribute('samlSession');
+        // we should store the correspondance between SAML session and PHP Session
+        // for logout by the IdP
+        $this->initCacheProfile();
+        $sessIndex = $samlSession['IdPSessionIndex'];
+        \jCache::set('saml/session/'.$sessIndex, session_id(), null, 'saml');
     }
 
     protected function synchronizeAclGroups($login, $newGroups, $samlUserGroupsSetting)
@@ -247,13 +267,14 @@ class Saml
     }
 
     /**
+     * @param AuthUser $authUser
      * @param string $defaultRelayState
      *
      * @return string the url to redirect to
      * @throws Error
      * @throws \jException
      */
-    function startLogoutProcess($defaultRelayState)
+    function startLogoutProcess($authUser, $defaultRelayState)
     {
         $samlSettings = $this->config->getSettingsArray();
         $auth = new Auth($samlSettings);
@@ -265,25 +286,26 @@ class Saml
         $nameIdSPNameQualifier = null;
 
         $hasSAMLSession = false;
-        if (isset($_SESSION['IdPSessionIndex']) && !empty($_SESSION['IdPSessionIndex'])) {
-            $sessionIndex = $_SESSION['IdPSessionIndex'];
-            $hasSAMLSession = true;
-        }
-        if (isset($_SESSION['samlNameId'])) {
-            $nameId = $_SESSION['samlNameId'];
-            $hasSAMLSession = true;
-        }
-        if (isset($_SESSION['samlNameIdFormat'])) {
-            $nameIdFormat = $_SESSION['samlNameIdFormat'];
-        }
-        if (isset($_SESSION['samlNameIdNameQualifier'])) {
-            $nameIdNameQualifier = $_SESSION['samlNameIdNameQualifier'];
-        }
-        if (isset($_SESSION['samlNameIdSPNameQualifier'])) {
-            $nameIdSPNameQualifier = $_SESSION['samlNameIdSPNameQualifier'];
-        }
 
-        \jAuth::logout();
+        if ($authUser && $samlSession = $authUser->getAttribute('samlSession')) {
+            if (isset($samlSession['IdPSessionIndex']) && !empty($samlSession['IdPSessionIndex'])) {
+                $sessionIndex = $_SESSION['IdPSessionIndex'];
+                $hasSAMLSession = true;
+            }
+            if (isset($samlSession['samlNameId'])) {
+                $nameId = $samlSession['samlNameId'];
+                $hasSAMLSession = true;
+            }
+            if (isset($samlSession['samlNameIdFormat'])) {
+                $nameIdFormat = $samlSession['samlNameIdFormat'];
+            }
+            if (isset($samlSession['samlNameIdNameQualifier'])) {
+                $nameIdNameQualifier = $samlSession['samlNameIdNameQualifier'];
+            }
+            if (isset($samlSession['samlNameIdSPNameQualifier'])) {
+                $nameIdSPNameQualifier = $samlSession['samlNameIdSPNameQualifier'];
+            }
+        }
 
         // FIXME JelixAuthentication should provides a method to get the default page
         // after a logout
@@ -294,13 +316,6 @@ class Saml
             // to avoid error "unknown session" on the IdP side
             return $relayState;
         }
-
-        unset($_SESSION['samlUserdata']);
-        unset($_SESSION['IdPSessionIndex']);
-        unset($_SESSION['samlNameId']);
-        unset($_SESSION['samlNameIdFormat']);
-        unset($_SESSION['samlNameIdNameQualifier']);
-        unset($_SESSION['samlNameIdSPNameQualifier']);
 
         $url = $auth->logout($relayState, array(), $nameId,
                              $sessionIndex, true, $nameIdFormat,
@@ -349,14 +364,7 @@ class Saml
                 // hijack the session to destroy
                 session_id($phpSessionToDelete);
                 session_start();
-                \jAuth::logout();
-
-                unset($_SESSION['samlUserdata']);
-                unset($_SESSION['IdPSessionIndex']);
-                unset($_SESSION['samlNameId']);
-                unset($_SESSION['samlNameIdFormat']);
-                unset($_SESSION['samlNameIdNameQualifier']);
-                unset($_SESSION['samlNameIdSPNameQualifier']);
+                \jAuthentication::session()->unsetSessionUser();
                 session_commit();
             }
 
@@ -365,7 +373,7 @@ class Saml
             session_start();
         }
         else {
-            \jAuth::logout();
+            \jAuthentication::session()->unsetSessionUser();
             unset($_SESSION);
         }
 

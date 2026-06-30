@@ -6,12 +6,12 @@
  */
 
 use Jelix\Saml\Saml;
-use OneLogin\Saml2\Auth;
 
 /**
  * Controller to call from the app to login and logout close to the Identity Provider
  */
-class authCtrl extends jController {
+class authCtrl extends jController
+{
 
     public $pluginParams = array(
         '*' => array('auth.required'=>false)
@@ -28,7 +28,8 @@ class authCtrl extends jController {
      * @return jResponseRedirectUrl|jResponseHtml
      * @throws \OneLogin\Saml2\Error
      */
-    function login() {
+    function login()
+    {
         /** @var jResponseRedirectUrl $rep */
         $rep = $this->getResponse('redirectUrl');
 
@@ -53,9 +54,8 @@ class authCtrl extends jController {
             // we will then redirect the user to the default page to display
             // after a login.
             // FIXME JelixAuthentication should provides a method to retrieve the
-            // url of the default page, url that it should be
+            // url of the default page
             $relayState = jServer::getServerURI().jApp::urlBasePath();
-
         }
 
         try {
@@ -108,7 +108,9 @@ class authCtrl extends jController {
             $configuration = new \Jelix\Saml\Configuration();
             $saml = new Saml($configuration);
             $defaultRelayState = jUrl::getFull('saml~endpoint:logoutdone');
-            $rep->url = $saml->startLogoutProcess($defaultRelayState);
+
+            $authUser = jAuthentication::session()->getSessionUser();
+            $rep->url = $saml->startLogoutProcess($authUser, $defaultRelayState);
         }
         catch(\Exception $e) {
             return $this->showErrorPage($e, 'logout');

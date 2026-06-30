@@ -28,9 +28,13 @@ class attrmappingCtrl extends jController
 
         $daoProperties = $config->getAuthorizedDaoPropertiesForMapping();
 
+        // retrieve the form used to edit the user properties
         $userFormSelector = jAuth::getDriverParam('form');
         $authForm = jForms::create($userFormSelector);
         $listOfField = array();
+
+        // create a field into the settings form for each field of the user form
+        // that is listed into the daoProperties array
         foreach ($authForm->getControls() as $ctrlName => $ctrl) {
             if (! ($ctrl instanceof jFormsControlInput)) {
                 continue;
