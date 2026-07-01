@@ -33,16 +33,27 @@
         <label locale="samladmin~admin.attrmapping.form.allowSAMLAccountToUseLocalPassword.label"/>
     </checkbox>
 
-    <checkbox ref="forceSAMLAuthOnPrivatePage">
-        <label locale="samladmin~admin.attrmapping.form.forceSAMLAuthOnPrivatePage.label"/>
-    </checkbox>
+    <radiobuttons ref="forceSAMLAuthOnLoginPage">
+        <label locale="samladmin~admin.attrmapping.form.forceSAMLAuthOnLoginPage.title"/>
+        <item value="form" locale="samladmin~admin.attrmapping.form.forceSAMLAuthOnLoginPage.form.label"/>
+        <item value="saml" locale="samladmin~admin.attrmapping.form.forceSAMLAuthOnLoginPage.saml.label"/>
+    </radiobuttons>
 
-    <checkbox ref="forceSAMLAuthOnLoginPage">
-        <label locale="samladmin~admin.attrmapping.form.forceSAMLAuthOnLoginPage.label"/>
-    </checkbox>
+
+    <radiobuttons ref="forceSAMLAuthOnPrivatePage">
+        <label locale="samladmin~admin.attrmapping.form.forceSAMLAuthOnPrivatePage.title"/>
+        <item value="form" locale="samladmin~admin.attrmapping.form.forceSAMLAuthOnPrivatePage.form.label"/>
+        <item value="saml" locale="samladmin~admin.attrmapping.form.forceSAMLAuthOnPrivatePage.saml.label"/>
+    </radiobuttons>
 
     <radiobuttons ref="redirectionAfterLogin">
         <label locale="samladmin~admin.attrmapping.form.redirectionAfterLogin.label"/>
+    </radiobuttons>
+
+    <radiobuttons ref="localLogoutOnly">
+        <label locale="samladmin~admin.attrmapping.form.localLogoutOnly.title"/>
+        <item value="saml" locale="samladmin~admin.attrmapping.form.localLogoutOnly.saml.label"/>
+        <item value="local" locale="samladmin~admin.attrmapping.form.localLogoutOnly.local.label"/>
     </radiobuttons>
 
     <submit ref="_submit">

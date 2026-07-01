@@ -1,7 +1,7 @@
 <?php
 /**
  * @author  Laurent Jouanneau
- * @copyright  2019-2021 3Liz
+ * @copyright  2019-2026 3Liz
  * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
  */
 namespace Jelix\Saml;
@@ -289,14 +289,17 @@ class Saml
 
         \jAuth::logout();
 
-        if (!$hasSAMLSession) {
+        if ($this->authConfig['after_logout']) {
+            // page indicated into the after_login option
+            $relayState = \jUrl::getFull($this->authConfig['after_logout']);
+        } else {
+            // home page
+            $relayState = $defaultRelayState;
+        }
+
+        if (!$hasSAMLSession || $this->config->isLocalLogoutOnly()) {
             // to avoid error "unknown session" on the IdP side
-            if ($this->authConfig['after_logout']) {
-                $url = \jUrl::getFull($this->authConfig['after_logout']);
-            } else {
-                $url = $defaultRelayState;
-            }
-            return $url;
+            return $relayState;
         }
 
         unset($_SESSION['samlUserdata']);
@@ -306,13 +309,6 @@ class Saml
         unset($_SESSION['samlNameIdNameQualifier']);
         unset($_SESSION['samlNameIdSPNameQualifier']);
 
-        if ($this->authConfig['after_logout']) {
-            // page indicated into the after_login option
-            $relayState = \jUrl::getFull($this->authConfig['after_logout']);
-        } else {
-            // home page
-            $relayState = $defaultRelayState;
-        }
         $url = $auth->logout($relayState, array(), $nameId,
                              $sessionIndex, true, $nameIdFormat,
                              $nameIdNameQualifier, $nameIdSPNameQualifier);

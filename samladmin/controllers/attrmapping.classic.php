@@ -3,7 +3,7 @@
  * SAML administration.
  *
  * @author    Laurent Jouanneau
- * @copyright 2021 3liz
+ * @copyright 2021-2026 3liz
  *
  * @licence     GNU Lesser General Public Licence see LICENCE file or http://www.gnu.org/licenses/lgpl.html
  */
@@ -49,22 +49,19 @@ class attrmappingCtrl extends jController
         $form->addControl($groupCtrl);
         jForms::destroy($userFormSelector);
 
-        $ctrl = $form->getControl('redirectionAfterLogin');
-        if ($ctrl->isActivated()) {
-            $conf = jApp::coord()->getPlugin('auth')->config;
-            if ($conf['after_login'] == 'master_admin~default:index' || $conf['after_login'] == 'adminui~default:index') {
-                $alLabel = jLocale::get('samladmin~admin.attrmapping.form.redirectionAfterLogin.dashboard');
-            }
-            else {
-                $alLabel = jLocale::get('samladmin~admin.attrmapping.form.redirectionAfterLogin.defaultpage', [ jUrl::get($conf['after_login'])]);
-            }
-            $ds = new jFormsStaticDatasource();
-            $ds->data = array(
-                '' => $alLabel,
-                'homepage' => jLocale::get('samladmin~admin.attrmapping.form.redirectionAfterLogin.homepage')
-            );
-            $form->getControl('redirectionAfterLogin')->datasource = $ds;
+        $conf = jApp::coord()->getPlugin('auth')->config;
+        if ($conf['after_login'] == 'master_admin~default:index' || $conf['after_login'] == 'adminui~default:index') {
+            $alLabel = jLocale::get('samladmin~admin.attrmapping.form.redirectionAfterLogin.dashboard');
         }
+        else {
+            $alLabel = jLocale::get('samladmin~admin.attrmapping.form.redirectionAfterLogin.defaultpage', [ jUrl::get($conf['after_login'])]);
+        }
+        $ds = new jFormsStaticDatasource();
+        $ds->data = array(
+            '' => $alLabel,
+            'homepage' => jLocale::get('samladmin~admin.attrmapping.form.redirectionAfterLogin.homepage')
+        );
+        $form->getControl('redirectionAfterLogin')->datasource = $ds;
 
         if ($config->mustRedirectToSAMLAuthOnLoginPage()) {
             $ctrl = $form->getControl('forceSAMLAuthOnLoginPage');
@@ -92,8 +89,9 @@ class attrmappingCtrl extends jController
         $form->setData('login', $config->getSAMLAttributeForLogin());
         $form->setData('automaticAccountCreation', $config->isAutomaticAccountCreation());
         $form->setData('allowSAMLAccountToUseLocalPassword', $config->isAllowingSAMLAccountToUseLocalPassword());
-        $form->setData('forceSAMLAuthOnPrivatePage', $config->mustForceSAMLAuthOnPrivatePage());
-        $form->setData('forceSAMLAuthOnLoginPage', $config->mustForceSAMLAuthOnLoginPage());
+        $form->setData('forceSAMLAuthOnPrivatePage', $config->mustForceSAMLAuthOnPrivatePage() ? 'saml': 'form');
+        $form->setData('forceSAMLAuthOnLoginPage', $config->mustForceSAMLAuthOnLoginPage() ? 'saml': 'form');
+        $form->setData('localLogoutOnly', $config->isLocalLogoutOnly() ?'local':'saml');
 
         $conf = jApp::coord()->getPlugin('auth')->config;
         if ($conf['after_login'] == '') {
@@ -176,8 +174,9 @@ class attrmappingCtrl extends jController
         $config->setSAMLAttributeForLogin($form->getData('login'));
         $config->setAutomaticAccountCreation($form->getData('automaticAccountCreation'));
         $config->setAllowSAMLAccountToUseLocalPassword($form->getData('allowSAMLAccountToUseLocalPassword'));
-        $config->setForceSAMLAuthOnPrivatePage($form->getData('forceSAMLAuthOnPrivatePage'));
-        $config->setForceSAMLAuthOnLoginPage($form->getData('forceSAMLAuthOnLoginPage'));
+        $config->setForceSAMLAuthOnPrivatePage($form->getData('forceSAMLAuthOnPrivatePage') == 'saml');
+        $config->setForceSAMLAuthOnLoginPage($form->getData('forceSAMLAuthOnLoginPage') == 'saml');
+        $config->setLocalLogoutOnly($form->getData('localLogoutOnly') == 'local');
 
         $ctrl = $form->getControl('redirectionAfterLogin');
         if ($ctrl->isActivated()) {

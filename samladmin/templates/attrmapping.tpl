@@ -16,7 +16,6 @@
         {ctrl_label 'groupsfromsaml'}
         {ctrl_control 'groupsfromsaml'}
     </div>
-
     <div  class="control-group">
         {ctrl_control 'automaticAccountCreation'}
         {ctrl_label 'automaticAccountCreation'}
@@ -24,21 +23,17 @@
     <div  class="control-group">
         {ctrl_control 'allowSAMLAccountToUseLocalPassword'}
         {ctrl_label 'allowSAMLAccountToUseLocalPassword'}
-
     </div>
     <div  class="control-group">
-        {ctrl_control 'forceSAMLAuthOnPrivatePage'}
         {ctrl_label 'forceSAMLAuthOnPrivatePage'}
-        <div class="help-block"> {@samladmin~admin.attrmapping.form.forceSAML.warning@}</div>
+        <div class="controls">
+        {ctrl_control 'forceSAMLAuthOnPrivatePage'}
+        </div>
     </div>
     <div class="control-group">
-        {ctrl_control 'forceSAMLAuthOnLoginPage'}
         {ctrl_label 'forceSAMLAuthOnLoginPage'}
-        <div class="help-block">
-        {if $loginFormUrl}
-        {@samladmin~admin.attrmapping.form.forceSAMLAuthOnLoginPage.help@} <a href="{$loginFormUrl}">{$loginFormUrl}</a>.
-        {/if}
-        {@samladmin~admin.attrmapping.form.forceSAML.warning@}
+        <div class="controls">
+        {ctrl_control 'forceSAMLAuthOnLoginPage'}
         </div>
     </div>
     <div class="control-group">
@@ -48,6 +43,18 @@
         </div>
     </div>
 
+    <div class="control-group">
+        {ctrl_label 'localLogoutOnly'}
+        <div class="controls">
+            {ctrl_control 'localLogoutOnly'}
+        </div>
+    </div>
+
+    <p>(1) {@samladmin~admin.attrmapping.form.forceSAML.warning@}
+        {if $loginFormUrl}
+            {@samladmin~admin.attrmapping.form.forceSAMLAuthOnLoginPage.help@} <a href="{$loginFormUrl}">{$loginFormUrl}</a>.
+        {/if}
+    </p>
     <div class="control-group">
         {formsubmit}
         <a href="{jurl 'samladmin~config:index'}" class="btn">{@jelix~ui.buttons.cancel@}</a>
