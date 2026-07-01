@@ -4,6 +4,9 @@ Changes
 Next
 ----
 
+Version 2.9.0
+-------------
+
 - enhancement: new configuration parameter to allow local logout instead of IDP logout
 
 Version 2.8.1
