@@ -1,16 +1,10 @@
 <?php
 /**
  * @author  Laurent Jouanneau
- * @copyright  2021-2024 3Liz
+ * @copyright  2021-2026 3Liz
  * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
  */
 namespace Jelix\Saml;
-
-use OneLogin\Saml2\Settings;
-use OneLogin\Saml2\Constants;
-
-use jLocale;
-
 
 class ConfigurationModifier extends Configuration
 {
@@ -53,6 +47,11 @@ class ConfigurationModifier extends Configuration
     public function setForceSAMLAuthOnLoginPage($allow)
     {
         $this->forceSAMLAuthOnLoginPage = !!$allow;
+    }
+
+    public function setLocalLogoutOnly($only)
+    {
+        $this->localLogoutOnly = !!$only;
     }
 
     public function setSpEntityId($entityId)
@@ -245,6 +244,9 @@ class ConfigurationModifier extends Configuration
 
         $liveConfig->setValue('forceSAMLAuthOnLoginPage', $this->forceSAMLAuthOnLoginPage, 'saml');
         $appConfig->saml['forceSAMLAuthOnLoginPage'] = $this->forceSAMLAuthOnLoginPage;
+
+        $liveConfig->setValue('localLogoutOnly', $this->localLogoutOnly, 'saml');
+        $appConfig->saml['localLogoutOnly'] = $this->localLogoutOnly;
 
         $secProperties = [
             'authnRequestsSigned', 'logoutRequestSigned', 'logoutResponseSigned',

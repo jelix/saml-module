@@ -312,7 +312,7 @@ class Saml
         // home page
         $relayState = $defaultRelayState;
 
-        if (!$hasSAMLSession) {
+        if (!$hasSAMLSession || $this->config->isLocalLogoutOnly()) {
             // to avoid error "unknown session" on the IdP side
             return $relayState;
         }

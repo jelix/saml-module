@@ -68,6 +68,11 @@ class Configuration {
     protected $forceRedirectToSAMLAuthOnLoginPage = false;
 
     /**
+     * @var bool true if the disconnection of the user is only at the application level, instead of at the SAML server level
+     */
+    protected $localLogoutOnly = false;
+
+    /**
      * @var string action to the login form when there is no modules jcommunity or jauth
      */
     protected $loginFormAction = '';
@@ -130,6 +135,10 @@ class Configuration {
 
         if (isset($iniConfig->saml['loginFormAction'])) {
             $this->loginFormAction = $iniConfig->saml['loginFormAction'];
+        }
+
+        if (isset($iniConfig->saml['localLogoutOnly'])) {
+            $this->localLogoutOnly = $iniConfig->saml['localLogoutOnly'];
         }
 
         $this->fixConfigValues($iniConfig);
@@ -688,6 +697,11 @@ class Configuration {
         return $this->forceRedirectToSAMLAuthOnLoginPage;
     }
 
+
+    function isLocalLogoutOnly()
+    {
+        return $this->localLogoutOnly;
+    }
 
     function getLoginAction()
     {

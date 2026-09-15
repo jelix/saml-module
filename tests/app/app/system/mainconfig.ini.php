@@ -47,12 +47,25 @@ samladmin.path="/opt/samladmin/"
 
 [coordplugins]
 ;name = file_ini_name or 1
+autolocale=1
 
 [tplplugins]
 defaultJformsBuilder=html
 
 [responses]
 html=myHtmlResponse
+
+
+[coordplugin_autolocale]
+; activate the detection from a parameter given in the url
+enableUrlDetection=on
+
+; indicate the parameter name indicating the language/locale to use
+urlParamNameLanguage=lang
+
+
+; if no url parameter found, indicate to use one of the prefered language given by the browser
+useDefaultLanguageBrowser=on
 
 [error_handling]
 messageLogFormat="%date%\t%ip%\t[%code%]\t%msg%\n\tat: %file%\t%line%\n\turl: %url%\n\t%http_method%: %params%\n\treferer: %referer%\n%trace%\n\n"
@@ -482,4 +495,3 @@ profile=app
 
 [accounts]
 autoCreateAccountOnLogin=on
-
