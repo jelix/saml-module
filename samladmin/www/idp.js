@@ -126,6 +126,36 @@ window.addEventListener('load', function () {
         })
     }
 
+    function initMetadataLoader()
+    {
+        let btnFileSelector = document.getElementById('metadata-file-loader-btn');
+        let fileSelector = document.getElementById('metadata-file-loader');
+
+
+        btnFileSelector.addEventListener('click', (ev) => {
+            fileSelector.removeAttribute('disabled');
+            fileSelector.click();
+        }, false);
+
+        fileSelector.addEventListener('change', function(ev) {
+            if (fileSelector.files.length == 0) {
+                return;
+            }
+            let file = fileSelector.files[0];
+            if (/.+\/xml$/.test(file.type)) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    document.getElementById('metadata-content').textContent = reader.result;
+                };
+                reader.onerror = () => {
+                    window.alert("Error reading the file. Please try again.");
+                };
+                reader.readAsText(file);
+            }
+        }, false);
+    }
+
+
     jFormsJQ.onFormReady('jforms_samladmin_idpconfig', function(/* jFormsJQForm */ form){
         loadCertDetails('signing-cert-details', 'signingCertificate');
         loadCertDetails('encrypt-cert-details', 'encryptionCertificate');
@@ -139,6 +169,8 @@ window.addEventListener('load', function () {
         cryptCertField.addEventListener('change', function() {
             loadCertDetails('encrypt-cert-details', 'encryptionCertificate');
         })
+
+        initMetadataLoader();
     });
 
 });

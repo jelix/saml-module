@@ -10,10 +10,14 @@
         <input type="text" id="metadataurl" size="50"/>
         </div>
     </div>
+    <p>{@samladmin~admin.idpconfig.form.metadata.content@}
+        <button id="metadata-file-loader-btn" type="button">{@samladmin~admin.idpconfig.form.metadata.loader@}</button>
+        <input type="file" id="metadata-file-loader" accept="application/xml,text/xml,*.xml" />
+    </p>
     <div class="control-group">
-        <label for="metadata-content" class="control-label">{@samladmin~admin.idpconfig.form.metadata.content@}</label>
+        <label for="metadata-content" class="control-label">{@samladmin~admin.idpconfig.form.metadata.content.label@}</label>
         <div class="controls">
-        <textarea id="metadata-content" cols="40" rows="10"></textarea>
+            <textarea id="metadata-content" cols="60" rows="10"></textarea>
         </div>
     </div>
 

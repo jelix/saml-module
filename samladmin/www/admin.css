@@ -10,6 +10,9 @@
 #metadata-loader {
     display:none;
 }
+#metadata-file-loader {
+    display:none;
+}
 
 dl.saml-url dd {
     margin-top: 0.3em;

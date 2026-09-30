@@ -4,6 +4,8 @@ Changes
 Next
 ----
 
+- enhancement: new button to load a metadata file in the SAML IDP configuration page
+
 Version 2.9.0
 -------------
 
