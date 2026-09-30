@@ -5,6 +5,7 @@ Next
 ----
 
 - enhancement: new button to load a metadata file in the SAML IDP configuration page
+- enhancement: possiblity to see the SAML login log in the admin page
 
 Version 2.9.0
 -------------

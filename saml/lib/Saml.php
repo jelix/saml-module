@@ -408,11 +408,28 @@ class Saml
         file_put_contents($file, $msg, FILE_APPEND);
     }
 
-    static function getErrorsLog()
+    static function getErrorsLog($truncateBegin = true)
     {
         $file = \jApp::logPath().'/saml.log';
-        $errors = file_get_contents($file);
-        return $errors;
+        if (file_exists($file)) {
+            $size = filesize($file);
+            if ($truncateBegin && $size > 20000) {
+
+                $errors = \jLocale::get('samladmin~admin.step.tests.log.too.long')."\n\n(...)\n\n";
+                $f = fopen($file, 'r');
+                fseek($f, -20000, SEEK_END);
+                while (!feof($f)) {
+                    $errors .= fread($f, 5000);
+                }
+                fclose($f);
+            }
+            else {
+                $errors = file_get_contents($file);
+            }
+
+            return $errors;
+        }
+        return '';
     }
 
     static function cleanErrorsLog()

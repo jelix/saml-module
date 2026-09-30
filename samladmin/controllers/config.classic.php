@@ -8,6 +8,7 @@
  * @licence     GNU Lesser General Public Licence see LICENCE file or http://www.gnu.org/licenses/lgpl.html
  */
 use Jelix\Saml\Configuration;
+use Jelix\Saml\Saml;
 
 class configCtrl extends jController
 {
@@ -104,4 +105,20 @@ class configCtrl extends jController
         $rep->mimeType = jFile::getMimeTypeFromFilename($rep->fileName);
         return $rep;
     }
+
+    public function log()
+    {
+        $rep = $this->getResponse('html');
+        $tpl = new jTpl();
+        $tpl->assign('logcontent', Saml::getErrorsLog());
+        $rep->body->assign('MAIN', $tpl->fetch('log'));
+        return $rep;
+    }
+
+    public function logClean()
+    {
+        Saml::cleanErrorsLog();
+        return $this->redirect('samladmin~config:log');
+    }
+
 }

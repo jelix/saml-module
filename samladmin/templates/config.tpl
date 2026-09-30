@@ -50,3 +50,12 @@
     <br><span class="link-details">{@samladmin~admin.attrmapping.link.details@}</span>
     {if !$attr_config_ok}<br/><span class="saml-error">{@samladmin~admin.attrmapping.error.not.set@}</span>{/if}
 </p>
+
+<h2><span class="saml-step">5</span> {@samladmin~admin.step.tests.title@}</h2>
+    <p>{if $idp_config_ok && $sp_config_ok && $attr_config_ok}
+            {@samladmin~admin.step.tests.description.ok@}
+            <a href="{jurl 'samladmin~config:log'}">{@samladmin~admin.step.tests.log.link@}</a>
+    {else}
+            {@samladmin~admin.step.tests.description.ko@}
+        {/if}
+    </p>
