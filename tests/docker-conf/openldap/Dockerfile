@@ -3,8 +3,7 @@
 #
 # from https://github.com/dinkel/docker-openldap
 # -----------------
-FROM debian:bullseye-slim
-MAINTAINER Jelix
+FROM debian:trixie
 
 # properly setup debian sources
 ENV DEBIAN_FRONTEND noninteractive
