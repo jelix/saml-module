@@ -8,6 +8,9 @@
  * @licence     GNU Lesser General Public Licence see LICENCE file or http://www.gnu.org/licenses/lgpl.html
  */
 
+use Jelix\Authentication\Core\AuthSession\AuthUser;
+use Jelix\Authentication\Core\IdentityAttributes;
+
 class attrmappingCtrl extends jController
 {
     // Configure access via jacl2 rights management
@@ -26,32 +29,30 @@ class attrmappingCtrl extends jController
 
         $defaultValues = $config->getAttributesMapping();
 
-        $daoProperties = $config->getAuthorizedDaoPropertiesForMapping();
+        $accountAdapter = jAuthentication::accountAdapter();
+        if ($accountAdapter) {
+            $accountClaims = $accountAdapter->getSupportedAccountClaims();
+        }
+        else {
+            $accountClaims = AuthUser::getDefaultSupportedAccountClaims();
+        }
 
-        // retrieve the form used to edit the user properties
-        $userFormSelector = jAuth::getDriverParam('form');
-        $authForm = jForms::create($userFormSelector);
+        $labels = IdentityAttributes::getAttributeLabels($accountClaims);
+
         $listOfField = array();
 
         // create a field into the settings form for each field of the user form
-        // that is listed into the daoProperties array
-        foreach ($authForm->getControls() as $ctrlName => $ctrl) {
-            if (! ($ctrl instanceof jFormsControlInput)) {
-                continue;
-            }
-            $listOfField[] = $ctrl->ref;
-            if (count($daoProperties) && !in_array($ctrl->ref, $daoProperties)) {
-                continue;
-            }
+        // that is listed into the labels array
+        foreach ($labels as $idAttr => $label) {
 
-            $attrCtrl = new jFormsControlInput('attr_'.$ctrl->ref);
-            $attrCtrl->label = $ctrl->label;
-            $attrCtrl->defaultValue = $defaultValues[$ctrl->ref] ?? '';
-            $attrCtrl->required = $ctrl->required;
+            $listOfField[] = $idAttr;
+
+            $attrCtrl = new jFormsControlInput('attr_'.$idAttr);
+            $attrCtrl->label = $label;
+            $attrCtrl->defaultValue = $defaultValues[$idAttr] ?? '';
             $groupCtrl->addChildControl($attrCtrl);
         }
         $form->addControl($groupCtrl);
-        jForms::destroy($userFormSelector);
 
         if ($config->mustRedirectToSAMLAuthOnLoginPage()) {
             $ctrl = $form->getControl('forceSAMLAuthOnLoginPage');
@@ -150,18 +151,10 @@ class attrmappingCtrl extends jController
         $config->setForceSAMLAuthOnLoginPage($form->getData('forceSAMLAuthOnLoginPage') == 'saml');
         $config->setLocalLogoutOnly($form->getData('localLogoutOnly') == 'local');
 
-        $daoProperties = $config->getAuthorizedDaoPropertiesForMapping();
-
         /** @var jFormsControlGroup $groupCtrl */
         $mapping = array();
         foreach($listOfField as $ctrlRef) {
-            if (count($daoProperties) == 0  || in_array($ctrlRef, $daoProperties)) {
-                $samlAttr = $form->getData('attr_'.$ctrlRef);
-            }
-            else {
-                $samlAttr = '';
-            }
-            $mapping[$ctrlRef] = $samlAttr;
+            $mapping[$ctrlRef] = $form->getData('attr_'.$ctrlRef);
         }
 
         $config->setAttributesMapping($mapping);

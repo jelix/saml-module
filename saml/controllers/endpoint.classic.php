@@ -102,19 +102,16 @@ class endpointCtrl extends jController {
             return $this->acsError('Technical error');
         }
 
-        $samlSession = $authUser->getAttribute('samlSession');
-        $urlBack = $samlSession['relayState'];
         $params = array(
             'login' => $authUser->getLogin(),
             'failed' => 1,
-            //'urlback' => $urlBack
         );
         $failUrl = jUrl::get('authcore~sign:in', $params);
 
         /** @var samlauthIdentityProvider $idp  */
         $idp = jAuthentication::manager()->getIdpById('samlauth');
         $workflow = jAuthentication::startAuthenticationWorkflow($authUser, $idp);
-        $workflow->setFinalUrl($urlBack);
+        $workflow->setFinalUrl($saml->getAuthenticationFinalUrl());
         $workflow->setFailUrl($failUrl);
         $nextUrl = $workflow->getNextAuthenticationUrl();
         if (!$workflow->isSuccess()) {

@@ -216,10 +216,10 @@ daoPropertiesForMapping="login,email"
 
 
 [saml:attributes-mapping]
-; indicate on which properties of the DAO record, attributes given by the idp should be stored
+; indicate on which JelixAuthentication Identity attributes, attributes given by the idp should be mapped.
 ; __login is a not a property, but indicates which SAML attribute contains the user login.
 __login=
-; <dao property>=<saml attribute>
+
 
 
 
@@ -465,6 +465,10 @@ idp[]=loginpass
 sessionHandler=php
 
 signInAlreadyAuthAction="adminui~default:index"
+notifyAuthMode=enabled
+
+accountWorkflowAdapter="\Jelix\Authentication\Account\AccountWorkflowAdapterForWorkflow"
+accountAdapter="\Jelix\Authentication\Account\AccountAdapter"
 
 [sessionauth]
 authRequired=off
@@ -495,3 +499,9 @@ profile=app
 
 [accounts]
 autoCreateAccountOnLogin=on
+
+[account:claim-mapping]
+username=jelix/identity/username
+firstname=jelix/identity/givenname
+lastname=jelix/identity/surname
+email=jelix/identity/email

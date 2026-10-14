@@ -105,16 +105,18 @@ singleLogoutServiceUrl=http://auth.lemon.local/saml/singleLogout
 
 You should set up the mapping of attributes. In an example below, we setup
 the exported attributes. The SAML jelix module will receive these attributes:
-`login`, `username` and `mail`.
+`login`, `firstname`, `lastname` and `mail`.
 
-If the DAO user record have properties `login`, `name` and `email`, the 
-mapping attributes should be (into the mainconfig.ini.php or localconfig.ini.pĥp):
+The corresponding Identity Attributes of JelixAuthentication are
+`jelix/identity/username`, `jelix/identity/givenname`, `jelix/identity/surname` and `jelix/identity/emailaddress`.
+
+The mapping attributes should be (into the mainconfig.ini.php or localconfig.ini.pĥp):
 
 ```
 [saml:attributes-mapping]
 __login=login
-; <dao property>=<saml attribute>
-login=login
-email=mail
-name=username
+jelix/identity/username=login
+jelix/identity/givenname=firstname
+jelix/identity/surname=lastname
+jelix/identity/emailaddress=mail
 ``` 

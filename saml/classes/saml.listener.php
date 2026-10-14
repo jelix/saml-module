@@ -5,7 +5,6 @@
  * @licence  http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public Licence, see LICENCE file
  */
 
-use Jelix\Authentication\Core\AuthSession\UserAccountInterface;
 use Jelix\Authentication\Core\IdentityProviderInterface;
 use Jelix\Authentication\Core\Workflow\Event\CheckAccountEvent;
 
@@ -26,13 +25,6 @@ class samlListener extends jEventListener{
         if ($idpId != 'samlauth') {
             return;
         }
-
-        // this is the opportunity to add information on the account
-
-
-        /** @var \Jelix\Authentication\Core\AuthSession\AuthUser $user */
-        $user = $event->getUserBeingAuthenticated();
-
 
     }
 

@@ -9,6 +9,7 @@ namespace Jelix\Saml;
 
 
 use Jelix\Authentication\Core\AuthSession\AuthUser;
+use Jelix\Authentication\Core\IdentityAttributes;
 use OneLogin\Saml2\Auth;
 use OneLogin\Saml2\Error;
 use OneLogin\Saml2\LogoutRequest;
@@ -20,7 +21,7 @@ class Saml
     const ACS_ERR_ATTR_MISSING = 2;
     const ACS_ERR_NOT_AUTHORIZED = 3;
 
-
+    protected $loginResponseRelayState = '';
 
     /**
      * @var Configuration
@@ -130,38 +131,47 @@ class Saml
             $relayState = $request->getServerURI() . \jApp::urlBasePath();
         }
 
-        $userAttributes = array(
-            AuthUser::ATTR_LOGIN => $login,
-            'samlSession' => array(
-                'samlUserdata' => $samlAttributes,
-                'accountAttributes' => $this->readAttributesMapping($samlAttributes),
-                'IdPSessionIndex' => $auth->getSessionIndex(),
-                'samlNameId' => $auth->getNameId(),
-                'samlNameIdFormat' => $auth->getNameIdFormat(),
-                'samlNameIdNameQualifier' => $auth->getNameIdNameQualifier(),
-                'samlNameIdSPNameQualifier' => $auth->getNameIdSPNameQualifier(),
-                'relayState' => $relayState
-            )
+        $this->loginResponseRelayState = $relayState;
 
+        $userAttributes = $this->readAttributesMapping($samlAttributes);
+        if (!isset($userAttributes[IdentityAttributes::UserName])) {
+            $userAttributes[IdentityAttributes::UserName] = $login;
+        }
+
+        // we want to store saml attributes in the account_idp table
+        $userAttributes['idpdata'] = $samlAttributes;
+
+        // these attributes are needed for the logout
+        $userAttributes['samlSession'] = array(
+            'IdPSessionIndex' => $auth->getSessionIndex(),
+            'samlNameId' => $auth->getNameId(),
+            'samlNameIdFormat' => $auth->getNameIdFormat(),
+            'samlNameIdNameQualifier' => $auth->getNameIdNameQualifier(),
+            'samlNameIdSPNameQualifier' => $auth->getNameIdSPNameQualifier(),
         );
 
         $user = new AuthUser($login, $userAttributes);
         return $user;
     }
 
+    public function getAuthenticationFinalUrl()
+    {
+        return $this->loginResponseRelayState;
+    }
+
     protected function readAttributesMapping($samlAttributes)
     {
         $accountAttributes = array();
         $mappingAttributes = $this->config->getAttributesMapping();
-        foreach($mappingAttributes as $property => $attribute) {
-            if (!isset($samlAttributes[$attribute]) || !$samlAttributes[$attribute]) {
+        foreach($mappingAttributes as $idAttribute => $samlAttribute) {
+            if (!isset($samlAttributes[$samlAttribute]) || !$samlAttributes[$samlAttribute]) {
                 continue;
             }
-            $val = $samlAttributes[$attribute];
+            $val = $samlAttributes[$samlAttribute];
             if (is_array($val)) {
                 $val = $val[0];
             }
-            $accountAttributes[$property] = $val;
+            $accountAttributes[$idAttribute] = $val;
         }
         return $accountAttributes;
     }
@@ -289,7 +299,7 @@ class Saml
 
         if ($authUser && $samlSession = $authUser->getAttribute('samlSession')) {
             if (isset($samlSession['IdPSessionIndex']) && !empty($samlSession['IdPSessionIndex'])) {
-                $sessionIndex = $_SESSION['IdPSessionIndex'];
+                $sessionIndex = $samlSession['IdPSessionIndex'];
                 $hasSAMLSession = true;
             }
             if (isset($samlSession['samlNameId'])) {

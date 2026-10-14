@@ -38,8 +38,8 @@ certs_encryption_files=idp_encrypt.pem
 
 [saml:attributes-mapping]
 __login=login
-login=login
-email=mail
+jelix/identity/username=login
+jelix/identity/emailaddress=mail
 
 [saml]
 automaticAccountCreation=on

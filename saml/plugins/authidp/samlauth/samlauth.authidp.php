@@ -7,6 +7,7 @@
  */
 
 use Jelix\Authentication\Core\IdentityProviderInterface;
+use Jelix\Authentication\Core\Workflow\AccountWorkflowAdapterInterface;
 
 class samlauthIdentityProvider implements IdentityProviderInterface
 {
@@ -74,5 +75,17 @@ class samlauthIdentityProvider implements IdentityProviderInterface
         }
 
         return null;
+    }
+
+    public function getWorkflowFeatures(): array
+    {
+        $features = array();
+
+        $samlConf = jApp::config()->saml;
+        if (isset($samlConf['updateAccountAtEachAuthentication']) && $samlConf['updateAccountAtEachAuthentication']) {
+            $features[AccountWorkflowAdapterInterface::WORKFLOW_FEATURE_UPDATE_ACCOUNT_AT_LOGIN] = true;
+        }
+
+        return $features;
     }
 }

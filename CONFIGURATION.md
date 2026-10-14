@@ -71,7 +71,7 @@ You can also activate the fact that SAML provides user groups through an attribu
 Configuration without samladmin
 ===============================
 
-This section explain the configuration if you do not plan to install the
+This section explains the configuration if you do not plan to install the
 samladmin module.
 
 You should setup parameters into `var/config/saml/saml.coord.ini.php`, and
@@ -123,16 +123,16 @@ the `uid` attribute given by the Identity Provider:
 __login=uid
 ```
 
-In the same section you can list the list of the user dao record properties that
-will receive the values of some SAML attributes. Keys are property names, values
-are attributes names.
+In the same section you can list the list of the JelixAuthentication identity attributes,
+that will receive the values of some SAML attributes. Keys are identity attributes, values
+are SAML attributes names. Example:
 
 ```ini
 [saml:attributes-mapping]
 __login=uid
 
-login=uid
-email=mail
+jelix/identity/username=uid
+jelix/identity/emailaddress="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
 
 ```
 
