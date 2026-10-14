@@ -4,7 +4,6 @@
 # from https://github.com/dinkel/docker-openldap
 # -----------------
 FROM debian:trixie
-MAINTAINER Jelix
 
 # properly setup debian sources
 ENV DEBIAN_FRONTEND noninteractive
@@ -27,4 +26,3 @@ EXPOSE 389 636
 ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["slapd", "-d", "32768", "-u", "openldap", "-g", "openldap", "-h", "ldap:///"]
-

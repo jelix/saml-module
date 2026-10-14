@@ -14,7 +14,8 @@ services:
     image: jwilder/nginx-proxy:alpine
     container_name: "jelix_saml_nginx_proxy"
     environment:
-      - DHPARAM_GENERATION=false
+      - DHPARAM_SKIP=true
+      - TRUST_DOWNSTREAM_PROXY=true
     ports:
       - "80:80"
     volumes:
@@ -40,7 +41,7 @@ services:
     build:
       context: ./docker-conf/phpfpm
       args:
-        php_version: "${PHP_VERSION}"
+        php_version: ${PHP_VERSION}
     container_name: "jelix_saml_php"
     environment:
       JELIX_VERSION: ${JELIX_VERSION}
