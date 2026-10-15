@@ -5,9 +5,21 @@ shift
 
 if [ "$COMMAND" == "" ]; then
     echo "Error: command is missing"
-    echo "Possible commands: clean-tmp, reset, install, rights, composer-install, composer-update"
-    echo "   ldap-reset, ldap-shell, ldap-users"
-    echo "   shell, shellroot, unit-tests"
+    echo "Possible commands: "
+    echo "- clean_tmp: delete content of testapp/temp"
+    echo "- composer-install: install php packages"
+    echo "- composer-update: update php packages"
+    echo "- install: launch the installer of the application"
+    echo "- init-data: setup initial accounts. To do after an installation"
+    echo "- ldap-reset: delete and recreate ldap entries"
+    echo "- ldap-shell: launch a shell into the ldap container"
+    echo "- ldap-users: list of ldap entries"
+    echo "- reset: delete all data and reinitialize configuration"
+    echo "- reset-install: shortcut for  reset+install+init-data"
+    echo "- rights: reinitialize rights on files"
+    echo "- shell: launch a shell in the PHP container, as userphp user"
+    echo "- shellroot: launch a shell in the PHP container, as root user"
+    echo "- unit-tests: launch unit tests"
     exit 1;
 fi
 CONTAINER=jelix_saml_php
@@ -17,12 +29,15 @@ case $COMMAND in
         docker exec -t -i $CONTAINER appctl.sh clean_tmp;;
     reset)
         docker exec -t -i $CONTAINER appctl.sh reset;;
-    reset-setup)
-        docker exec -t -i $CONTAINER appctl.sh reset
-        docker exec -t -i $CONTAINER appctl.sh init-data
-        ;;
     install)
         docker exec -t -i $CONTAINER appctl.sh install;;
+    init-data)
+        docker exec -t -i $CONTAINER appctl.sh init-data;;
+    reset-install)
+        docker exec -t -i $CONTAINER appctl.sh reset
+        docker exec -t -i $CONTAINER appctl.sh install
+        docker exec -t -i $CONTAINER appctl.sh init-data
+        ;;
     rights)
         docker exec -t -i $CONTAINER appctl.sh rights;;
     composer-install)

@@ -18,7 +18,7 @@ Then launch the containers for tests
 ```bash
 ./run-docker build
 ./run-docker up
-./app-ctl reset
+./app-ctl reset-install
 ./app-ctl ldap-reset
 ``` 
 
@@ -43,6 +43,9 @@ Other users :
 - jane / passjane (who is into the group1 group)
 
 To reset all data and docker containers, run `./run-docker reset`
+
+You can execute other subcommands with `./appctl <command>`.
+Launch `./appctl` without parameters to have the list of possible subcommands.
 
 Unit-tests
 ----------
