@@ -30,7 +30,7 @@ function cleanTmp() {
 }
 
 
-function resetApp() {
+function cleanApp() {
     if [ -f $APPDIR/var/config/CLOSED ]; then
         rm -f $APPDIR/var/config/CLOSED
     fi
@@ -39,11 +39,6 @@ function resetApp() {
         mkdir $APPDIR/var/log
         chown $APP_USER:$APP_GROUP $APPDIR/var/log
     fi
-
-    cp $APPDIR/var/config/localconfig.ini.php.dist $APPDIR/var/config/localconfig.ini.php
-    cp $APPDIR/var/config/profiles.ini.php.dist $APPDIR/var/config/profiles.ini.php
-
-    chown -R $APP_USER:$APP_GROUP $APPDIR/var/config/profiles.ini.php $APPDIR/var/config/localconfig.ini.php
 
     if [ -f $APPDIR/var/config/installer.ini.php ]; then
         rm -f $APPDIR/var/config/installer.ini.php
@@ -54,6 +49,15 @@ function resetApp() {
     if [ -f $APPDIR/var/config/localurls.xml ]; then
         rm -f $APPDIR/var/config/localurls.xml
     fi
+
+    if [ -f $APPDIR/var/config/localconfig.ini.php ]; then
+        rm -f $APPDIR/var/config/localconfig.ini.php
+    fi
+
+    if [ -f $APPDIR/var/config/profiles.ini.php ]; then
+        rm -f $APPDIR/var/config/profiles.ini.php
+    fi
+
     rm -rf $APPDIR/var/log/*
     rm -rf $APPDIR/var/db/*
     rm -rf $APPDIR/var/mails/*
@@ -64,8 +68,23 @@ function resetApp() {
     touch $APPDIR/var/uploads/.dummy && chown $APP_USER:$APP_GROUP $APPDIR/var/uploads/.dummy
 
     cleanTmp
-    setRights
-    launchInstaller
+
+}
+
+
+function resetApp() {
+  cleanApp
+
+  if [ -f $APPDIR/var/config/profiles.ini.php.dist ]; then
+      cp $APPDIR/var/config/profiles.ini.php.dist $APPDIR/var/config/profiles.ini.php
+  fi
+  if [ -f $APPDIR/var/config/localconfig.ini.php.dist ]; then
+      cp $APPDIR/var/config/localconfig.ini.php.dist $APPDIR/var/config/localconfig.ini.php
+  fi
+
+  chown -R $APP_USER:$APP_GROUP $APPDIR/var/config/profiles.ini.php $APPDIR/var/config/localconfig.ini.php
+  setRights
+
 }
 
 
@@ -113,38 +132,9 @@ function composerUpdate() {
 
 function launch() {
 
-    if [ ! -f $APPDIR/var/config/profiles.ini.php ]; then
-        cp $APPDIR/var/config/profiles.ini.php.dist $APPDIR/var/config/profiles.ini.php
-    fi
-    if [ ! -f $APPDIR/var/config/localconfig.ini.php ]; then
-        cp $APPDIR/var/config/localconfig.ini.php.dist $APPDIR/var/config/localconfig.ini.php
-    fi
-    chown -R $APP_USER:$APP_GROUP $APPDIR/var/config/profiles.ini.php $APPDIR/var/config/localconfig.ini.php
-
+    resetApp
     if [ ! -d $APPDIR/vendor ]; then
       composerInstall
-    fi
-
-    if [[ $JELIX_VERSION == 1.6* ]]; then
-        if [ "$JELIX_STABILITY" == "release" ]; then
-            jelix_archive=https://download.jelix.org/jelix/releases/1.6.x/${JELIX_VERSION}/jelix-${JELIX_VERSION}-dev.tar.gz
-        else
-            jelix_archive=https://download.jelix.org/jelix/nightly/1.6.x/jelix-${JELIX_VERSION}-dev.tar.gz
-        fi
-        echo $jelix_archive
-        jelix_directory=jelix-${JELIX_VERSION}-dev
-
-
-        if [ ! -d /opt/tests/jelix ]; then
-            wget -O /opt/tests/jelix.tar.gz $jelix_archive
-            (
-              cd /opt/tests/
-              tar xzf jelix.tar.gz
-              chown -R $APP_USER:$APP_GROUP $jelix_directory
-              mv $jelix_directory jelix
-              rm jelix.tar.gz
-            )
-        fi
     fi
 
     if [ ! -f $APPDIR/var/config/saml/certs/sp.crt ]; then
@@ -153,6 +143,7 @@ function launch() {
         chmod 644 $APPDIR/var/config/saml/certs/sp.key $APPDIR/var/config/saml/certs/sp.crt
     fi
 
+    launchInstaller
     setRights
     cleanTmp
 }
@@ -160,12 +151,18 @@ function launch() {
 case $COMMAND in
     clean_tmp)
         cleanTmp;;
+    clean)
+        cleanApp;;
     reset)
-        resetApp;;
-    launch)
-        launch;;
+        if [ ! -d $APPDIR/vendor ]; then
+          composerInstall
+        fi
+        resetApp
+        ;;
     install)
         launchInstaller;;
+    launch)
+        launch;;
     rights)
         setRights;;
     composer_install)
