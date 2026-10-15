@@ -50,6 +50,14 @@ class attrmappingCtrl extends jController
             $attrCtrl = new jFormsControlInput('attr_'.$idAttr);
             $attrCtrl->label = $label;
             $attrCtrl->defaultValue = $defaultValues[$idAttr] ?? '';
+
+            if ($idAttr == 'email'
+                || $idAttr == IdentityAttributes::Email
+                || $idAttr == 'username'
+                || $idAttr == IdentityAttributes::UserName
+            ) {
+                $attrCtrl->required = true;
+            }
             $groupCtrl->addChildControl($attrCtrl);
         }
         $form->addControl($groupCtrl);

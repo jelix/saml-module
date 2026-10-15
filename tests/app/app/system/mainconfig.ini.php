@@ -39,8 +39,6 @@ authloginpass.enabled=on
 account.enabled=on
 
 saml.path="/opt/saml/"
-saml.installparam[useradmin]=dwho
-saml.installparam[emailadmin]="dwho@lemon.local"
 saml.installparam[authep]="admin"
 
 samladmin.path="/opt/samladmin/"
@@ -504,4 +502,4 @@ autoCreateAccountOnLogin=on
 username=jelix/identity/username
 firstname=jelix/identity/givenname
 lastname=jelix/identity/surname
-email=jelix/identity/email
+email=jelix/identity/emailaddress

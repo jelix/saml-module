@@ -21,7 +21,8 @@ class pagesCtrl extends jController {
     function profile() {
         $rep = $this->getResponse('html');
 
-        $attributes = $_SESSION['samlUserdata'];
+        $user = jAuthentication::getCurrentUser();
+        $attributes = $user->getAttribute('idpdata');
 
         $rep->title = jLocale::get('saml~auth.authentication.done');
 
