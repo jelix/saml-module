@@ -28,24 +28,43 @@ class attrmappingCtrl extends jController
 
         $daoProperties = $config->getAuthorizedDaoPropertiesForMapping();
 
+        if (!in_array('email', $daoProperties)) {
+            array_unshift($daoProperties, 'email');
+        }
+
+        if (!in_array('login', $daoProperties)) {
+            array_unshift($daoProperties, 'login');
+        }
+
         $userFormSelector = jAuth::getDriverParam('form');
         $authForm = jForms::create($userFormSelector);
-        $listOfField = array();
-        foreach ($authForm->getControls() as $ctrlName => $ctrl) {
-            if (! ($ctrl instanceof jFormsControlInput)) {
-                continue;
+
+        foreach ($daoProperties as $daoProperty) {
+
+            $ctrl = $authForm->getControl($daoProperty);
+            $attrCtrl = new jFormsControlInput('attr_'.$daoProperty);
+            $label = '';
+
+            if (!$ctrl) {
+                $attrCtrl->required = ($daoProperty == 'login' || $daoProperty == 'email');
             }
-            $listOfField[] = $ctrl->ref;
-            if (count($daoProperties) && !in_array($ctrl->ref, $daoProperties)) {
-                continue;
+            else {
+                $label = $ctrl->label;
+                $attrCtrl->required = ($daoProperty == 'login' || $daoProperty == 'email')? true : $ctrl->required;
             }
 
-            $attrCtrl = new jFormsControlInput('attr_'.$ctrl->ref);
-            $attrCtrl->label = $ctrl->label;
-            $attrCtrl->defaultValue = $defaultValues[$ctrl->ref] ?? '';
-            $attrCtrl->required = $ctrl->required;
+            if ($daoProperty == 'login') {
+                $label = jLocale::get('samladmin~admin.attrmapping.form.login.label');
+            }
+            else if ($label == '') {
+                $label = $daoProperty;
+            }
+            $attrCtrl->label = $label;
+            $attrCtrl->defaultValue = $defaultValues[$daoProperty] ?? '';
+
             $groupCtrl->addChildControl($attrCtrl);
         }
+
         $form->addControl($groupCtrl);
         jForms::destroy($userFormSelector);
 
@@ -68,7 +87,7 @@ class attrmappingCtrl extends jController
             $ctrl->label = jLocale::get('samladmin~admin.attrmapping.form.forceSAMLAuthOnLoginPage.redirectlabel');
         }
 
-        return $listOfField;
+        return $daoProperties;
     }
 
 
@@ -86,7 +105,6 @@ class attrmappingCtrl extends jController
             $form->setData('groupsfromsamldropprefix', $userGroupsSetting['drop_prefix']);
         }
 
-        $form->setData('login', $config->getSAMLAttributeForLogin());
         $form->setData('automaticAccountCreation', $config->isAutomaticAccountCreation());
         $form->setData('allowSAMLAccountToUseLocalPassword', $config->isAllowingSAMLAccountToUseLocalPassword());
         $form->setData('forceSAMLAuthOnPrivatePage', $config->mustForceSAMLAuthOnPrivatePage() ? 'saml': 'form');
@@ -171,7 +189,6 @@ class attrmappingCtrl extends jController
         }
 
         $config = new \Jelix\Saml\ConfigurationModifier();
-        $config->setSAMLAttributeForLogin($form->getData('login'));
         $config->setAutomaticAccountCreation($form->getData('automaticAccountCreation'));
         $config->setAllowSAMLAccountToUseLocalPassword($form->getData('allowSAMLAccountToUseLocalPassword'));
         $config->setForceSAMLAuthOnPrivatePage($form->getData('forceSAMLAuthOnPrivatePage') == 'saml');
@@ -183,18 +200,9 @@ class attrmappingCtrl extends jController
             $config->setRedirectionAfterLogin($form->getData('redirectionAfterLogin'));
         }
 
-        $daoProperties = $config->getAuthorizedDaoPropertiesForMapping();
-
-        /** @var jFormsControlGroup $groupCtrl */
         $mapping = array();
         foreach($listOfField as $ctrlRef) {
-            if (count($daoProperties) == 0  || in_array($ctrlRef, $daoProperties)) {
-                $samlAttr = $form->getData('attr_'.$ctrlRef);
-            }
-            else {
-                $samlAttr = '';
-            }
-            $mapping[$ctrlRef] = $samlAttr;
+            $mapping[$ctrlRef] = $form->getData('attr_'.$ctrlRef);
         }
 
         $config->setAttributesMapping($mapping);

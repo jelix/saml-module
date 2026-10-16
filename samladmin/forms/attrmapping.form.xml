@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form xmlns="http://jelix.org/ns/forms/1.1">
 
-    <input ref="login" type="string" required="true">
-        <label locale="samladmin~admin.attrmapping.form.login.label"/>
-    </input>
-
     <group ref="attrsgroup">
         <label locale="samladmin~admin.attrmapping.form.attrsgroup.label" />
     </group>

@@ -20,7 +20,7 @@
                             </ul>
                         {else}
                             {if is_array($val)}
-                                {$val[0]|eschtml}
+                                {if count($val)}{$val[0]|eschtml}{/if}
                             {else}
                                 {$val|eschtml}
                             {/if}

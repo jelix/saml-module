@@ -112,7 +112,6 @@ mapping attributes should be (into the mainconfig.ini.php or localconfig.ini.pĥ
 
 ```
 [saml:attributes-mapping]
-__login=login
 ; <dao property>=<saml attribute>
 login=login
 email=mail

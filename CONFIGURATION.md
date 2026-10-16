@@ -113,29 +113,16 @@ and the user dao record properties.
 
 If you don't use the samladmin module, you should setup by hand.
 
-There should be at least one attribute, indicating the user login. You should
-indicate the name of this attribute into the `__login` option of the `saml:attributes-mapping`
-section of the configuration. In this example, the login value is given into
-the `uid` attribute given by the Identity Provider:
+In the section `saml:attributes-mapping`, indicate the list of the user dao record properties that
+will receive the values of some SAML attributes. Keys are property names, values are attributes names.
+
+In this example, the login value is given into the `uid` attribute given by the Identity Provider,
+and the  `email` property will receive the value of the `mail` attribute.
 
 ```ini
 [saml:attributes-mapping]
-__login=uid
-```
-
-In the same section you can list the list of the user dao record properties that
-will receive the values of some SAML attributes. Keys are property names, values
-are attributes names.
-
-```ini
-[saml:attributes-mapping]
-__login=uid
-
 login=uid
 email=mail
-
 ```
 
-Here, the user dao object will have its `login` property receiving the value
-of the `uid` attribute, and the  `email` property receiving the value
-of the `mail` attribute.
+`login` and `email` are mandatory (since they are mandatory into the dao used for jAuth).

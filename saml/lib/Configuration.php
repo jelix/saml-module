@@ -21,11 +21,6 @@ class Configuration {
     protected $settings = array();
 
     /**
-     * @var string the SAML attribute that contains the user login
-     */
-    protected $loginAttribute = '';
-
-    /**
      * @var array mapping between dao record properties (keys) and saml attributes (values)
      */
     protected $attributesMapping = array();
@@ -210,9 +205,7 @@ class Configuration {
         );
 
         $attrConfig = $iniConfig->{'saml:attributes-mapping'};
-        if (isset($attrConfig['__login']) && $attrConfig['__login'] != '') {
-            $this->loginAttribute = $attrConfig['__login'];
-        }
+        // deprecated property, we ignore it
         unset($attrConfig['__login']);
         $this->attributesMapping = $attrConfig;
 
@@ -427,7 +420,7 @@ class Configuration {
 
     public function checkAttrConfig()
     {
-        if ($this->loginAttribute == '' || count($this->attributesMapping) == 0) {
+        if (count($this->attributesMapping) == 0) {
             throw new \Exception(jLocale::get('saml~auth.authentication.error.saml.config.attributes.missing'), 1);
         }
     }
@@ -770,7 +763,7 @@ class Configuration {
      */
     function getSAMLAttributeForLogin()
     {
-        return $this->loginAttribute;
+        return $this->attributesMapping['login'] ?? '';
     }
 
     /**

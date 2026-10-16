@@ -133,11 +133,6 @@ class ConfigurationModifier extends Configuration
         $this->settings['idp']['x509certMulti']['encryption'] = array($certificate);
     }
 
-    public function setSAMLAttributeForLogin($attr)
-    {
-        $this->loginAttribute = $attr;
-    }
-
     public function setAttributesMapping(array $attributes)
     {
         $this->attributesMapping = $attributes;
@@ -230,7 +225,6 @@ class ConfigurationModifier extends Configuration
         $appConfig->{'saml:idp'}['certs_encryption_files'] = $cryptCert ? 'idp_encrypt.pem' : '';
 
         $mapping = $this->attributesMapping;
-        $mapping['__login'] = $this->loginAttribute;
         $liveConfig->setValues($mapping, 'saml:attributes-mapping');
         $appConfig->{'saml:attributes-mapping'} = $mapping;
 
