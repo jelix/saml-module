@@ -1,11 +1,5 @@
 <h1>{@samladmin~admin.attrmapping.title@}</h1>
 {form $attrform, 'samladmin~attrmapping:save'}
-    <div class="control-group">
-        {ctrl_label 'login'}
-        <div class="controls">
-        {ctrl_control 'login'}
-        </div>
-    </div>
 
     <div  class="control-group">
         {ctrl_label 'attrsgroup'}

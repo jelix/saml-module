@@ -113,29 +113,17 @@ and the user dao record properties.
 
 If you don't use the samladmin module, you should setup by hand.
 
-There should be at least one attribute, indicating the user login. You should
-indicate the name of this attribute into the `__login` option of the `saml:attributes-mapping`
-section of the configuration. In this example, the login value is given into
-the `uid` attribute given by the Identity Provider:
+In the section `saml:attributes-mapping`, indicate the list of the JelixAuthentication identity attributes that
+should be mapped to some SAML attributes. Keys are identity attribute names, values are SAML attributes names.
+
+In this example, the `jelix/identity/username` attribute will receive the value of the `uid` attribute given by the SAML Identity Provider,
+and the  `jelix/identity/emailaddress`  attribute will receive the value of the `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` SAML attribute.
 
 ```ini
 [saml:attributes-mapping]
-__login=uid
-```
-
-In the same section you can list the list of the JelixAuthentication identity attributes,
-that will receive the values of some SAML attributes. Keys are identity attributes, values
-are SAML attributes names. Example:
-
-```ini
-[saml:attributes-mapping]
-__login=uid
-
 jelix/identity/username=uid
 jelix/identity/emailaddress="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
 
 ```
 
-Here, the user dao object will have its `login` property receiving the value
-of the `uid` attribute, and the  `email` property receiving the value
-of the `mail` attribute.
+`jelix/identity/username` and `jelix/identity/emailaddress` are mandatory.

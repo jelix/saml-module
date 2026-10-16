@@ -36,9 +36,17 @@ class attrmappingCtrl extends jController
         else {
             $accountClaims = AuthUser::getDefaultSupportedAccountClaims();
         }
+        if (!in_array(IdentityAttributes::Email, $accountClaims)) {
+            array_unshift($accountClaims, IdentityAttributes::Email);
+        }
+
+        if (!in_array(IdentityAttributes::UserName, $accountClaims)) {
+            array_unshift($accountClaims, IdentityAttributes::UserName);
+        }
+
 
         $labels = IdentityAttributes::getAttributeLabels($accountClaims);
-
+        // FIXME check that username attr and email attr is there
         $listOfField = array();
 
         // create a field into the settings form for each field of the user form
@@ -60,6 +68,7 @@ class attrmappingCtrl extends jController
             }
             $groupCtrl->addChildControl($attrCtrl);
         }
+
         $form->addControl($groupCtrl);
 
         if ($config->mustRedirectToSAMLAuthOnLoginPage()) {
@@ -85,7 +94,6 @@ class attrmappingCtrl extends jController
             $form->setData('groupsfromsamldropprefix', $userGroupsSetting['drop_prefix']);
         }
 
-        $form->setData('login', $config->getSAMLAttributeForLogin());
         $form->setData('automaticAccountCreation', $config->isAutomaticAccountCreation());
         $form->setData('allowSAMLAccountToUseLocalPassword', $config->isAllowingSAMLAccountToUseLocalPassword());
         $form->setData('forceSAMLAuthOnPrivatePage', $config->mustForceSAMLAuthOnPrivatePage() ? 'saml': 'form');
@@ -152,7 +160,6 @@ class attrmappingCtrl extends jController
         }
 
         $config = new \Jelix\Saml\ConfigurationModifier();
-        $config->setSAMLAttributeForLogin($form->getData('login'));
         $config->setAutomaticAccountCreation($form->getData('automaticAccountCreation'));
         $config->setAllowSAMLAccountToUseLocalPassword($form->getData('allowSAMLAccountToUseLocalPassword'));
         $config->setForceSAMLAuthOnPrivatePage($form->getData('forceSAMLAuthOnPrivatePage') == 'saml');

@@ -2,8 +2,6 @@ ARG php_version=8.2
 FROM 3liz/liz-php-fpm:${php_version}
 
 ARG php_version
-ENV JELIX_VERSION=1.8.24
-ENV JELIX_STABILITY=release
 ENV PHP_VERSION=${php_version}
 
 RUN apt-get update; \

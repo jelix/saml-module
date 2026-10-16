@@ -214,10 +214,7 @@ daoPropertiesForMapping="login,email"
 
 
 [saml:attributes-mapping]
-; indicate on which JelixAuthentication Identity attributes, attributes given by the idp should be mapped.
-; __login is a not a property, but indicates which SAML attribute contains the user login.
-__login=
-
+; <identity attribute>=<saml attribute>
 
 
 

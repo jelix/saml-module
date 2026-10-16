@@ -37,7 +37,6 @@ certs_signing_files=idp_sig.pem
 certs_encryption_files=idp_encrypt.pem
 
 [saml:attributes-mapping]
-__login=login
 jelix/identity/username=login
 jelix/identity/emailaddress=mail
 

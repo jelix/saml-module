@@ -114,7 +114,6 @@ The mapping attributes should be (into the mainconfig.ini.php or localconfig.ini
 
 ```
 [saml:attributes-mapping]
-__login=login
 jelix/identity/username=login
 jelix/identity/givenname=firstname
 jelix/identity/surname=lastname

@@ -295,7 +295,11 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
                         $user->status = 1; // STATUS_VALID
                     }
                     foreach($this->userAttributesValues as $property => $value) {
-                        $user->$property = $value;
+                        // if there is a mapping for the login or password, we don't want to overwrite it.
+                        // Login is already set with createUserObject, and we don't want to change the password.
+                        if ($property != 'login' && $property != 'password') {
+                            $user->$property = $value;
+                        }
                     }
                     jAuth::saveNewUser($user);
                 }

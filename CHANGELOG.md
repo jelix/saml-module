@@ -6,6 +6,9 @@ Next
 
 - enhancement: new button to load a metadata file in the SAML IDP configuration page
 - enhancement: possiblity to see the SAML login log in the admin page
+- simplification of the admin page to set attributes mapping: there is now a single input field to set the login
+  attribute mapping. 
+  In the configuration: the `__login` parameter from the `[saml:attributes-mapping]` section is not used anymore.
 
 Version 2.9.0
 -------------
