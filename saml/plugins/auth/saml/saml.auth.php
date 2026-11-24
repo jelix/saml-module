@@ -34,7 +34,7 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
             $params = array_merge($params, jApp::config()->saml);
         }
         parent::__construct($params);
-        $this->dbProfile = $params['dbProfile'] ?: '';
+        $this->dbProfile = $params['dbProfile'] ?? '';
         if (!isset($this->_params['dao'])) {
             throw new Exception("Dao selector is missing into the saml configuration");
         }
