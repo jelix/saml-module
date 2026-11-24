@@ -42,3 +42,8 @@ email=mail
 
 [saml]
 automaticAccountCreation=on
+
+; is on, just to see the checkbox for the notification. No real implementation of a notification
+isApplicationSupportingNotification=on
+notificationOnAccountCreation=on
+

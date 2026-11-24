@@ -15,6 +15,10 @@
         {ctrl_label 'automaticAccountCreation'}
     </div>
     <div  class="control-group">
+        {ctrl_control 'notificationOnAccountCreation'}
+        {ctrl_label 'notificationOnAccountCreation'}
+    </div>
+    <div  class="control-group">
         {ctrl_control 'allowSAMLAccountToUseLocalPassword'}
         {ctrl_label 'allowSAMLAccountToUseLocalPassword'}
     </div>

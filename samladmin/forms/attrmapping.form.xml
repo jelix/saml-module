@@ -25,6 +25,10 @@
         <label locale="samladmin~admin.attrmapping.form.automaticAccountCreation.label"/>
     </checkbox>
 
+    <checkbox ref="notificationOnAccountCreation">
+        <label locale="samladmin~admin.attrmapping.form.notificationOnAccountCreation.label"/>
+    </checkbox>
+
     <checkbox ref="allowSAMLAccountToUseLocalPassword">
         <label locale="samladmin~admin.attrmapping.form.allowSAMLAccountToUseLocalPassword.label"/>
     </checkbox>

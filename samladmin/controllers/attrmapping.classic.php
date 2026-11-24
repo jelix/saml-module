@@ -106,6 +106,15 @@ class attrmappingCtrl extends jController
         }
 
         $form->setData('automaticAccountCreation', $config->isAutomaticAccountCreation());
+
+        if ($config->isApplicationSupportingNotification()) {
+            $form->setData('notificationOnAccountCreation', $config->isNotificationOnAccountCreation());
+            $form->deactivate('notificationOnAccountCreation', false);
+        }
+        else {
+            $form->deactivate('notificationOnAccountCreation');
+        }
+
         $form->setData('allowSAMLAccountToUseLocalPassword', $config->isAllowingSAMLAccountToUseLocalPassword());
         $form->setData('forceSAMLAuthOnPrivatePage', $config->mustForceSAMLAuthOnPrivatePage() ? 'saml': 'form');
         $form->setData('forceSAMLAuthOnLoginPage', $config->mustForceSAMLAuthOnLoginPage() ? 'saml': 'form');
@@ -190,6 +199,9 @@ class attrmappingCtrl extends jController
 
         $config = new \Jelix\Saml\ConfigurationModifier();
         $config->setAutomaticAccountCreation($form->getData('automaticAccountCreation'));
+        if ($config->isApplicationSupportingNotification()) {
+            $config->setNotificationOnAccountCreation($form->getData('notificationOnAccountCreation'));
+        }
         $config->setAllowSAMLAccountToUseLocalPassword($form->getData('allowSAMLAccountToUseLocalPassword'));
         $config->setForceSAMLAuthOnPrivatePage($form->getData('forceSAMLAuthOnPrivatePage') == 'saml');
         $config->setForceSAMLAuthOnLoginPage($form->getData('forceSAMLAuthOnLoginPage') == 'saml');

@@ -36,6 +36,22 @@ class Configuration {
     protected $automaticAccountCreation = true;
 
     /**
+     * Indicates that the administrator should be notified when an account is automatically created.
+     *
+     * He will be notified if the application supports the notification ($isApplicationSupportingNotification)
+     * and it it responds to the event samlAccountCreated
+     *
+     * @var bool
+     */
+    protected $notificationOnAccountCreation = false;
+
+    /**
+     * Indicates that the application is able to send notifications to the administrator of the application.
+     * This configuration parameter should be set by the developper of the application.
+     */
+    protected $_isApplicationSupportingNotification = false;
+
+    /**
      * @var bool indicates if a user created with SAML can use his local password to login
      */
     protected $allowSAMLAccountToUseLocalPassword = true;
@@ -111,6 +127,14 @@ class Configuration {
             if ($isAutomaticAccountCreation !== null) {
                 $this->automaticAccountCreation = $isAutomaticAccountCreation;
             }
+        }
+
+        if (isset($iniConfig->saml['notificationOnAccountCreation'])) {
+            $this->notificationOnAccountCreation = $iniConfig->saml['notificationOnAccountCreation'];
+        }
+
+        if (isset($iniConfig->saml['isApplicationSupportingNotification'])) {
+            $this->_isApplicationSupportingNotification = $iniConfig->saml['isApplicationSupportingNotification'];
         }
 
         if (isset($iniConfig->saml['allowSAMLAccountToUseLocalPassword'])) {
@@ -659,6 +683,19 @@ class Configuration {
     function isAutomaticAccountCreation()
     {
         return $this->automaticAccountCreation;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isApplicationSupportingNotification()
+    {
+        return $this->_isApplicationSupportingNotification;
+    }
+
+    public function isNotificationOnAccountCreation()
+    {
+        return $this->notificationOnAccountCreation;
     }
 
     /**

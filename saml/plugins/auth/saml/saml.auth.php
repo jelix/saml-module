@@ -13,6 +13,10 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
 
     protected $automaticAccountCreation = false;
 
+    protected $notificationOnAccountCreation = false;
+
+    protected $isApplicationSupportingNotification = false;
+
     /**
      * @var bool true if the current login process is made with SAML
      */
@@ -37,6 +41,14 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
 
         if (isset($this->_params['automaticAccountCreation'])) {
             $this->automaticAccountCreation = $this->_params['automaticAccountCreation'];
+        }
+
+        if (isset($this->_params['notificationOnAccountCreation'])) {
+            $this->notificationOnAccountCreation = $this->_params['notificationOnAccountCreation'];
+        }
+
+        if (isset($this->_params['isApplicationSupportingNotification'])) {
+            $this->isApplicationSupportingNotification = $this->_params['isApplicationSupportingNotification'];
         }
 
         if (isset($this->_params['caseSensitiveLogins'])) {
@@ -302,6 +314,9 @@ class samlAuthDriver extends jAuthDriverBase implements jIAuthDriver3 {
                         }
                     }
                     jAuth::saveNewUser($user);
+                    if ($this->isApplicationSupportingNotification && $this->notificationOnAccountCreation) {
+                        jEvent::notify('samlAccountCreated', array('user' => $user));
+                    }
                 }
             }
             else {

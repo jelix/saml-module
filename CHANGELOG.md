@@ -9,6 +9,10 @@ Next
 - simplification of the admin page to set attributes mapping: there is now a single input field to set the login
   attribute mapping. 
   In the configuration: the `__login` parameter from the `[saml:attributes-mapping]` section is not used anymore.
+- new possibility to send a notification to the administrator when an account is automatically created during
+  an SAML authentication. New configuration parameters: `isApplicationSupportingNotification` and
+ `notificationOnAccountCreation`
+
 
 Version 2.9.0
 -------------

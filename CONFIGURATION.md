@@ -126,3 +126,19 @@ email=mail
 ```
 
 `login` and `email` are mandatory (since they are mandatory into the dao used for jAuth).
+
+
+Notifications
+=============
+
+When the automatic account creation is enabled, and when a new account is created, there is the possibility
+to send a notification. However it depends on the application and its ability to send notification.
+
+If you want your application to send notifications:
+
+- create jEvent listener for the event `samlAccountCreated`. The event has a parameter `user` containing the user properties. Your listener should then notify someone of the account creation (by sending an email or else).
+- set `isApplicationSupportingNotification=on` into the section `[saml]` of the application configuration.
+
+Then, if the configuration parameter `notificationOnAccountCreation` is `on`, a notification will be sent.
+
+

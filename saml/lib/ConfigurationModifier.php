@@ -26,6 +26,14 @@ class ConfigurationModifier extends Configuration
     }
 
     /**
+     * @param bool $enable
+     */
+    public function setNotificationOnAccountCreation($enable)
+    {
+        $this->notificationOnAccountCreation = !!$enable;
+    }
+
+    /**
      * @param bool $allow
      */
     public function setAllowSAMLAccountToUseLocalPassword($allow)
@@ -234,6 +242,9 @@ class ConfigurationModifier extends Configuration
 
         $liveConfig->setValue('automaticAccountCreation', $this->automaticAccountCreation, 'saml');
         $appConfig->saml['automaticAccountCreation'] = $this->automaticAccountCreation;
+
+        $liveConfig->setValue('notificationOnAccountCreation', $this->notificationOnAccountCreation, 'saml');
+        $appConfig->saml['notificationOnAccountCreation'] = $this->notificationOnAccountCreation;
 
         $liveConfig->setValue('allowSAMLAccountToUseLocalPassword', $this->allowSAMLAccountToUseLocalPassword, 'saml');
         $appConfig->saml['allowSAMLAccountToUseLocalPassword'] = $this->allowSAMLAccountToUseLocalPassword;
