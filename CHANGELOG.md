@@ -4,6 +4,9 @@ Changes
 Next
 ----
 
+Version 2.10.0
+---------------
+
 - enhancement: new button to load a metadata file in the SAML IDP configuration page
 - enhancement: possiblity to see the SAML login log in the admin page
 - simplification of the admin page to set attributes mapping: there is now a single input field to set the login
