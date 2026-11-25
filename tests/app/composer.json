@@ -3,10 +3,9 @@
     "type": "project",
     "license": "LGPL",
     "require": {
-      "php": ">=7.4",
+      "php": ">=8.2",
       "jelix/jelix": "dev-jelix-1.8.x",
-      "onelogin/php-saml": "~4.3.1",
-      "phpseclib/phpseclib": "~3.0.47",
+      "onelogin/php-saml": "~4.6.0",
       "phpunit/phpunit": "^8.5.27"
     },
     "config": {

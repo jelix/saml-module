@@ -7,6 +7,7 @@
 
 use Jelix\Saml\Saml;
 use OneLogin\Saml2\Error;
+use OneLogin\Saml2\ValidationError;
 
 /**
  * Controller called by the Identity Provider
@@ -95,12 +96,16 @@ class endpointCtrl extends jController {
         }
         catch(Error $e) {
             Saml::logError($e->getMessage(), 'ACS');
-            return $this->acsError('Technical error');
+            return $this->acsError(jLocale::get('saml~auth.authentication.error.saml.technical.error'));
+        }
+        catch(ValidationError $e) {
+            Saml::logError($e->getMessage(), 'ACS');
+            return $this->acsError(jLocale::get('saml~auth.authentication.error.saml.validation.error'));
         }
         catch(Exception $e) {
             \jLog::logEx($e, 'error');
             Saml::logError($e->getMessage(), 'ACS');
-            return $this->acsError('Technical error');
+            return $this->acsError(jLocale::get('saml~auth.authentication.error.technical.error'));
         }
 
         /** @var jResponseRedirectUrl $rep */
@@ -146,12 +151,16 @@ class endpointCtrl extends jController {
         }
         catch(Error $e) {
             Saml::logError($e->getMessage(), 'SLS');
-            return $this->logoutresult('Technical error');
+            return $this->logoutresult(jLocale::get('saml~auth.authentication.error.saml.technical.error'));
+        }
+        catch(ValidationError $e) {
+            Saml::logError($e->getMessage(), 'SLS');
+            return $this->logoutresult(jLocale::get('saml~auth.authentication.error.saml.validation.error'));
         }
         catch(\Exception $e) {
             \jLog::logEx($e, 'error');
             Saml::logError($e->getMessage(), 'SLS');
-            return $this->logoutresult('Technical error');
+            return $this->logoutresult(jLocale::get('saml~auth.authentication.error.echnical.error'));
         }
 
         if ($relayState) {
