@@ -9,7 +9,7 @@ Version 2.11.0
 
 - Upgrade the lib `onelogin/php-saml` to 4.6, which fixes bugs and brings a better support of SAML
 - Better compatibility with PHP 8.4 and 8.5
-- New requirements: PHP 8.2 minimum.
+- New requirements: PHP 8.2 minimum and Jelix 1.8 minimum.
 
 
 Version 2.10.1

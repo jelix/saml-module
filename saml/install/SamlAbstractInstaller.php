@@ -2,20 +2,14 @@
 /**
  * @author      Laurent Jouanneau
  * @contributor
- * @copyright   2019-2021 3liz
+ * @copyright   2019-2026 3liz
  * @licence     GNU Lesser General Public Licence see LICENCE file or http://www.gnu.org/licenses/lgpl.html
  */
 
 /**
- * base class for installers/updaters for Jelix 1.6
+ * base class for installers/updaters based on the old Jelix Installer classes
  */
 class SamlAbstractInstaller extends jInstallerModule {
-
-    protected function isJelix16()
-    {
-        return !method_exists('jApp', 'varConfigPath');
-    }
-
 
     /**
      * @return jIniFileModifier
@@ -79,43 +73,26 @@ class SamlAbstractInstaller extends jInstallerModule {
         if (!$authconfig) {
             return array(null, null);
         }
-        if ($this->isJelix16()) {
-            $confPath = jApp::configPath($authconfig);
-            $conf = new jIniFileModifier($confPath);
+
+        $confPath = jApp::varConfigPath($authconfig);
+        if (!file_exists($confPath)) {
+            $confPath = jApp::appSystemPath($authconfig);
             if (!file_exists($confPath)) {
                 return array(null, null);
             }
         }
-        else {
-            $confPath = jApp::varConfigPath($authconfig);
-            if (!file_exists($confPath)) {
-                $confPath = jApp::appSystemPath($authconfig);
-                if (!file_exists($confPath)) {
-                    return array(null, null);
-                }
-            }
-            $conf = new \Jelix\IniFile\IniModifier($confPath);
-        }
+        $conf = new \Jelix\IniFile\IniModifier($confPath);
         return array($conf, $authconfig);
     }
 
 
     protected function updateCacheProfile($fileName = 'profiles.ini.php')
     {
-        if ($this->isJelix16()) {
-            $filePath = jApp::configPath($fileName);
-            if (!file_exists($filePath)) {
-                return;
-            }
-            $profiles = new jIniFileModifier($filePath);
+        $filePath = jApp::varConfigPath($fileName);
+        if (!file_exists($filePath)) {
+            return;
         }
-        else {
-            $filePath = jApp::varConfigPath($fileName);
-            if (!file_exists($filePath)) {
-                return;
-            }
-            $profiles = new \Jelix\IniFile\IniModifier($filePath);
-        }
+        $profiles = new \Jelix\IniFile\IniModifier($filePath);
 
         if ($profiles->getValue('saml', 'jcache') || $profiles->isSection('jcache:saml')) {
             return;

@@ -254,14 +254,7 @@ class Configuration {
 
     protected function configPath($file)
     {
-        if (method_exists('\\jApp', 'varConfigPath')) {
-            // jelix 1.7+
-            return \jApp::varConfigPath($file);
-        }
-        else {
-            // jelix 1.6
-            return \jApp::configPath();
-        }
+        return \jApp::varConfigPath($file);
     }
 
     protected function readSpConfig($iniConfig) {

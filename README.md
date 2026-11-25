@@ -7,7 +7,7 @@ A "samladmin" module is also provided to configure the "saml" module.
 Installation
 ============
 
-These modules are for Jelix 1.6.21 and higher. They are compatible with jauth, 
+These modules are for Jelix 1.8 and higher. They are compatible with jauth, 
 jauthdb, jauthdb_admin and jcommunity modules.
 
 The saml module uses the [onelogin/php-saml](https://github.com/onelogin/php-saml/) library which is installed 

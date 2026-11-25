@@ -58,7 +58,6 @@ class authCtrl extends jController {
             $auth_url_return = $this->param('auth_url_return');
             if ($conf['enable_after_login_override']
                 && $auth_url_return != ''
-                && method_exists('jAuth','checkReturnUrl')
                 && jAuth::checkReturnUrl($auth_url_return)
             ) {
                 $relayState = $auth_url_return;
