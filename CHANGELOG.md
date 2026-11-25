@@ -4,6 +4,11 @@ Changes
 Next
 ----
 
+Version 2.10.1
+--------------
+
+- fix(saml) PHP notice about dbProfile when this config param does not exist
+
 Version 2.10.0
 ---------------
 
